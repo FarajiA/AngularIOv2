@@ -1,34 +1,62 @@
 <ion-modal-view class="modal-register modal-inspius">
   <ion-content>
     <div class="header">
-      <a class="close" ng-click="vm.closeRegister()"><i class="is-icon-back"></i></a>
+      <a class="close" ng-click="vm.mRegister.hide()"><i class="is-icon-back"></i></a>
       <div class="logo">
         <img src="img/logo.png">
       </div>
     </div>
-    <form ng-submit="doRegister()">
-      <div class="list list-inset">
-        <label class="item item-input">
-          <i class="is-icon-avatar"></i>
-          <input type="text" ng-model="registerData.username" placeholder="Username">
-        </label>
-        <label class="item item-input">
-          <i class="is-icon-envelope"></i>
-          <input type="email" ng-model="registerData.email" placeholder="Email">
-        </label>
-        <label class="item item-input">
-          <i class="is-icon-padlock"></i>
-          <input type="password" ng-model="registerData.password" placeholder="Password">
-        </label>
-        <label class="item item-input">
-          <i class="is-icon-padlock"></i>
-          <input type="password" ng-model="registerData.repassword" placeholder="Confirm Password">
-        </label>
-        <label class="item item-button">
-          <button class="button button-block button-positive" type="submit">Continue</button>
-        </label>
-      </div>
-    </form>
-    
+      <form name="vm.form.registerform" ng-submit="vm.Register()">
+          <div class ="list list-inset">
+              <label class="item item-input">
+                  <!-- <i class="is-icon-avatar"></i> -->
+                  <input type="text" name="firstname" maxlength="30" ng-model="registerData.firstname" ng-minlength="1" placeholder="First Name" required>
+                  <i class="icon ion-alert-circled error" ng-show="form.registerform.firstname.$invalid && form.registerform.firstname.$touched"></i>
+              </label>
+              <label class="item item-input">
+                  <!-- <i class="is-icon-avatar"></i> -->
+                  <input type="text" name="lastname" maxlength="30" ng-model="registerData.lastname" maxlength="30" placeholder="Last Name">
+              </label>
+              <label class="item item-input">
+                  <!-- <i class="is-icon-avatar"></i> -->
+                  <input type="text" username-validate="^[a-zA-Z0-9\._.-]+$" regex-validate-flags="gi" name="username" min="2" ng-minlength="2" ng-model="registerData.username" placeholder="Username" required>
+                  <i class="icon is-icon-avatar success" ng-show="!form.registerform.username.$error.usernamevalid && !form.registerform.username.$invalid"></i>
+                  <i class="icon is-icon-avatar error" ng-show="form.registerform.username.$invalid && form.registerform.username.$touched"></i>
+              </label>
+              <label class="item item-input">
+                  <!-- <i class="is-icon-envelope"></i> -->
+                  <input type="email" email-validate ng-model="registerData.email" name="email" maxlength="50" placeholder="Email">
+                  <i class="icon ion-alert-circled error" ng-show="form.registerform.email.$invalid && form.registerform.email.$touched"></i>
+                  <div class="error-messages" ng-messages="form.registerform.email.$error" ng-if="form.registerform.email.$touched">
+                      <p ng-message="email" ng-show="form.registerform.email.$invalid">Email not legit</p>
+                      <p ng-message="emailvalid" ng-show="form.registerform.email.$error.emailvalid">Email is with another account</p>
+                  </div>
+              </label>
+              <label class="item item-input">
+                  <!-- <i class="is-icon-padlock"></i> -->
+                  <input type="password" maxlength="15" ng-minlength="6" ng-model="registerData.password" name="password" placeholder="Password" required>
+                  <i class="icon ion-alert-circled error" ng-show="form.registerform.password.$invalid && form.registerform.password.$touched"></i>
+              </label>
+              <div class="error-messages" ng-messages="form.registerform.password.$error" ng-if="form.registerform.password.$touched">
+                  <p ng-message="minlength" ng-show="form.registerform.password.$dirty">Gotta be at least 6 characters</p>
+                  <p ng-message="passwordvalid" ng-show="form.registerform.password.$error.passwordvalid">Gotta use at least one number and alphabet</p>
+              </div>
+              <label class="item item-input">
+                  <!-- <i class="is-icon-padlock"></i> -->
+                  <input type="password" maxlength="15" ng-minlength="6" ng-model="registerData.passwordConfirm" name="passwordConfirm" placeholder="Confirm Password" pw-check="registerData.passwordConfirm" required>
+                  <i class="icon ion-alert-circled error" ng-show="form.registerform.passwordConfirm.$error.pwmatch && !form.registerform.passwordConfirm.$pristine"></i>
+              </label>
+              <div class="error-messages" ng-messages="form.registerform.passwordConfirm.$error" ng-if="form.registerform.passwordConfirm.$touched">
+                  <p ng-message="pwmatch" ng-show="form.registerform.passwordConfirm.$error.pwmatch">Gotta match</p>
+              </div>
+              <p class="legal description">
+                  By clicking Sign Up, you agree to our <a ng-href="http://chasertheapp.com/terms" onclick="window.open(this.href, '_system', 'location=yes');">Terms</a>
+                  and that you have read our <a ng-href="http://chasertheapp.com/privacy" onclick="window.open(this.href, '_system', 'location=yes');">Privacy Policy</a>
+              </p>
+              <label class="item item-button">
+                  <button class="button button-block button-positive" type="submit">Continue</button>
+              </label>
+          </div>
+      </form>    
   </ion-content>
 </ion-modal-view>

@@ -58,7 +58,7 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform) {
             StatusBar.styleDefault();
         }
     });
-    /*
+   
     AuthService.fillAuthData();
     Encryption.fillKeyData();
     
@@ -79,7 +79,7 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform) {
         else 
             $state.go('login');
     });
-    */
+    
 });
 
 app.config(RouteMethods, ocLazyLoadProvider);
@@ -164,7 +164,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   $ionicSideMenuDelegate.canDragContent(false);
               }]
           }
-      })/*
+      })
       .state('main.traffic-detail', {
           url: '/traffic/user/:username',
           views: {
@@ -191,7 +191,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   $ionicSideMenuDelegate.canDragContent(false);
               }]
           }
-      })*/
+      })
       .state('main.activity', {
           url: '/activity/:requests',
           views: {
@@ -213,7 +213,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   $ionicSideMenuDelegate.canDragContent(false);
               }]
           }
-      })/*
+      })
       .state('main.activity-detail', {
           url: '/activity/user/:username',
           views: {
@@ -312,7 +312,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   $ionicSideMenuDelegate.canDragContent(false);
               }]
           }
-      })*/
+      })
       .state('login', {
           url: '/login',
           templateUrl: 'components/login/login.html',
@@ -323,13 +323,16 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                       return $ocLazyLoad.load({
                           name: 'login',
                           files: [
-                              'components/login/login.js'
+                              'lib/angular-messages.js',
+                              'components/login/login.js',
+                              'components/login/loginServices.js',
+                              'components/login/loginDirectives.js'
                           ]
                       });
                   }
               ]
           }
-      })/*
+      })
       .state('groups', {
           url: '/groups',
           templateUrl: 'components/groups/groups.html',
@@ -385,18 +388,15 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   }
               ]
           }
-      })*/;
+      });
 
-    /*
+    
     $urlRouterProvider.otherwise(function ($injector) {
         var $state = $injector.get("$state");
         $state.go("main.dash");
     });
-    */
-    $urlRouterProvider.otherwise('/login')
-
+    
     $httpProvider.interceptors.push('authInterceptorService');
-
 };
 
 function ocLazyLoadProvider($ocLazyLoadProvider) {
@@ -616,10 +616,10 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
 
 
 
-app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', /*'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub',*/ 'toaster', function ($scope, $q, $state, $stateParams, $ionicModal, /*AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub,*/ $toaster) {
+app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toaster', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster) {
 
     var mc = this;
-    /*
+    
     $scope.user = UserStore.data();
 
     $scope.loadRequestState = false;
@@ -795,7 +795,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
 
         $scope.$apply(function () {
             if ($state.current.name != "main.messages-thread") {
-                $toaster.pop('success', notify.username, title /*_.replace(text, '{0}', notify.username), "", 'trustedHtml', function (toaster) {
+                $toaster.pop('success', notify.username, title /*_.replace(text, '{0}', notify.username) */, "", 'trustedHtml', function (toaster) {
                     $state.go(state);
                     return true;
                 });
@@ -880,5 +880,5 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
             });
         }
     };
-    */
+    
 }]);

@@ -64,6 +64,7 @@
                   <ion-nav-back-button class="button button-icon icon ion-chevron-left">
                   </ion-nav-back-button>
               </ion-nav-bar>
+              <toaster-container toaster-options="{'time-out': 5000,'hideDuration': 1000,'extendedTimeOut': 1000, 'position-class':'toast-top-full-width' }" class="custom"></toaster-container>
               <ion-nav-view></ion-nav-view>
           </ion-side-menu-content>
           <ion-side-menu side="left">
@@ -79,11 +80,61 @@
                       <ion-item href="#/groups" ng-click="contactsLoadPage()" class="item-icon-left" menu-close><i class="icon ion-android-people"></i> Groups</ion-item>
                       <ion-item href="#/contacts" ng-click="contactsLoadPage()" class="item-icon-left" menu-close><i class="icon ion-plus-circled"></i> Invite</ion-item>
                       <ion-item href="#" class="item-icon-left" ng-click="logout()"><i class="icon ion-log-out"></i> Logout</ion-item>
-                      
+                      <script id="photo-modal.html" type="text/ng-template">
+                          <ion-modal-view class="photo-modal">
+                              <ion-content>
+                                  <div class="choice-buttons">
+                                      <a class="button button-outline icon-left ion-camera button-assertive" ng-click="takePicture()">Take Photo</a>
+                                      <a class="button button-outline icon-left ion-images button-assertive" ng-click="selectPicture()">Gallery Photo</a>
+                                  </div>
+                              </ion-content>
+                          </ion-modal-view>
+                      </script>
+                      <script id="crop-modal.html" type="text/ng-template">
+                          <ion-modal-view class="crop-modal">
+                              <ion-header-bar style="padding:0">
+                                  <div class="button-bar">
+                                      <button ng-click="closecropModal()" class="button button-outline button-assertive icon-left ion-close">Cancel</button>
+                                      <button ng-click="uploadPicture()" class="button button-outline button-balanced icon-left ion-checkmark">Crop</button>
+                                  </div>
+                              </ion-header-bar>
+                              <ion-content>
+                                  <div id="photoCanvas" set-dimensions>
+                                      <img-crop image="imgURI"
+                                                result-image="$parent.resImageDataURI"
+                                                change-on-fly="changeOnFly"
+                                                area-type="{{type}}"
+                                                area-min-size="selMinSize"
+                                                result-image-format="{{resImgFormat}}"
+                                                result-image-quality="resImgQuality"
+                                                result-image-size="resImgSize"
+                                                on-change="onChange($dataURI)"
+                                                on-load-error="onLoadError()">
+                                      </img-crop>
+                                  </div>
+                              </ion-content>
+                          </ion-modal-view>
+                      </script>
                   </ion-list>
               </ion-content>
           </ion-side-menu>
-
+          <script id="passphrase.html" type="text/ng-template">
+              <ion-modal-view>
+                  <ion-header-bar class="bar bar-header ">
+                      <h1 class="title">Enter passphrase</h1>
+                      <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
+                  </ion-header-bar>
+                  <ion-content class="padding">
+                      <div class="list">
+                          <label class="item item-input">
+                              <!-- <span class="input-label">Enter Passphrase</span> -->
+                              <input ng-model="mc.passPhrase" placeholder="Passphrase" type="text">
+                          </label>
+                          <button class="button button-full" ng-click="mc.savePhrase()">Save</button>
+                      </div>
+                  </ion-content>
+              </ion-modal-view>
+          </script>
       </ion-side-menus>
   </body>
 </html>

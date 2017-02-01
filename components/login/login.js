@@ -1,9 +1,8 @@
 ﻿; (function () {
-
     angular.module('App').controller('LoginController', ['$q', '$scope', '$state', '$ionicLoading', '$ionicModal', 'AuthService', 'UserStore', function ($q, $scope, $state, $ionicLoading, $ionicModal, AuthService, UserStore) {
 
         var vm = this;
-        vm.showLoginForm = true;
+        vm.form = {};
 
         $ionicModal.fromTemplateUrl('components/login/templates/forgot_password.html', {
             scope: $scope,
@@ -16,15 +15,7 @@
         }).then(function (modal) {
             vm.mRegister = modal;
         });
-
-        vm.closeLogin = function () {
-            $scope.mLogin.hide();
-        };
-
-        vm.closeForgotPassword = function () {
-            vm.mForgotPassword.hide();
-        };
-
+        
         // function to submit the form after all validation has occurred
         vm.submitLogin = function (user) {
             if (vm.loginform.$valid) {
@@ -58,16 +49,14 @@
                 fbLoginError("Cannot find the authResponse");
                 return;
             }
-
             var authResponse = response.authResponse;
-            /*
+          
             CheckifAccountExists(authResponse).then(function (exists) {
                 if (exists) {
                     $state.go('app.profile');
                     $ionicLoading.hide();
                 };
-            });
-            */
+            });            
         };
         // This method is to get the user profile info from the facebook api
         var getFacebookProfileInfo = function (authResponse) {
@@ -122,7 +111,6 @@
             $ionicLoading.show({
                 template: 'Logging in...'
             });
-
             window.plugins.googleplus.login(GoogleOptions,
               function (user_data) {
                   // For the purpose of this example I will store user data on local storage
