@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+      <link href="css/ionic.app.css" rel="stylesheet">
+      <link href="css/toaster.css" rel="stylesheet">
+      <link href="css/style.css" rel="stylesheet">
+      <link href="css/mdchips.css" rel="stylesheet" />
+      <script src="lib/ionic/js/ionic.bundle.js"></script>
+      <script src="lib/jquery-1.12.1.min.js"></script>
+      <script src="lib/jquery.signalR.min.js"></script>
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+      <script src="lib/angular-local-storage.min.js"></script>
+      <script src="lib/ocLazyLoad.min.js"></script>
+      <script src="lib/lodash.min.js"></script>
+      <script src="lib/toaster.min.js"></script>
+      <script src="lib/moment.js"></script>
+      <script src="lib/md-chips.js"></script>
+      <script src="lib/cryptico.min.js"></script>
+
+      <!-- cordova script (this will be a 404 during development) -->
+      <script src="cordova.js"></script>
+      <!-- your app's js -->
+      <script src="app.js"></script>
+      <script src="js/controllers.js"></script>
+      <script src="js/services.js"></script>
+      <script src="components/activity/activityServices.js"></script>
+      <script src="components/messages/messageServices.js"></script>
+      <script src="components/traffic/trafficServices.js"></script>
+      <script src="shared/services/services.js"></script>
+      <script src="shared/directives/directives.js"></script>
+  </head>
+  <body ng-app="App">
+    <!--
+      The nav bar that will be updated as we navigate between views.
+    -->
+    
+    <!--
+      The views will be rendered in the <ion-nav-view> directive below
+      Templates are in the /templates folder (but you could also
+      have templates inline in this html file if you'd like).
+    -->
+      <ion-side-menus ng-controller="mainController as mc">
+          <ion-side-menu-content>
+              <ion-nav-bar class="bar-stable">
+                  <ion-nav-back-button class="button button-icon icon ion-chevron-left">
+                  </ion-nav-back-button>
+              </ion-nav-bar>
+              <ion-nav-view></ion-nav-view>
+          </ion-side-menu-content>
+          <ion-side-menu side="left">
+              <ion-content has-header="false">
+                  <div class="sidemenu-header">
+                      <a class="profile" ng-click="openPhotoModal()" href="#">
+                          <img ng-src="{{mc.chaser.savedImage}}" />
+                      </a>
+                      <h1 class="title">{{mc.user.username}}</h1>
+                  </div>
+                  <ion-list>
+                      <ion-item href="#/blocks" class="item-icon-left" menu-close><i class="icon ion-nuclear"></i> Blocks</ion-item>
+                      <ion-item href="#/groups" ng-click="contactsLoadPage()" class="item-icon-left" menu-close><i class="icon ion-android-people"></i> Groups</ion-item>
+                      <ion-item href="#/contacts" ng-click="contactsLoadPage()" class="item-icon-left" menu-close><i class="icon ion-plus-circled"></i> Invite</ion-item>
+                      <ion-item href="#" class="item-icon-left" ng-click="logout()"><i class="icon ion-log-out"></i> Logout</ion-item>
+                      
+                  </ion-list>
+              </ion-content>
+          </ion-side-menu>
+
+      </ion-side-menus>
+  </body>
+</html>

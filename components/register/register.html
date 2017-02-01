@@ -1,0 +1,35 @@
+﻿<div class="row">    
+    <form name="registerform" ng-submit="submitRegister(user)" novalidate>
+        <div class="form-group" ng-class="{ 'has-error' : registerform.firstname.$invalid && !registerform.firstname.$pristine }">
+            <input type="text" class="form-control" ng-model="user.firstname" name="firstname" placeholder="First Name" ng-minlength="2" required>
+        </div>
+
+        <div class="form-group has-feedback" ng-class="{ 'has-error' : registerform.lastname.$invalid && !registerform.lastname.$pristine }">
+            <input type="text" class="form-control" ng-model="user.lastname" name="lastname" placeholder="Last Name" ng-minlength="2" required>
+        </div>
+        <div class="form-group has-feedback" ng-class="{ 'has-error' : registerform.email.$invalid && !registerform.email.$pristine || registerform.email.$error.emailvalid }">
+            <label class="control-label" for="email" ng-show="registerform.email.$error.emailvalid">Email is already registered</label>
+            <input type="email" class="form-control" email-validate ng-model="user.email" name="email" placeholder="Email" required>
+            <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="registerform.email.$error.emailvalid && !registerform.email.$pristine" aria-hidden="true"></span>            
+        </div>
+        <div class="form-group has-feedback" ng-class="{ 'has-error' : registerform.username.$invalid && !registerform.username.$pristine || registerform.username.$error.usernamevalid ,
+             'has-success' : !registerform.username.$invalid && !registerform.username.$pristine && !registerform.username.$error.usernamevalid}">
+            <input type="text" class="form-control" username-validate ng-model="user.username" name="username" min="2" ng-minlength="2" placeholder="Username" required>
+            <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!registerform.username.$error.usernamevalid && !registerform.username.$pristine && registerform.username.$valid" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="registerform.username.$error.usernamevalid && !registerform.username.$pristine" aria-hidden="true"></span>
+        </div>
+        
+        <div class="form-group has-feedback" ng-class="{ 'has-error' : registerform.password.$invalid && !registerform.password.$pristine }">
+            <input type="password" class="form-control" ng-model="user.password" name="password" placeholder="Password" required>
+        </div>
+        <div class="form-group has-feedback" ng-class="{ 'has-error' : registerform.passwordConfirm.$invalid && !registerform.passwordConfirm.$pristine}">
+            <input type="password" class="form-control" ng-model="user.passwordConfirm" pw-check="user.password" name="passwordConfirm" placeholder="Confirm Password" required>            
+            <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="registerform.passwordConfirm.$error.pwmatch && !registerform.passwordConfirm.$pristine" aria-hidden="true"></span>
+        </div>
+        <hr/>
+
+        <button type="submit" style="width:50%;display:inline-block" class="btn btn-primary btn-lg btn-block" ng-disabled="registerform.$invalid">Register</button>
+    </form>
+</div>
+
+

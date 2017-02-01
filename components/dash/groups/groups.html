@@ -1,0 +1,41 @@
+﻿<ion-view view-title="Choose Group">
+    <ion-content class="padding">
+        <div class="groupIntro">
+            <p>You are about to broadcast your location, choose who can view:</p>
+        </div>
+        <div class="list card">
+            <a ng-click="vm.broadcast(0, vm.allChasers)" class="item item-icon-right">
+                <h2>All Chasers</h2>                
+            </a>
+        </div>
+
+        <div class="list card">
+            <a ng-click="vm.broadcast(0, vm.anyonewithLink)" class="item item-icon-right">
+                <h2>Anyone with link</h2>
+                <i class="tooltip icon ion-help-circled" title="Anyone who gets the link supplied" animation="fade"></i>
+            </a>
+        </div>
+
+        <div class="list card">
+            <a ng-click="vm.broadcast(0, vm.everyone)" class="item item-icon-right">
+                <h2>Anyone & Everyone</h2>
+                <i class="tooltip icon ion-help-circled" title="Anyone who gets the link supplied and anyone who comes across this profile" animation="fade"></i>
+            </a>
+        </div>
+
+        <div class="list card" ng-show="vm.Groups.length != 0" ng-repeat="group in vm.Groups">
+            <a ng-click="vm.broadcast(group.id, vm.groupOnly)" class="item item-icon-left">
+                <h2>{{group.name}}</h2>
+                <p>{{group.membersAmount}} members</p>
+            </a>
+            <ion-infinite-scroll ng-if="vm.moGroups" on-infinite="vm.loadMoreGroups()" distance="30%"></ion-infinite-scroll>
+        </div>
+
+        <div class="list card">
+            <a href="#/groups/edit/0" class="item item-icon-right">                
+                Add Group
+                <i class="icon ion-plus-circled"></i>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

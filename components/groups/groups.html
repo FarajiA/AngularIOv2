@@ -1,0 +1,19 @@
+﻿<ion-view view-title="Groups">   
+    <ion-content class="padding">
+        <div id="result">
+            <div id="groups" class="groups">
+                <div class="zeroResults" ng-show="vm.Groups.length === 0">
+                    <h2>no groups dawg</h2>
+                </div>
+                <ion-list ng-show="vm.Groups.length != 0">
+                    <ion-item item="group" class="item-button-right group-item" ng-repeat="group in vm.Groups" type="item-text-wrap" href="#/groups/edit/{{group.id}}">
+                        <h2>{{group.name}}</h2>
+                        <p>{{group.membersAmount}} members</p>
+                        <ion-option-button class="button-assertive" ng-click="vm.deleteGroup(group.id, group.name)"><i class="icon ion-minus"></i></ion-option-button>
+                    </ion-item>
+                </ion-list>
+                <ion-infinite-scroll ng-if="vm.moGroups" on-infinite="vm.loadMoreGroups()" distance="30%"></ion-infinite-scroll>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

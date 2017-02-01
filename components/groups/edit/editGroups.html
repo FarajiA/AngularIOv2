@@ -1,0 +1,50 @@
+﻿<ion-view cache-view="false" hide-tabs>
+    <ion-nav-title> {{vm.groupTitle}} </ion-nav-title>
+    <ion-content class="padding">
+        <div class="list">
+            <label class="item item-input item-floating-label input-calm">
+                <span class="input-label">Group Name</span>
+                <input type="text" ng-maxlength="50" placeholder="Group Name" ng-model="vm.groupName">
+            </label>
+            <label class="item item-input item-floating-label input-calm">
+                <span class="input-label">Search Members</span>
+                <input type="text" ng-maxlength="30" search-members placeholder="Search Members" ng-model="vm.searchGroup">
+            </label>
+        </div>
+        <div class="button-bar">
+            <a class="button" ng-class="{'active' : showChasers }" ng-click="showChasers = true;">Chasers</a>
+            <a class="button" ng-class="{'active' : !showChasers }" ng-click="showChasers = false;">Members <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.groupMembersTotal}}</span></i></a>
+        </div>
+        <ion-scroll direction="y" ng-show="showChasers">
+            <div class="zeroResults" ng-show="searchresults.array.length === 0 && initial.first">
+                <h2>no chasers fam</h2>
+            </div>
+            <div class="zeroResults" ng-show="searchresults.array.length === 0 && !initial.first">
+                <h2>no results</h2>
+            </div>
+            <ion-list>
+                <ion-checkbox ng-model="user.checked" ng-checked="user.checked" ng-repeat="user in searchresults.array" ng-change="vm.updateMembers(user)">{{user.username}}<p>{{user.firstName}}&nbsp;{{user.lastName}}</p></ion-checkbox>
+            </ion-list>
+            <ion-infinite-scroll ng-if="vm.moChasers" on-infinite="vm.loadMoreChasers()" distance="30%"></ion-infinite-scroll>
+        </ion-scroll>
+        <ion-scroll direction="y" ng-show="!showChasers">
+            <ion-list>
+                <ion-item class="item-avatar item-icon-right" ng-repeat="member in Members.array" type="item-text-wrap">
+                    <img ng-src="{{member.photo && imageURL + member.id + '.png' || 'img/default_avatar.png' }}">
+                    <h2>{{member.username}}</h2>
+                    <p>{{member.firstName}}&nbsp;{{member.lastName}}</p>
+                    <ion-option-button class="button-assertive" ng-click="vm.deleteMember(member.id)"><i class="icon ion-minus"></i></ion-option-button>
+                </ion-item>
+            </ion-list>
+            <ion-infinite-scroll ng-if="vm.moMembers" on-infinite="vm.loadMoreMembers()" distance="30%"></ion-infinite-scroll>
+        </ion-scroll>
+    </ion-content>
+
+    <ion-footer-bar align-title="center" class="bar-stable">
+        <div class="button-bar">
+            <a class="button" ng-model="button.first" ng-click="vm.saveGroup()" ng-disabled="vm.groupName.length == 0" style="width: 100%;max-width: inherit;">
+               {{vm.buttonText}}
+            </a>
+        </div>
+    </ion-footer-bar>
+</ion-view>

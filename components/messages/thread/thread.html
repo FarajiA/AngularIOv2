@@ -1,0 +1,15 @@
+﻿<ion-view view-title="{{vm.corresponder }}" hide-tabs>
+    <ion-content class="padding">
+        <irontec-simple-chat messages="vm.MessageThread"
+                             username="vm.username"
+                             input-placeholder-text="Enter message"
+                             submit-button-text="Send"
+                             submit-function="vm.sendMessage"
+                             visible="true"
+                             corresponder="vm.corresponder"
+                             user="vm.user.id">
+        </irontec-simple-chat>
+        <ion-infinite-scroll ng-if="vm.moMessages" on-infinite="vm.loadMoreMessages()" distance="30%"></ion-infinite-scroll>
+    </ion-content>
+</ion-view>
+

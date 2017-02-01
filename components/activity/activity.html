@@ -1,0 +1,39 @@
+﻿<ion-view view-title="Activity">
+    <ion-content class="padding">
+
+        <div class="button-bar">
+            <a class="button" ng-class="{'active' : !vm.showRequests }" ng-click="vm.showRequests = false">Broadcasting <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.broadcastersNo}}</span></i></a>
+            <a class="button" ng-class="{'active' : vm.showRequests }" ng-click="vm.showRequests = true">Requests <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.requestsNo}}</span></i></a>
+        </div>
+        <div id="result">
+            <div id="broadcasts" ng-show="!vm.showRequests" class="broadcast">
+            <div class="zeroResults" ng-show="vm.Broadcasting.length === 0">
+                <h2>no one broadcasting</h2>
+            </div>
+            <ion-list ng-show="vm.Broadcasting.length > 0">
+                <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Broadcasting" type="item-text-wrap" href="#/main/activity/user/{{chaser.username}}">
+                   <img ng-src="{{chaser.photo && imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
+                   <h2>{{chaser.username}}</h2>
+                   <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
+                </ion-item>
+            </ion-list>
+                <ion-infinite-scroll ng-if="vm.moBroadcasters" on-infinite="vm.loadMoreBroadcasters()" distance="30%"></ion-infinite-scroll>
+            </div>    
+
+            <div id="requests" ng-show="vm.showRequests" class="requests">
+                <div class="zeroResults" ng-show="vm.Requests.length === 0">
+                    <h2>no requests</h2>
+                </div>
+                <ion-list ng-show="vm.Chasers.length > 0">
+                    <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Broadcasting" type="item-text-wrap" href="#/main/activity/user/{{chaser.username}}">
+                        <img ng-src="{{chaser.photo && imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
+                        <h2>{{chaser.username}}</h2>
+                        <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
+                    </ion-item>
+                </ion-list>
+                <ion-infinite-scroll ng-if="vm.moRequests" on-infinite="vm.loadMoreRequests()" distance="30%"></ion-infinite-scroll>
+            </div>
+        </div>
+
+    </ion-content>
+</ion-view>

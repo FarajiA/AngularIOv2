@@ -1,0 +1,22 @@
+﻿<div id="thread" class="thread">
+    <div class="row" ng-repeat="message in vm.messages">
+        <div class="col" ng-if="message.username == vm.corresponder">xxxxxx</div>
+        <div class="col" ng-class="{'col-75' : message.username == vm.corresponder}">
+            <div class="talk-bubble tri-right chatRound" ng-class="message.username == vm.corresponder ? 'left-in' : 'right-in'">
+                <div class="talktext">
+                    <p>stuff</p>
+                </div>
+            </div>
+            <p class="date">{{message.date  }}</p>
+            <!-- filter = date : "MMM. d" -->
+        </div>
+    </div>
+    <div class="panel-footer chat-bottom-bar">
+        <form style="display:inherit" ng-submit="vm.submitFunction()">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm chat-input" placeholder="{{vm.inputPlaceholderText}}" ng-maxlength="300" ng-model="vm.writingMessage" />
+                <span class="input-group-btn"><input type="submit" class="btn btn-sm chat-submit-button" value="{{vm.submitButtonText}}" /></span>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+﻿<ion-view view-title="Messages">
+<ion-content class="padding">     
+    <div id="messages" class="messages">
+                    <div class="zeroResults" ng-show="vm.Messages.length === 0">
+                        <h2>no messages</h2>
+                    </div>
+        <ion-list ng-show="vm.Messages.length > 0">
+           <ion-item class="item-avatar item-icon-right" ng-class="{'bold' : !message.viewed }" href="#/main/messages/{{message.corresponder}}" ng-repeat="message in vm.Messages track by $id($index)" ng-click="vm.MessageViewed($index)" type="item-text-wrap" >
+             <img ng-src="{{message.photo == 'True' && imageURL + message.userID + '.png' || 'img/default_avatar.png' }}">
+             <h2>{{message.username}}</h2>             
+             <p>{{message.body | messageDecrypt}}</p>
+             <p class="date">{{message.date | messageDate }}</p>
+           </ion-item>
+        </ion-list>
+    </div>
+    <ion-infinite-scroll ng-if="vm.moMessages" on-infinite="vm.loadMoreMessages()" distance="30%"></ion-infinite-scroll>          
+</ion-content>
+</ion-view>
+
