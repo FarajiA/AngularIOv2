@@ -15,10 +15,16 @@
         }).then(function (modal) {
             vm.mRegister = modal;
         });
-        
-        // function to submit the form after all validation has occurred
-        vm.submitLogin = function (user) {
-            if (vm.loginform.$valid) {
+
+        $ionicModal.fromTemplateUrl('components/login/templates/verifyforgotten.html', {
+            scope: $scope,
+        }).then(function (modal) {
+            vm.mVerifyForgotten = modal;
+        });
+
+        vm.Login = function (user) {            
+            if (vm.form.loginForm.$valid) {
+                /*
                 AuthService.Login(user).then(function (response) {
                     $scope.$parent.userInitiate(response.userName).then(function () {
                         $state.go("main.dash");
@@ -26,18 +32,37 @@
                         console.log("error logging user in: " + err)
                     };
                 });
+                */
             }
         };
 
-        vm.submitRegister = function (user) {
-            if (vm.registerform.$valid) {
+        vm.Register = function (user) {
+            if (vm.form.registerForm.$valid) {
+                /*
                 AuthService.Register(user).then(function (UserAcct) {
                     AuthService.Login(user).then(function (response) {
                         $scope.$parent.userInitiate(response.userName);
                         $state.go('main.dash');
                     });
                 });
+                */
             };
+        };
+
+        vm.forgotPassword = function (user) {
+            if (vm.form.forgotForm.$valid) {
+                /*
+                AuthService.Login(user).then(function (response) {
+                    $scope.$parent.userInitiate(response.userName).then(function () {
+                        $state.go("main.dash");
+                    }), function (err) {
+                        console.log("error logging user in: " + err)
+                    };
+                });
+                */
+                vm.mForgotPassword.hide();
+                vm.mVerifyForgotten.show();
+            }
         };
 
         var fbLoginError = function (error) {

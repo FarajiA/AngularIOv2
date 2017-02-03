@@ -27,6 +27,24 @@ const groupSaveButtonText_CONSTANT = "Save Changes";
 const groupEditGroup_CONSTANT = "Edit Group";
 const groupNewGroup_CONSTANT = "New Group";
 const groupMax_CONSTANT = "10 members maximum";
+const userBroadcasting_CONSTANT = {
+    broadcasting: 'Broadcasting',
+    notBroadcasting: 'Not broadcasting'
+};
+const decision_CONSTANT = {
+    following: 'Chasing',
+    follow: 'Chase',
+    requested: 'Requested',
+    unblock: 'Unblock',
+    block: 'Block'
+};
+const block_CONSTANT = {
+    blockedConfirmTitle: 'Are you sure?',
+    blockedCompletedTitle: '0 has been blocked!',
+    blockedCompletedText: 'This user will no longer be able to view your profile or location.',
+    unblockConfirmTitle: 'Unblock 0?',
+    unblockOops: 'Oops! Something went wrong, try again.'
+};
 
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 

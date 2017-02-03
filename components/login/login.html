@@ -6,18 +6,18 @@
                 <img src="img/logo.png">
             </div>
         </div>
-        <form name="loginForm" ng-submit="doLogin(loginForm)" novalidate="">
+        <form name="vm.form.loginForm" ng-submit="vm.Login(loginData)" novalidate="">
             <div class="list list-inset">
                 <label class="item item-input">
                     <i class="is-icon-avatar"></i>
                     <input type="text" name="username" ng-model="loginData.username" required placeholder="Username">
                 </label>
-                <div class="invalid-required" ng-show="loginForm.username.$error && loginForm.$submitted">* Username is required</div>
+                <div class="invalid-required" ng-show="vm.form.loginForm.username.$error && vm.form.loginForm.$submitted">* Username is required</div>
                 <label class="item item-input">
                     <i class="is-icon-padlock"></i>
                     <input type="password" name="password" ng-model="loginData.password" placeholder="Password" required>
                 </label>
-                <div class="invalid-required" ng-show="loginForm.password.$error && loginForm.$submitted">* Password is required</div>
+                <div class="invalid-required" ng-show="vm.form.loginForm.password.$error && vm.form.loginForm.$submitted">* Password is required</div>
                 <label class="item item-button">
                     <button class="button button-block button-positive" type="submit">Sign in</button>
                 </label>

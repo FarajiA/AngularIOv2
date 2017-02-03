@@ -54,7 +54,11 @@
     bottom: 0;
 }
 */
+form label .error {color: red;}
+form label .success {color: green;}
+p.description {color:#fff;}
 
+  
 .modal-inspius {
   background: url(../img/bg-login.jpg) !important;
   background-size: cover !important;

@@ -1,0 +1,31 @@
+<ion-modal-view class="modal-forgotpass modal-inspius modal-noback">
+  <ion-content>
+    <div class="header text-center clearfix">
+      <a class="close" ng-click="vm.mVerifyForgotten.hide()"><i class="is-icon-back"></i></a>
+      <div class="title">Reset Password</div>
+      <div class="description">
+        Please enter verification code and new password.
+      </div>
+    </div>
+    <form name="vm.form.verifyForm" ng-submit="vm.submitForgotten(verifyData)" novalidate="">
+      <div class="list list-inset">
+        <label class="item item-input">
+            <textarea name="textarea" placeholder="Enter Code" rows="5" required></textarea>
+        </label>
+        <label class="item item-input">
+            <i class="is-icon-padlock" ng-class="{'error': vm.form.verifyForm.password.$invalid && vm.form.verifyForm.password.$touched}"></i>
+            <input type="password" maxlength="15" ng-minlength="6" ng-model="verifyData.password" name="password" placeholder="New Password" required>
+        </label>
+        <div class="invalid-required" ng-show="vm.form.verifyForm.password.$touched && vm.form.verifyForm.password.$error.minlength">* Gotta be at least 6 characters</div>
+        <label class="item item-input">
+            <i class="is-icon-padlock" ng-class="{'error': vm.form.verifyForm.passwordConfirm.$error.pwmatch && vm.form.verifyForm.passwordConfirm.$touched}"></i>
+            <input type="password" maxlength="15" ng-minlength="6" ng-model="verifyData.passwordConfirm" name="passwordConfirm" placeholder="Confirm Password" pw-check="verifyData.password" required>
+        </label>
+        <div class="invalid-required" ng-show="vm.form.verifyForm.passwordConfirm.$error.pwmatch && vm.form.verifyForm.passwordConfirm.$touched">Gotta match</div>
+        <label class="item item-button">
+          <button class="button button-block button-positive" type="submit">Reset Password</button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-modal-view>

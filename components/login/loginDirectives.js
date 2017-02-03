@@ -1,5 +1,5 @@
 ﻿; (function () {
-    angular.module('App').directive('emailValidate', ['Registration', function (Registration) {
+    angular.module('App').directive('emailValidate', ['UserLogin', function (UserLogin) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -9,8 +9,8 @@
                     var value = elem.val();
                     var pattern = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
                     if (pattern.test(value)) {
-                        Registration.emailCheck(value).then(function () {
-                            var isValid = Registration.data();
+                        UserLogin.emailCheck(value).then(function (response) {
+                            var isValid = response;
                             ctrl.$setValidity('emailvalid', isValid);
                         });
                     }
@@ -20,24 +20,22 @@
                 });
             }
         }
-    }]).directive('usernameValidate', ['Registration', function (Registration) {
+    }]).directive('usernameValidate', ['UserLogin', function (UserLogin) {
         return {
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, elem, attrs, ctrl) {
-                var me = attrs.ngModel;
-                //var min = attrs.ngMinlength;                
+                var me = attrs.ngModel;           
                 scope.$watch(me, function (value) {
                     var theexpression = attrs.usernameValidate;
                     var flags = attrs.regexValidateFlags || '';
-
                     if (value) {
                         var regex = new RegExp(theexpression, flags);
                         var valid = regex.test(value);
                         ctrl.$setValidity('charactersvalid', valid);
                         if (valid) {
-                            Registration.usernameCheck(value).then(function () {
-                                var isValid = !Registration.data();
+                            UserLogin.usernameCheck(value).then(function (response) {
+                                var isValid = response;
                                 ctrl.$setValidity('usernamevalid', isValid);
                             });
                         } else
@@ -62,7 +60,6 @@
                 elem.bind('focusin', function () {
                     ctrl.$setValidity('passwordvalid', true);
                 });
-
                 elem.bind('blur', function () {
                     var value = elem.val();
                     var theexpression = attrs.pwValidate;
