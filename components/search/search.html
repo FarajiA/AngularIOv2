@@ -1,0 +1,33 @@
+﻿<ion-view id="search">
+    <ion-nav-bar id="search-nav" class="nav-title-slide-ios7" align-title="left">
+        <ion-nav-buttons side="left">
+            <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+        </ion-nav-buttons>
+        <ion-nav-buttons side="right">
+            <button class="button button-clear">Cancel</button>
+        </ion-nav-buttons>
+        <ion-nav-title>
+            <label class="item-input-wrapper search-button">
+                <i class="icon ion-ios-search"></i>
+                <input autofocus min="1" auto-search type="search" ng-model="Searchquery" placeholder="Search">
+            </label>
+        </ion-nav-title>
+    </ion-nav-bar>
+        <ion-content has-padding="false" has-header="true" has-bouncing="false">
+            <div id="result">
+                <div class="search">
+                    <div class="zeroResults search" ng-show="searchresults.array.length === 0 && !initial.first">
+                        <h2>no results</h2>
+                    </div>
+                    <ion-list ng-show="searchresults.array.length > 0">
+                        <ion-item class="item-avatar item-icon-right" ng-repeat="search in searchresults.array" type="item-text-wrap" href="#/main/search/{{search.username}}">
+                            <img ng-src="{{search.photo && imageURL + search.id + '.png' || 'img/default_avatar.png' }}">
+                            <h2>{{search.username}}</h2>
+                            <p>{{search.firstName}}&nbsp;{{search.lastName}}</p>
+                        </ion-item>
+                    </ion-list>
+                    <ion-infinite-scroll ng-if="!noMoSearch" on-infinite="vm.loadMoreSearch(Searchquery)" distance="30%"></ion-infinite-scroll>
+                </div>
+            </div>
+        </ion-content>
+</ion-view>

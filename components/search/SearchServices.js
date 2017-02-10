@@ -8,12 +8,11 @@
             $http.get(baseURL_CONSTANT + "api/search/" + query + "/" + index + "/" + countSet_CONSTANT)
             .success(function (d) {
                 deffered.resolve(d);
-                data.push(d);
+                data = d;
             })
             .error(function (data, status) {
                 console.log("Request failed " + status);
             });
-
             return deffered.promise;
         };
 

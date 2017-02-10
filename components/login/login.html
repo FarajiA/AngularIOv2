@@ -17,7 +17,7 @@
                     <i class="is-icon-padlock"></i>
                     <input type="password" name="password" ng-model="loginData.password" placeholder="Password" required>
                 </label>
-                <div class="invalid-required" ng-show="vm.form.loginForm.password.$error && vm.form.loginForm.$submitted">* Password is required</div>
+                <div class="invalid-required" ng-show="vm.form.loginForm.password.$error && vm.form.loginForm.$submitted">* Password is required</div>                
                 <label class="item item-button">
                     <button class="button button-block button-positive" type="submit">Sign in</button>
                 </label>
@@ -30,7 +30,7 @@
                 <a ng-click="vm.googleSignIn();" onclick="return false;">Sign in with Google <i class="is-icon-next"></i></a>
             </div>
             <div class="link" ng-click="vm.mRegister.show()">
-                <a >Wanna sign up?<i class="is-icon-next"></i></a>
+                <a>Wanna sign up?<i class="is-icon-next"></i></a>
             </div>
         </div>
     </ion-content>

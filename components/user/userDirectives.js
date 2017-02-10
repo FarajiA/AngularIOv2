@@ -1,5 +1,5 @@
 ﻿; (function () {
-    angular.module('App').directive('userChoice', ['$ionicPopup', '$timeout', 'User', 'Block', function ($ionicPopup, $timeout, User, Block) {
+    angular.module('App').directive('userChoice', ['$ionicPopup', '$timeout', 'User', 'Decision', 'Block', function ($ionicPopup, $timeout, User, Decision, Block) {
         return {
             restrict: 'A',
             require: '?ngModel',
@@ -7,83 +7,71 @@
 
                 var UserRequest = function () {
                     scope.$apply(function () {
-                        /*
-                        Decision.request(UserObject.details().GUID).then(function (response) {
-                            if (response === 1) {
+                        Decision.request(User.data().id).then(function (response) {
+                            if (response) {
                                 elem.attr('data-chasing', "requested").attr("disabled", "disabled");
-                                scope.symbol = 2;
-                            }
-                            else {
-                                scope.symbol = 0;
+                                scope.relationship = 2;
+                                User.data().relationship = 2;
                             }
                         });
-                        */
+
                     });
                 };
 
                 var UserFollow = function () {
                     scope.$apply(function () {
-                        /*
-                        Decision.follow(UserObject.details().GUID).then(function (response) {
-                            if (response === 1) {
+                        Decision.follow(User.data().id).then(function (response) {
+                            if (response) {
                                 elem.attr('data-chasing', true);
-                                UserObject.details().isChasing = true;
-                                scope.noChasers++;
-                                scope.symbol = 1;
-                                scope.$emit('emit_Chasers', { action: "chasing" });
-                            }
-                            else {
-                                scope.symbol = 0;
+                                scope.chasers++;
+                                scope.relationship = 1;
+                                User.data().relationship = 1;
+                                scope.$emit('emit_Action', { action: "chasing" });
                             }
                         });
-                        */
+
                     });
                 };
 
                 var UserUnfollow = function () {
                     scope.$apply(function () {
-                        /*
-                        Decision.unfollow(UserObject.details().GUID).then(function (response) {
-                            if (response === 1) {
+                        Decision.unfollow(User.data().id).then(function (response) {
+                            if (response) {
                                 elem.attr('data-chasing', false);
-                                UserObject.details().isChasing = false;
-                                scope.noChasers--;
-                                scope.symbol = 0;
-                                scope.$emit('emit_Chasers', { action: "chasing" });
-                            }
-                            else {
-                                scope.symbol = 1;
+                                scope.chasers--;
+                                scope.relationship = 0;
+                                User.data().relationship = 0;
+                                scope.$emit('emit_Action', { action: "chasing" });
                             }
                         });
-                        */
+
                     });
                 };
 
                 var UserUnblock = function () {
                     scope.$apply(function () {
-                        /*
                         var unblockPopup = $ionicPopup.show({
-                            title: BlockConst.blockedConfirmTitle,
+                            title: block_CONSTANT.blockedConfirmTitle,
                             buttons: [
                                 {
                                     text: 'Cancel',
                                     onTap: function (e) {
-                                        scope.symbol = 3;
+                                        scope.relationship = 3;
                                     }
                                 },
                                 {
                                     text: '<b>Sure</b>',
                                     type: 'button-positive',
                                     onTap: function (e) {
-                                        Block.DeleteBlock(Block.data().ID).then(function (response) {
+                                        Block.DeleteBlock(User.data().id).then(function (response) {
                                             unblockPopup.close();
-                                            if (response === 1) {
-                                                scope.symbol = 0;
+                                            if (response) {
+                                                scope.relationship = 0;
+                                                User.data().relationship = 0;
                                                 elem.attr('data-chasing', false);
                                             } else {
                                                 var alertPopup = $ionicPopup.alert({
-                                                    title: 'Whoops!',
-                                                    template: updatedUserConst.unsuccessfulUpdate
+                                                    title: genericError_CONSTANT
                                                 });
                                             }
                                         });
@@ -92,51 +80,48 @@
                                 }
                             ]
                         });
-                        */
+
                     });
                 };
 
                 scope.$watch(attrs.ngModel, function (newValue, oldValue) {
-                    /*
                     if (newValue >= 0 && newValue < 4) {
                         scope.loadingFollow = false;
                     }
                     switch (newValue) {
                         case 0:
                             elem.attr('data-chasing', false);
-                            scope.isFollowing = activityConst.follow;
+                            scope.isFollowing = decision_CONSTANT.follow;
                             break;
                         case 1:
                             elem.attr('data-chasing', true);
-                            scope.isFollowing = activityConst.following;
+                            scope.isFollowing = decision_CONSTANT.following;
                             break;
                         case 2:
                             elem.attr('data-chasing', "requested").attr("disabled", "disabled");
-                            scope.isFollowing = activityConst.requested;
+                            scope.isFollowing = decision_CONSTANT.requested;
                             break;
                         case 3:
                             elem.attr('data-chasing', "unblock");
-                            scope.isFollowing = activityConst.unblock;
+                            scope.isFollowing = decision_CONSTANT.unblock;
                             break;
                     }
-                    */
+
                 });
 
                 elem.on('click', function (e) {
-                    /*
                     scope.$apply(function () {
-                        scope.symbol = 4;
+                        scope.relationship = 4;
                         scope.loadingFollow = true;
                     });
-                    if (UserObject.getBlocked())
+                    if (User.data().relationship == 3)
                         UserUnblock();
-                    else if (UserObject.details().isprivate && UserObject.details().isChasing == 0)
+                    else if (User.data().private && User.data().relationship == 0)
                         UserRequest();
-                    else if (!UserObject.details().isprivate && UserObject.details().isChasing == 1)
+                    else if (User.data().relationship == 1)
                         UserUnfollow();
                     else
                         UserFollow();
-                    */
                 });
             }
         }
@@ -150,7 +135,6 @@
                 scope.interval;
                 var promise;
                 scope.$watch(attrs.ngModel, function (newValue, oldValue) {
-                    /*
                     if (newValue) {
                         if (UserObject.details().isChasing == 1 || !UserObject.details().isprivate) {
                             elem.removeAttr("disabled")
@@ -169,7 +153,7 @@
                         elem.attr("disabled", "disabled")
                         .text(userDetails.notBroadcasting);
                     }
-                    */
+
                 });
             }
         }

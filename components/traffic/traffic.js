@@ -1,39 +1,22 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('TrafficController', ['$scope', '$timeout', '$stateParams', 'Traffic', 'UserStore', 'ionicMaterialInk', 'ionicMaterialMotion', function ($scope, $timeout, $stateParams, Traffic, UserStore, ionicMaterialInk, ionicMaterialMotion) {
+    app.controller('TrafficController', ['$scope', '$timeout', '$stateParams', 'Traffic', 'UserStore', function ($scope, $timeout, $stateParams, Traffic, UserStore) {
         var vm = this;
-        ionicMaterialMotion.fadeSlideInRight();
         vm.TrafficService = Traffic;
         vm.imageURL = imgURL_CONSTANT;
         vm.chasersIndex = 0;
         vm.chasingIndex = 0;
-        /*
-        var fadeSlideInRight = function () {            
-           
-            document.getElementsByTagName('ion-list')[0].className += ' animate-fade-slide-in-right';
-            
-            $timeout(function () {
-                ionicMaterialMotion.fadeSlideInRight();
-            }, 400);
-           
-            setTimeout(function () {
-                ionicMaterialMotion.fadeSlideInRight();
-            }, 500); 
-            
-        };
-        fadeSlideInRight();
-        */
 
         vm.loadChasingState = $scope.$parent.loadChasingState;
         vm.showChasing = ($stateParams.chasing === "chasing") || vm.loadChasingState;
 
-        var unbindGetChasers = $scope.$watch('vm.TrafficService.getChasers()', function (newVal, oldVal) {
+        /* var unbindGetChasers = */$scope.$watch('vm.TrafficService.getChasers()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Chasers = newVal.results;
                 vm.chasersNo = newVal.total;
                 vm.moChasers = (vm.chasersNo > countSet_CONSTANT);
                 vm.chasersIndex++;
-                unbindGetChasers();
+                //unbindGetChasers();
             }
         });
 
@@ -57,13 +40,13 @@
             return deffered.promise;
         };
         
-        var unbindGetChasing = $scope.$watch('vm.TrafficService.getChasing()', function (newVal, oldVal) {
+        /* var unbindGetChasing = */$scope.$watch('vm.TrafficService.getChasing()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Chasing = newVal.results;
                 vm.chasingNo = newVal.total;
                 vm.moChasing = (vm.chasingNo > countSet_CONSTANT);
                 vm.chasingIndex++;
-                unbindGetChasing();
+                //unbindGetChasing();
             }
         });
 
@@ -82,7 +65,7 @@
                 });
             }
             else if (vm.chasingIndex >= pagingChasingMax)
-                vm.moChasers = false;
+                vm.moChasing = false;
 
             return deffered.promise;
         };

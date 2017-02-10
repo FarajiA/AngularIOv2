@@ -1,4 +1,7 @@
 ﻿<ion-view view-title="{{vm.corresponder }}" hide-tabs>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon icon ion-android-more-vertical"></button>
+    </ion-nav-buttons>
     <ion-content class="padding">
         <irontec-simple-chat messages="vm.MessageThread"
                              username="vm.username"

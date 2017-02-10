@@ -1,5 +1,11 @@
 ﻿<ion-view view-title="Traffic">
-    <ion-content class="padding">        
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon icon ion-ios-chatboxes-outline" ui-sref="messages"></button>
+    </ion-nav-buttons>
+    <ion-content class="padding" has-header="true" padding="true" has-bouncing="true">        
         <div class="button-bar">
             <a class="button" ng-class="{'active' : !vm.showChasing }" ng-click="vm.showChasing = false;">sers <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.ChasersNo}}</span></i></a>
             <a class="button" ng-class="{'active' : vm.showChasing }" ng-click="vm.showChasing = true;">sing <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.ChasingNo}}</span></i></a>
@@ -27,7 +33,6 @@
                         <img ng-src="{{chaser.photo && imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
                         <h2>{{chaser.username}}</h2>
                         <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
-                        <!-- <i class="icon ion-chatbubble muted"></i> -->
                     </ion-item>
                 </ion-list>
                 <ion-infinite-scroll ng-if="vm.moChasing" on-infinite="vm.loadMoreChasing()" distance="30%"></ion-infinite-scroll>

@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('MessagesController', ['$scope', '$q', 'UserStore', 'Messages', 'Encryption', function ($scope, $q, UserStore, Messages, Encryption) {
+    app.controller('MessagesController', ['$scope', '$q', '$state', '$ionicHistory', 'UserStore', 'Messages', 'Encryption', function ($scope, $q, $state, $ionicHistory, UserStore, Messages, Encryption) {
         
         var vm = this;
         vm.MessageService = Messages;
@@ -9,7 +9,8 @@
 
         vm.user = UserStore.data();
 
-        var unbindGetInbox = $scope.$watch('vm.MessageService.inboxMessages()', function (newVal, oldVal) {
+        /*var unbindGetInbox = */
+        $scope.$watch('vm.MessageService.inboxMessages()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Messages = newVal.results;
                 vm.messagesNo = newVal.total;
@@ -53,5 +54,14 @@
                     Messages.viewed(response.corresponder);
             });
         };
+
+        vm.goBack = function () {
+            var back = $ionicHistory.viewHistory().backView;
+            if (!_.isEmpty(back))
+                $ionicHistory.goBack();
+            else 
+                $state.go('main.dash');
+        };
+
     }]);
 })();

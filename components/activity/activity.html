@@ -1,6 +1,11 @@
 ﻿<ion-view view-title="Activity">
-    <ion-content class="padding">
-
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon icon ion-ios-chatboxes-outline" ui-sref="messages"></button>
+    </ion-nav-buttons>
+    <ion-content class="padding" has-header="true" padding="true" has-bouncing="true">
         <div class="button-bar">
             <a class="button" ng-class="{'active' : !vm.showRequests }" ng-click="vm.showRequests = false">Broadcasting <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.broadcastersNo}}</span></i></a>
             <a class="button" ng-class="{'active' : vm.showRequests }" ng-click="vm.showRequests = true">Requests <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.requestsNo}}</span></i></a>
@@ -34,6 +39,5 @@
                 <ion-infinite-scroll ng-if="vm.moRequests" on-infinite="vm.loadMoreRequests()" distance="30%"></ion-infinite-scroll>
             </div>
         </div>
-
     </ion-content>
 </ion-view>

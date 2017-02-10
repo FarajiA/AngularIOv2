@@ -2,20 +2,15 @@
     <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon icon ion-ios-chatboxes-outline" ui-sref="messages"></button>
+    </ion-nav-buttons>
     <ion-content has-header="true" padding="true" id="dash" has-bouncing="false">
-
         <div style="text-align:center">
             <br /><br /><br /><br /><br />
             <button class="button button-large" ui-sref="dash-group">
                 Press this playa
             </button>
-        </div>
-
-        <div ng-if="true">
-            <label class="item item-input item-floating-label input-calm">
-                <span class="input-label">Share Link</span>
-                <input type="text" ng-maxlength="30" ng-readonly="true" ng-model="vm.shareLink">
-            </label>
         </div>
     </ion-content>
 

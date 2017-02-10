@@ -1,0 +1,19 @@
+﻿<ion-view title="Chasing">    
+    <ion-content has-header="true" padding="false">       
+        <div id="result">
+            <div id="chasing">
+                <div class="zeroResults" ng-show="chasing.length === 0">
+                    <h2>not chasing anyone</h2>
+                </div>
+                <ion-list ng-show="chasing.length > 0">
+                    <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chaser in chasing" type="item-text-wrap"  href="#/main/{{vm.segment}}/{{chaser.id}}">
+                        <img ng-src="{{chaser.photo && vm.imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
+                        <h2>{{chaser.username}}</h2>
+                        <p>{{chaser.firstname}}&nbsp;{{chaser.lastname}}</p>
+                    </ion-item>
+                </ion-list>
+                <ion-infinite-scroll ng-if="!noMoChasing" on-infinite="loadMoreChasing()" spinner="lines" distance="30%"></ion-infinite-scroll>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

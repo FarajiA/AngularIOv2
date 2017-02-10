@@ -1,5 +1,5 @@
 ﻿; (function () {
-    angular.module('App').controller('LoginController', ['$q', '$scope', '$state', '$ionicLoading', '$ionicModal', 'AuthService', 'UserStore', function ($q, $scope, $state, $ionicLoading, $ionicModal, AuthService, UserStore) {
+    angular.module('App').controller('LoginController', ['$q', '$scope', '$state', '$ionicLoading', '$ionicModal', '$ionicPopup', 'AuthService', 'UserLogin', 'UserStore', function ($q, $scope, $state, $ionicLoading, $ionicModal, $ionicPopup, AuthService, UserLogin, UserStore) {
 
         var vm = this;
         vm.form = {};
@@ -24,7 +24,6 @@
 
         vm.Login = function (user) {            
             if (vm.form.loginForm.$valid) {
-                /*
                 AuthService.Login(user).then(function (response) {
                     $scope.$parent.userInitiate(response.userName).then(function () {
                         $state.go("main.dash");
@@ -32,36 +31,54 @@
                         console.log("error logging user in: " + err)
                     };
                 });
-                */
             }
         };
 
         vm.Register = function (user) {
             if (vm.form.registerForm.$valid) {
-                /*
                 AuthService.Register(user).then(function (UserAcct) {
                     AuthService.Login(user).then(function (response) {
                         $scope.$parent.userInitiate(response.userName);
                         $state.go('main.dash');
                     });
                 });
-                */
             };
         };
 
         vm.forgotPassword = function (user) {
             if (vm.form.forgotForm.$valid) {
-                /*
-                AuthService.Login(user).then(function (response) {
-                    $scope.$parent.userInitiate(response.userName).then(function () {
-                        $state.go("main.dash");
-                    }), function (err) {
-                        console.log("error logging user in: " + err)
-                    };
+                UserLogin.forgotPassword(user.email).then(function (response) {
+                    if (response) {
+                        vm.notOnFile = false;
+                        vm.mForgotPassword.hide();
+                        vm.mVerifyForgotten.show();
+                    }
+                    else
+                        vm.notOnFile = true;
                 });
-                */
-                vm.mForgotPassword.hide();
-                vm.mVerifyForgotten.show();
+            }
+        };
+
+        vm.submitForgotten = function (user) {
+            if (vm.form.verifyForm.$valid) {
+                UserLogin.resetPassword(user).then(function (response) {
+                    if (response) {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Updated!',
+                            template: 'Login with new credentials'
+                        });
+                        alertPopup.then(function (res) {
+                            vm.mVerifyForgotten.hide();
+                        });
+                    }
+                    else {
+                        var alertPopup = $ionicPopup.alert({
+                            title: genericError_CONSTANT,
+                            template: 'Something went wrong, try again.'
+                        });
+                    }
+                        
+                });
             }
         };
 

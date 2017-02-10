@@ -2,13 +2,14 @@
     var app = angular.module('App');
     app.controller('ThreadController', ['$scope', '$timeout', '$state', '$stateParams', '$filter', '$templateCache', 'Thread', 'Messages', 'Encryption', function ($scope, $timeout, $state, $stateParams, $filter, $templateCache, Thread, Messages, Encryption) {
         //$templateCache.removeAll();
+        /*
         $scope.$on("$ionicView.beforeEnter", function () {
                 $scope.showTabs.show = false;
         });
         $scope.$on("$ionicView.beforeLeave", function () {
             $scope.showTabs.show = true;
         });
-
+        */
         var vm = this;
         var activeMessage = Messages.active();
 

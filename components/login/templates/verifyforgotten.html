@@ -10,7 +10,7 @@
     <form name="vm.form.verifyForm" ng-submit="vm.submitForgotten(verifyData)" novalidate="">
       <div class="list list-inset">
         <label class="item item-input">
-            <textarea name="textarea" placeholder="Enter Code" rows="5" required></textarea>
+            <textarea name="textarea" placeholder="Enter Code" ng-model="verifyData.code" name="code" rows="5" required></textarea>
         </label>
         <label class="item item-input">
             <i class="is-icon-padlock" ng-class="{'error': vm.form.verifyForm.password.$invalid && vm.form.verifyForm.password.$touched}"></i>
@@ -18,10 +18,10 @@
         </label>
         <div class="invalid-required" ng-show="vm.form.verifyForm.password.$touched && vm.form.verifyForm.password.$error.minlength">* Gotta be at least 6 characters</div>
         <label class="item item-input">
-            <i class="is-icon-padlock" ng-class="{'error': vm.form.verifyForm.passwordConfirm.$error.pwmatch && vm.form.verifyForm.passwordConfirm.$touched}"></i>
-            <input type="password" maxlength="15" ng-minlength="6" ng-model="verifyData.passwordConfirm" name="passwordConfirm" placeholder="Confirm Password" pw-check="verifyData.password" required>
+            <i class="is-icon-padlock" ng-class="{'error': vm.form.verifyForm.confirmpassword.$error.pwmatch && vm.form.verifyForm.confirmpassword.$touched}"></i>
+            <input type="password" maxlength="15" ng-minlength="6" ng-model="verifyData.confirmpassword" name="confirmpassword" placeholder="Confirm Password" pw-check="verifyData.password" required>
         </label>
-        <div class="invalid-required" ng-show="vm.form.verifyForm.passwordConfirm.$error.pwmatch && vm.form.verifyForm.passwordConfirm.$touched">Gotta match</div>
+        <div class="invalid-required" ng-show="vm.form.verifyForm.confirmpassword.$error.pwmatch && vm.form.verifyForm.confirmpassword.$touched">Gotta match</div>
         <label class="item item-button">
           <button class="button button-block button-positive" type="submit">Reset Password</button>
         </label>

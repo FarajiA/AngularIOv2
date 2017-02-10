@@ -106,13 +106,9 @@ ocLazyLoadProvider.$inject = ["$ocLazyLoadProvider"];
 
 function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $provide) {
 
-    // Turn off caching for demo simplicity's sake
-    //$ionicConfigProvider.views.maxCache(0);
+    $ionicConfigProvider.backButton.previousTitleText(false).text('');
+    $ionicConfigProvider.tabs.position('bottom');
 
-    /*
-    // Turn off back button text
-    $ionicConfigProvider.backButton.previousTitleText(false);
-    */
     $provide.decorator('mdChipsDirective', function ($delegate, $injector) {
         var directive, link;
         directive = $delegate[0];
@@ -210,6 +206,52 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
               }]
           }
       })
+        .state('main.traffic-chasers', {
+            url: '/traffic/chasers/:userId',
+            views: {
+                'main-traffic': {
+                    templateUrl: 'components/user/chasers/chasers.html',
+                    controller: 'ChasersController'
+                }
+            },
+            resolve: {
+                loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'trafficChasers',
+                        files: [
+                            'components/user/chasers/chaserServices.js',
+                            'components/user/chasers/chasers.js'
+                        ]
+                    });
+                }],
+                data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                    $ionicSideMenuDelegate.canDragContent(false);
+                }]
+            }
+        })
+        .state('main.traffic-chasing', {
+            url: '/traffic/chasing/:userId',
+            views: {
+                'main-traffic': {
+                    templateUrl: 'components/user/chasing/chasing.html',
+                    controller: 'ChasingController'
+                }
+            },
+            resolve: {
+                loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'trafficChasing',
+                        files: [
+                            'components/user/chasing/chasingServices.js',
+                            'components/user/chasing/chasing.js'
+                        ]
+                    });
+                }],
+                data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                    $ionicSideMenuDelegate.canDragContent(false);
+                }]
+            }
+        })
       .state('main.activity', {
           url: '/activity/:requests',
           views: {
@@ -259,21 +301,46 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
               }]
           }
       })
-      .state('main.messages', {
-          url: '/messages',
+      .state('main.search', {
+          url: '/search',
           views: {
-              'main-messages': {
-                  templateUrl: 'components/messages/messages.html',
-                  controller: 'MessagesController as vm'
+              'main-search': {
+                  templateUrl: 'components/search/search.html',
+                  controller: 'SearchController as vm'
               }
           },
           resolve: {
               loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
                   return $ocLazyLoad.load({
-                      name: 'messages',
+                      name: 'search',
                       files: [
-                          'components/messages/messages.js',
-                          'components/messages/messagesFilters.js'
+                          'components/search/search.js',
+                          'components/search/searchServices.js',
+                          'components/search/searchDirectives.js'
+                      ]
+                  });
+              }]
+          }
+      })
+      .state('main.search-detail', {
+          url: '/search/:username',
+          views: {
+              'main-search': {
+                  templateUrl: 'components/user/user.html',
+                  controller: 'UserController as vm'
+              }
+          },
+          resolve: {
+              loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
+                  return $ocLazyLoad.load({
+                      name: 'searchDetails',
+                      files: [
+                          //'lib/angular-simple-logger.js',
+                          //'lib/angular-google-maps.js',
+                          'components/user/userServices.js',
+                          'components/user/user.js',
+                          'components/user/userDirectives.js',
+                          'components/blocks/blocksServices.js'
                       ]
                   });
               }],
@@ -282,14 +349,30 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
               }]
           }
       })
-      .state('main.messages-thread', {
+      .state('messages', {
+          url: '/messages',
+          templateUrl: 'components/messages/messages.html',
+          controller: 'MessagesController as vm',
+          resolve: {
+              loadExternals: [
+                  '$ocLazyLoad', function ($ocLazyLoad) {
+                      return $ocLazyLoad.load({
+                          name: 'messages',
+                          files: [
+                              'components/messages/messages.js',
+                              'components/messages/messagesFilters.js'
+                          ]
+                      });
+                  }],
+              data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                  $ionicSideMenuDelegate.canDragContent(false);
+              }]
+          }
+      })
+      .state('messages-thread', {
           url: '/messages/:userID',
-          views: {
-              'main-messages': {
-                  templateUrl: 'components/messages/thread/thread.html',
-                  controller: 'ThreadController as vm'
-              }
-          },
+          templateUrl: 'components/messages/thread/thread.html',
+          controller: 'ThreadController as vm',
           resolve: {
               loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
                   return $ocLazyLoad.load({
@@ -307,14 +390,10 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
               }]
           }
       })
-      .state('main.messages-compose', {
+      .state('messages-compose', {
           url: '/messages-compose',
-          views: {
-              'main-messages': {
-                  templateUrl: 'components/messages/compose/compose.html',
-                  controller: 'ComposeController as vm'
-              }
-          },
+          templateUrl: 'components/messages/compose/compose.html',
+          controller: 'ComposeController as vm',
           resolve: {
               loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
                   return $ocLazyLoad.load({
@@ -460,16 +539,14 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
 
     authServiceFactory.Login = function (loginData) {
 
-        var data = "grant_type=password&username=" + loginData.username + "&password=" + loginData.password + "&client_id=" + clientID_CONSTANT;;
+        var data = "grant_type=password&username=" + loginData.username + "&password=" + loginData.password + "&client_id=" + clientID_CONSTANT;
 
         var deferred = $q.defer();
         var date = new Date();
 
         $http.post(baseURL_CONSTANT + 'oauth/token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, skipAuthorization: true }).success(function (response) {
-
             var refreshTokenDate = date.setDate(date.getDate() + refreshTokenLife_CONSTANT);
             localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.username, refreshToken: response.refresh_token, refreshExpiration: refreshTokenDate });
-
             authServiceFactory.authentication.isAuth = true;
             authServiceFactory.authentication.userName = response.userName;
             authServiceFactory.authentication.token = response.access_token;
@@ -878,16 +955,17 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
     };
 
     mc.savePhrase = function () {
+        var passphrase = _.toLower(mc.passPhrase);
         if (_.isEmpty(Encryption.Key.publicKey)) {
-            Encryption.generatePrivateKey(_.toLower(mc.passPhrase).replace(/\s+/g, '')).then(function (response) {
+            Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
                 if (response)
                     mc.phraseModal.hide();
             });
         }
         else {
-            Encryption.verifyPassphrase(_.toLower(mc.passPhrase).replace(/\s+/g, '')).then(function (response) {
+            Encryption.verifyPassphrase(passphrase.replace(/\s+/g, '')).then(function (response) {
                 if (response) {
-                    Encryption.generatePrivateKey(_.toLower(mc.passPhrase).replace(/\s+/g, '')).then(function (response) {
+                    Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
                         if (response)
                             mc.phraseModal.hide();
                     });
