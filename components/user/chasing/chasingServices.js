@@ -1,11 +1,11 @@
 ﻿; (function () {
-    angular.module('App').factory('Chasers', ['$http', '$q', function ($http, $q) {
+    angular.module('App').factory('Chasing', ['$http', '$q', function ($http, $q) {
         var data = [];
         var User = {};
 
-        User.chasers = function (index, guid) {            
+        User.chasing = function (index, guid) {
             var deffered = $q.defer();
-            $http.get(baseURL + "api/chasers/" + guid + "/" + index + "/" + countSet)
+            $http.get(baseURL_CONSTANT + "api/chasing/" + guid + "/" + index + "/" + countSet_CONSTANT)
             .success(function (d) {
                 data = d;
                 deffered.resolve(d);

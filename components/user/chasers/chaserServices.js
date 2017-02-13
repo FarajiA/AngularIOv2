@@ -3,9 +3,9 @@
         var data = [];
         var User = {};
 
-        User.chasing = function (index, guid) {
+        User.chasers = function (index, guid) {
             var deffered = $q.defer();
-            $http.get(baseURL + "api/chasing/" + guid + "/" + index + "/" + countSet_CONSTANT)
+            $http.get(baseURL_CONSTANT + "api/chasers/" + guid + "/" + index + "/" + countSet_CONSTANT)
             .success(function (d) {
                 data = d;
                 deffered.resolve(d);

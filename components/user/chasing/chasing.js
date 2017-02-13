@@ -1,15 +1,17 @@
 ﻿; (function () {
-    angular.module('App').controller('ChasersController', ['$scope', '$stateParams', '$location', 'Chasing', function ($scope, $stateParams, $location, Chasing) {
+    angular.module('App').controller('ChasingController', ['$scope', '$stateParams', '$location', 'Chasing', function ($scope, $stateParams, $location, Chasing) {
 
         var vm = this;
         var userID = $stateParams.userId;
         vm.imageURL = imgURL_CONSTANT;
+        vm.total = 0;
+        vm.index = 0;
 
-        var chasersInit = function () {
+        var chasingInit = function () {
             //$ionicLoading.show();
-            vm.index = 0;
-            Chasers.chasers(vm.index, userID).then(function (response) {
-                vm.chasers = response.results;
+            Chasing.chasing(vm.index, userID).then(function (response) {
+                vm.chasing = response.results;
+                vm.total = response.total;
                 vm.index++;
                 //$ionicLoading.hide();
             }, function (error) {
@@ -17,20 +19,20 @@
             });
         };
 
-        chasersInit();
+       chasingInit();
 
-        vm.loadMoreChasers = function () {
-            var chasersNo = Chasers.data().Total;
+       vm.loadMoreChasing = function () {
+            var chasersNo = vm.total;
             var pagingMax = Math.ceil(chasersNo / countSet_CONSTANT, 1);
             if (vm.index < pagingMax && vm.index > 0) {
-                Chasers.chasers(vm.index, userID).then(function (response) {
-                    var merged = vm.chasers.concat(response.Results);
-                    vm.chasers = merged;
+                Chasers.chasing(vm.index, userID).then(function (response) {
+                    var merged = vm.chasing.concat(response.results);
+                    vm.chasing = merged;
                     vm.index++;
                 });
             }
             else if (vm.index == pagingMax)
-                $scope.noMoChasers = true;
+                vm.noMoChasing = true;
 
             $scope.$broadcast('scroll.infiniteScrollComplete');
         };

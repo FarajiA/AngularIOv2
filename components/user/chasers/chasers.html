@@ -5,8 +5,8 @@
                 <div class="zeroResults" ng-show="vm.chasers.length === 0">
                     <h2>no chasers</h2>
                 </div>
-                <ion-list ng-show="chasers.length > 0">
-                    <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chaser in vm.chasers" type="item-text-wrap" href="#/main/{{vm.segment}}/{{chaser.id}}">
+                <ion-list ng-show="vm.chasers.length > 0">
+                    <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chaser in vm.chasers" type="item-text-wrap" href="#/main/{{vm.segment}}/user/{{chaser.username}}">
                         <img ng-src="{{chaser.photo && vm.imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
                         <h2>{{chaser.username}}</h2>
                         <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>

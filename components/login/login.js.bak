@@ -21,12 +21,6 @@
         }).then(function (modal) {
             vm.mVerifyForgotten = modal;
         });
- 		
-		$ionicModal.fromTemplateUrl('components/login/templates/username.html', {
-            scope: $scope,
-        }).then(function (modal) {
-            vm.mUsername = modal;
-        });
 
         vm.Login = function (user) {            
             if (vm.form.loginForm.$valid) {
@@ -93,9 +87,6 @@
             $ionicLoading.hide();
         };
         var fbLoginSuccess = function (response) {
-            $ionicLoading.show({
-                template: 'Logging in...'
-            });
             if (!response.authResponse) {
                 fbLoginError("Cannot find the authResponse");
                 return;
@@ -104,16 +95,10 @@
           
             CheckifAccountExists(authResponse).then(function (exists) {
                 if (exists) {
-                    $state.go('main.dash');
+                    $state.go('app.profile');
                     $ionicLoading.hide();
-                }
-                else {
-
-
                 };
-            });
-            
-            
+            });            
         };
         // This method is to get the user profile info from the facebook api
         var getFacebookProfileInfo = function (authResponse) {
@@ -161,8 +146,7 @@
         };
 
         var GoogleOptions = {
-            androidApiKey: " 32004928430-fu72cmv7oom069hj7b1cr0ft45fdb5nk.apps.googleusercontent.com",
-            webClientId: "32004928430-i22lnlmlsuinehebs5rv9640pi3phoos.apps.googleusercontent.com"
+            webClientId: "32004928430.apps.googleusercontent.com"
         };
 
         vm.googleSignIn = function () {

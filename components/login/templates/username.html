@@ -1,0 +1,20 @@
+<ion-modal-view class="modal-forgotpass modal-inspius modal-noback">
+  <ion-content>
+    <div class="header text-center clearfix">
+      <a class="close" ng-click="vm.mForgotPassword.hide()"><i class="is-icon-back"></i></a>
+      <div class="title">Please choose username.</div>
+    </div>
+    <form name="usernameForm" ng-submit="doResetPassword(forgotForm)" novalidate="">
+      <div class="list list-inset">
+        <label class="item item-input">
+          <i class="is-icon-envelope"></i>
+          <input type="email" ng-model="forgotData.email" required name="email" placeholder="Email">
+        </label>
+		<div class="invalid-required" ng-show="forgotForm.email.$error && forgotForm.$submitted">* Email is required</div>
+        <label class="item item-button">
+          <button class="button button-block button-positive" type="submit">Reset Password</button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-modal-view>

@@ -211,7 +211,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
             views: {
                 'main-traffic': {
                     templateUrl: 'components/user/chasers/chasers.html',
-                    controller: 'ChasersController'
+                    controller: 'ChasersController as vm'
                 }
             },
             resolve: {
@@ -234,7 +234,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
             views: {
                 'main-traffic': {
                     templateUrl: 'components/user/chasing/chasing.html',
-                    controller: 'ChasingController'
+                    controller: 'ChasingController as vm'
                 }
             },
             resolve: {
