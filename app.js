@@ -301,6 +301,52 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
               }]
           }
       })
+        .state('main.activity-chasers', {
+            url: '/activity/chasers/:userId',
+            views: {
+                'main-activity': {
+                    templateUrl: 'components/user/chasers/chasers.html',
+                    controller: 'ChasersController as vm'
+                }
+            },
+            resolve: {
+                loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'activityChasers',
+                        files: [
+                            'components/user/chasers/chaserServices.js',
+                            'components/user/chasers/chasers.js'
+                        ]
+                    });
+                }],
+                data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                    $ionicSideMenuDelegate.canDragContent(false);
+                }]
+            }
+        })
+        .state('main.activity-chasing', {
+            url: '/activity/chasing/:userId',
+            views: {
+                'main-activity': {
+                    templateUrl: 'components/user/chasing/chasing.html',
+                    controller: 'ChasingController as vm'
+                }
+            },
+            resolve: {
+                loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'activityChasing',
+                        files: [
+                            'components/user/chasing/chasingServices.js',
+                            'components/user/chasing/chasing.js'
+                        ]
+                    });
+                }],
+                data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                    $ionicSideMenuDelegate.canDragContent(false);
+                }]
+            }
+        })
       .state('main.search', {
           url: '/search',
           views: {
@@ -349,6 +395,52 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
               }]
           }
       })
+        .state('main.search-chasers', {
+            url: '/search/chasers/:userId',
+            views: {
+                'main-search': {
+                    templateUrl: 'components/user/chasers/chasers.html',
+                    controller: 'ChasersController as vm'
+                }
+            },
+            resolve: {
+                loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'searchChasers',
+                        files: [
+                            'components/user/chasers/chaserServices.js',
+                            'components/user/chasers/chasers.js'
+                        ]
+                    });
+                }],
+                data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                    $ionicSideMenuDelegate.canDragContent(false);
+                }]
+            }
+        })
+        .state('main.search-chasing', {
+            url: '/search/chasing/:userId',
+            views: {
+                'main-search': {
+                    templateUrl: 'components/user/chasing/chasing.html',
+                    controller: 'ChasingController as vm'
+                }
+            },
+            resolve: {
+                loadExternals: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'searchChasing',
+                        files: [
+                            'components/user/chasing/chasingServices.js',
+                            'components/user/chasing/chasing.js'
+                        ]
+                    });
+                }],
+                data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                    $ionicSideMenuDelegate.canDragContent(false);
+                }]
+            }
+        })
       .state('messages', {
           url: '/messages',
           templateUrl: 'components/messages/messages.html',
@@ -682,12 +774,8 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     var _responseError = function (rejection) {
         if (rejection.status === 401) {
             var authService = $injector.get('AuthService');
-            var jwtHelper = $injector.get('jwtHelper');
             var state = $injector.get('$state');
             var authData = localStorageService.get('authorizationData');
-
-            var date = jwtHelper.getTokenExpirationDate(authData.token);
-            var expired = jwtHelper.isTokenExpired(authData.token);
 
             authService.refreshToken().then(function (response) {
                 $rootScope.$emit("tokenRefreshed");
@@ -928,7 +1016,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
 
 
     $scope.$parent.$on("centralHubBroadcast", function (e, coords) {
-        $scope.$broadcast('mapUpdate', { coords })
+        $scope.$broadcast('mapUpdate', coords)
     });
 
     mc.CheckBadge = function (badge) {

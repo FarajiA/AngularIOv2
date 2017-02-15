@@ -5,10 +5,10 @@
     <ion-nav-buttons side="right">
         <button class="button button-icon icon ion-ios-chatboxes-outline" ui-sref="messages"></button>
     </ion-nav-buttons>
-    <ion-content class="padding" has-header="true" padding="true" has-bouncing="true">        
+    <ion-content has-padding="false" has-header="true" has-bouncing="true">        
         <div class="button-bar">
-            <a class="button" ng-class="{'active' : !vm.showChasing }" ng-click="vm.showChasing = false;">sers <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.ChasersNo}}</span></i></a>
-            <a class="button" ng-class="{'active' : vm.showChasing }" ng-click="vm.showChasing = true;">sing <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.ChasingNo}}</span></i></a>
+            <a class="button" ng-class="{'active' : !vm.showChasing }" ng-click="vm.showChasing = false;">sers <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.chasersNo}}</span></i></a>
+            <a class="button" ng-class="{'active' : vm.showChasing }" ng-click="vm.showChasing = true;">sing <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.chasingNo}}</span></i></a>
         </div>
         <div id="result">
             <div id="chasers" ng-show="!vm.showChasing" class="chasers">
@@ -17,7 +17,7 @@
                 </div>
                 <ion-list ng-show="vm.Chasers.length > 0">
                     <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Chasers" type="item-text-wrap" href="#/main/traffic/user/{{chaser.username}}">
-                        <img ng-src="{{chaser.photo && imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
+                        <img ng-src="{{chaser.photo && vm.imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
                         <h2>{{chaser.username}}</h2>
                         <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
                     </ion-item>
@@ -30,7 +30,7 @@
                 </div>
                 <ion-list ng-show="vm.Chasing.length > 0">
                     <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Chasing" type="item-text-wrap" href="#/main/traffic/user/{{chaser.username}}">
-                        <img ng-src="{{chaser.photo && imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
+                        <img ng-src="{{chaser.photo && vm.imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
                         <h2>{{chaser.username}}</h2>
                         <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
                     </ion-item>

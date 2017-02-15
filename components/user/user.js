@@ -5,6 +5,7 @@
         vm.username = $stateParams.username;
         vm.title = vm.username;
         vm.broadcast = {};
+        vm.imageURL = imgURL_CONSTANT;
         $scope.chaserBroadcast = {};
         var path = $location.path().split("/") || "Unknown";
         vm.segment = path[2];

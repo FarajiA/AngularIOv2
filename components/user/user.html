@@ -3,14 +3,14 @@
         <button class="button button-icon icon ion-android-more-vertical"></button>
     </ion-nav-buttons>
     <ion-content>
-        <div class="hero" style="background-image: url('img/profile-bg.jpg');">
-            <div class="content">
-                <div class="avatar" style="background-image: url('img/daenerys.jpg');"></div>
-                <h4>{{vm.fullName}}</h4>
-                <button user-choice ng-model="relationship" class="button button-small" ng-class="{'ion-star':symbol == 0 || symbol == 1 ,'ion-paper-airplane':symbol == 2,'ion-nuclear':symbol == 3}">
-                    {{isFollowing}}
-                </button>
-            </div>
+        <div class="hero" style="background-image: url('{{vm.photo && vm.imageURL + vm.id  + '.png' || 'img/default_avatar.png' }}');">            
+        </div>
+        <div class="hero-content">
+            <div class="avatar" style="background-image: url('{{vm.photo && vm.imageURL + vm.id  + '.png' || 'img/default_avatar.png' }}');"></div>
+            <h4>{{vm.fullName}}</h4>
+            <button user-choice ng-model="relationship" class="button button-small" ng-class="{'ion-star':symbol == 0 || symbol == 1 ,'ion-paper-airplane':symbol == 2,'ion-nuclear':symbol == 3}">
+                {{isFollowing}}
+            </button>
         </div>
         <div class="tabs tabs-dark tabs-icon-top static profile-tabs">
             <a href='{{vm.chaserLink}}' class="tab-item">
@@ -23,58 +23,55 @@
                 <i class="icon ion-ios-chatboxes-outline"></i>
             </a>
         </div>
-        <div id="broadcast" class="row">
+        <div id="broadcast" class="row broadcast-profile">
             <button ng-model="broadcasting" ng-disabled="!vm.allowedAccess" class="button button-block icon icon-left" ng-click="vm.openMap()">
-                <!-- ng-class="{'broadcasting': broadcasting, 'private': private && isChasing != 1 }" -->
-                {{vm.isBroadcasting}}
+                <!-- ng-class="{'broadcasting': broadcasting, 'private': private && isChasing != 1 }"-->
+                            {{vm.isBroadcasting}}
             </button>
         </div>
     </ion-content>
 
-    <script id="mapModal.html" type="text/ng-template">
-        <ion-modal-view class="map-modal">
-            <ion-content has-bouncing="false">
-                <a ng-click="vm.closeMap()" class="button icon-left ion-close button-clear button-dark"></a>
-                <h3>Broadcast Coords</h3>
-                {{vm.broadcast.coords.latitude}} / {{vm.broadcast.coords.longitude}}
-                <hr />
-            </ion-content>
-        </ion-modal-view>
-    </script>
+                <script id="mapModal.html" type="text/ng-template">
+                    <ion-modal-view class="map-modal">
+                        <ion-content has-bouncing="false">
+                            <a ng-click="vm.closeMap()" class="button icon-left ion-close button-clear button-dark"></a>
+                            <h3>Broadcast Coords</h3>
+                            {{vm.broadcast.coords.latitude}} / {{vm.broadcast.coords.longitude}}
+                            <hr />
+                        </ion-content>
+                    </ion-modal-view>
+                </script>                
+                <script id="mapModal.html" type="text/ng-template">
+                    <ion-modal-view class="map-modal">
+                        <ion-content has-bouncing="false">
+                            <div id="mapbanner">
+                                <a ng-click="closeModal()" class="button icon-left ion-close button-clear button-dark"></a>
+                                <span class="mapTitle">{{vm.username}}</span>
+                            </div>
+                            <ui-gmap-google-map center='map.center' control='map.control' zoom='map.zoom' draggable="true" options="options">
+                                <ui-gmap-marker ng-if="!selfIdentity" coords="chaserMarker.coords" options="chaserMarker.options" idkey="chaserMarker.id">
+                                </ui-gmap-marker>
+                                <ui-gmap-marker coords="userMarker.coords" options="userMarker.options" idkey="userMarker.id">
+                                </ui-gmap-marker>
+                            </ui-gmap-google-map>
 
-    <!--
-    <script id="mapModal.html" type="text/ng-template">
-        <ion-modal-view class="map-modal">
-            <ion-content has-bouncing="false">
-                <div id="mapbanner">
-                    <a ng-click="closeModal()" class="button icon-left ion-close button-clear button-dark"></a>
-                    <span class="mapTitle">{{vm.username}}</span>
-                </div>
-                <ui-gmap-google-map center='map.center' control='map.control' zoom='map.zoom' draggable="true" options="options">
-                    <ui-gmap-marker ng-if="!selfIdentity" coords="chaserMarker.coords" options="chaserMarker.options" idkey="chaserMarker.id">
-                    </ui-gmap-marker>
-                    <ui-gmap-marker coords="userMarker.coords" options="userMarker.options" idkey="userMarker.id">
-                    </ui-gmap-marker>
-                </ui-gmap-google-map>
-
-            </ion-content>
-        </ion-modal-view>
-    </script>
-
-    <script id="menuPopover.html" type="text/ng-template">
-        <ion-popover-view class="flagPopover">
-            <ion-content>
-                <div class="list">
-                    <a class="item" ng-click="flagUser()">
-                        Report
-                    </a>
-                    <a class="item" ng-disabled="alreadyBlocked" ng-click="blockAction()">
-                        {{vm.blockText}}
-                    </a>
-                </div>
-            </ion-content>
-        </ion-popover-view>
-    </script>
-    -->
+                        </ion-content>
+                    </ion-modal-view>
+                </script>
+                <script id="menuPopover.html" type="text/ng-template">
+                    <ion-popover-view class="flagPopover">
+                        <ion-content>
+                            <div class="list">
+                                <a class="item" ng-click="flagUser()">
+                                    Report
+                                </a>
+                                <a class="item" ng-disabled="alreadyBlocked" ng-click="blockAction()">
+                                    {{vm.blockText}}
+                                </a>
+                            </div>
+                        </ion-content>
+                    </ion-popover-view>
+                </script>
+                
 </ion-view>
 

@@ -139,7 +139,7 @@
         var CheckifAccountExists = function (provider, token) {
             var info = $q.defer();
             return info.promise;
-        }
+        };
 
         vm.facebookSignIn = function () {
             facebookConnectPlugin.getLoginStatus(function (success) {

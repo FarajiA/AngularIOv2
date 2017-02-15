@@ -5,7 +5,7 @@
     <ion-nav-buttons side="right">
         <button class="button button-icon icon ion-ios-chatboxes-outline" ui-sref="messages"></button>
     </ion-nav-buttons>
-    <ion-content class="padding" has-header="true" padding="true" has-bouncing="true">
+    <ion-content has-padding="false" has-header="true" has-bouncing="true">
         <div class="button-bar">
             <a class="button" ng-class="{'active' : !vm.showRequests }" ng-click="vm.showRequests = false">Broadcasting <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.broadcastersNo}}</span></i></a>
             <a class="button" ng-class="{'active' : vm.showRequests }" ng-click="vm.showRequests = true">Requests <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.requestsNo}}</span></i></a>
@@ -17,7 +17,7 @@
             </div>
             <ion-list ng-show="vm.Broadcasting.length > 0">
                 <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Broadcasting" type="item-text-wrap" href="#/main/activity/user/{{chaser.username}}">
-                   <img ng-src="{{chaser.photo && imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
+                   <img ng-src="{{chaser.photo && vm.imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
                    <h2>{{chaser.username}}</h2>
                    <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
                 </ion-item>
@@ -31,7 +31,7 @@
                 </div>
                 <ion-list ng-show="vm.Chasers.length > 0">
                     <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Broadcasting" type="item-text-wrap" href="#/main/activity/user/{{chaser.username}}">
-                        <img ng-src="{{chaser.photo && imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
+                        <img ng-src="{{chaser.photo && vm.imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
                         <h2>{{chaser.username}}</h2>
                         <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
                     </ion-item>
