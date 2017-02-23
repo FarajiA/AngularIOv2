@@ -82,8 +82,7 @@
                             title: genericError_CONSTANT,
                             template: 'Something went wrong, try again.'
                         });
-                    }
-                        
+                    }                        
                 });
             }
         };

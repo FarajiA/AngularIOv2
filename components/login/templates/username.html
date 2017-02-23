@@ -1,18 +1,17 @@
 <ion-modal-view class="modal-forgotpass modal-inspius modal-noback">
   <ion-content>
     <div class="header text-center clearfix">
-      <a class="close" ng-click="vm.mForgotPassword.hide()"><i class="is-icon-back"></i></a>
       <div class="title">Please choose username.</div>
     </div>
-    <form name="usernameForm" ng-submit="doResetPassword(forgotForm)" novalidate="">
+    <form name="vm.form.usernameForm" ng-submit="vm.newUsername(usernameData)" novalidate="">
       <div class="list list-inset">
         <label class="item item-input">
-          <i class="is-icon-envelope"></i>
-          <input type="email" ng-model="forgotData.email" required name="email" placeholder="Email">
+          <i class="icon is-icon-avatar" ng-class="{'error': vm.form.usernameForm.username.$error.usernamevalid || vm.form.usernameForm.$error.charactersvalid || (vm.form.usernameForm.username.$invalid && vm.form.usernameForm.username.$touched), 'success': !(vm.form.usernameForm.username.$error.usernamevalid || vm.form.usernameForm.username.$error.charactersvalid) && vm.form.usernameForm.username.$dirty}"></i>
+          <input type="text" ng-model="usernameData.username" required name="username" placeholder="Username" username-validate="^[a-zA-Z0-9\._.-]+$" regex-validate-flags="gi">
         </label>
-		<div class="invalid-required" ng-show="forgotForm.email.$error && forgotForm.$submitted">* Email is required</div>
+		<div class="invalid-required" ng-show="vm.form.usernameForm.username.$error && vm.form.usernameForm.username.$submitted">* Username is required</div>
         <label class="item item-button">
-          <button class="button button-block button-positive" type="submit">Reset Password</button>
+          <button class="button button-block button-positive" type="submit">Save</button>
         </label>
       </div>
     </form>

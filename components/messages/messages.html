@@ -1,19 +1,15 @@
-﻿<ion-view view-title="Messages">
-    <ion-nav-buttons side="left">
-        <button class="button button-icon icon ion-chevron-left" ng-click="vm.goBack()"></button>
-    </ion-nav-buttons>
+﻿<ion-view view-title="Messages">    
     <ion-nav-buttons side="right">
         <button class="button button-icon icon ion-compose" ui-sref="messages-compose"></button>
     </ion-nav-buttons>
-
 <ion-content has-padding="false">     
     <div id="messages" class="messages">
         <div class="zeroResults" ng-show="vm.Messages.length === 0">
           <h2>no messages</h2>
         </div>
         <ion-list ng-show="vm.Messages.length > 0">
-           <ion-item class="item-avatar item-icon-right" ng-class="{'bold' : !message.viewed }" href="#/messages/{{message.corresponder}}" ng-repeat="message in vm.Messages track by $id($index)" ng-click="vm.MessageViewed($index)" type="item-text-wrap" >
-             <img ng-src="{{message.photo == 'True' && imageURL + message.userID + '.png' || 'img/default_avatar.png' }}">
+           <ion-item class="item-avatar item-icon-right" ng-class="{'bold' : !message.viewed }" href="#/messages/{{message.corresponder}}" ng-repeat="message in vm.Messages track by $id($index)" ng-click="vm.MessageViewed($index)" type="item-text-wrap" >            
+             <img ng-src="{{message.photo && vm.imageURL + message.corresponder + '.png' || 'img/default_avatar.png' }}" />
              <h2>{{message.username}}</h2>             
              <p>{{message.body | messageDecrypt}}</p>
              <p class="date">{{message.date | messageDate }}</p>

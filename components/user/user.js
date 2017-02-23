@@ -22,6 +22,13 @@
                 vm.broadcasting = response.broadcasting;
                 $scope.relationship = response.relationship;
                 $scope.broadcastObject = response.broadcast;
+
+                if (_.toString($scope.relationship) == 1 || !vm.private) {
+                    vm.chaserLink = '#/main/' + vm.segment + '/chasers/' + vm.id;
+                    vm.chasingLink = '#/main/' + vm.segment + '/chasing/' + vm.id;
+                }
+                else 
+                    vm.chaserLink = vm.chasingLink = "javascript:void(0)";
             });
         };
 
@@ -68,9 +75,6 @@
 
         $scope.$on('$ionicView.enter', function () {
             if (!(vm.id === UserStore.data().id)) {
-                vm.chaserLink = '#/main/' + vm.segment + '/chasers/' + vm.id;
-                vm.chasingLink = '#/main/' + vm.segment + '/chasing/' + vm.id;
-
                 $scope.$watch("vm.broadcasting", function (newValue, oldValue) {
                     if (newValue && !_.isEmpty($scope.broadcastObject)) {
                         vm.allowedAccess = false;

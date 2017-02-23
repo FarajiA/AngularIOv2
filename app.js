@@ -369,7 +369,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
           }
       })
       .state('main.search-detail', {
-          url: '/search/:username',
+          url: '/search/user/:username',
           views: {
               'main-search': {
                   templateUrl: 'components/user/user.html',

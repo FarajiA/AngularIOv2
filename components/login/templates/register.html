@@ -16,7 +16,7 @@
               </label>
               <label class="item item-input">
                   <i class="icon is-icon-avatar" ng-class="{'error': vm.form.registerForm.username.$error.usernamevalid || vm.form.registerForm.username.$error.charactersvalid || (vm.form.registerForm.username.$invalid && vm.form.registerForm.username.$touched), 'success': !(vm.form.registerForm.username.$error.usernamevalid || vm.form.registerForm.username.$error.charactersvalid) && vm.form.registerForm.username.$dirty}"></i>
-                  <input type="text" username-validate="^[a-zA-Z0-9\._.-]+$" regex-validate-flags="gi" name="username" min="2" ng-minlength="1" ng-model="registerData.username" placeholder="Username" required>
+                  <input type="text" username-validate="^[a-zA-Z0-9\._.-]+$" regex-validate-flags="gi" name="username" ng-minlength="1" ng-model="registerData.username" placeholder="Username" required>
               </label>
               <div class="invalid-required" ng-show="vm.form.registerForm.username.$error.usernamevalid">* Taken</div>
               <div class="invalid-required" ng-show="vm.form.registerForm.username.$error.charactersvalid">* Periods, underscores, and dashes only</div>

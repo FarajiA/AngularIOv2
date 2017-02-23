@@ -7,8 +7,8 @@
     </ion-nav-buttons>
     <ion-content has-padding="false" has-header="true" has-bouncing="true">        
         <div class="button-bar">
-            <a class="button" ng-class="{'active' : !vm.showChasing }" ng-click="vm.showChasing = false;">sers <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.chasersNo}}</span></i></a>
-            <a class="button" ng-class="{'active' : vm.showChasing }" ng-click="vm.showChasing = true;">sing <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.chasingNo}}</span></i></a>
+            <a class="button" ng-class="{'active' : !vm.showChasing }" ng-click="vm.showChasing = false;">Followers <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.chasersNo}}</span></i></a>
+            <a class="button" ng-class="{'active' : vm.showChasing }" ng-click="vm.showChasing = true;">Following <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.chasingNo}}</span></i></a>
         </div>
         <div id="result">
             <div id="chasers" ng-show="!vm.showChasing" class="chasers">

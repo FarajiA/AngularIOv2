@@ -32,8 +32,6 @@
        })
    */
 
-
-
     angular.module('irontec.simpleChat', []);
     angular.module('irontec.simpleChat').directive('irontecSimpleChat', ['$timeout', SimpleChat]);
 

@@ -1,9 +1,9 @@
-﻿<ion-view title="Chasing">    
+﻿<ion-view title="Following">    
     <ion-content has-header="true" padding="false">       
         <div id="result">
             <div id="chasing">
                 <div class="zeroResults" ng-show="vm.chasing.length === 0">
-                    <h2>not chasing anyone</h2>
+                    <h2>not following anyone</h2>
                 </div>
                 <ion-list ng-show="vm.chasing.length > 0">
                     <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chaser in vm.chasing" type="item-text-wrap" href="#/main/{{vm.segment}}/user/{{chaser.username}}">
