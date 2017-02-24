@@ -74,7 +74,7 @@
         /* End map*/
 
         $scope.$on('$ionicView.enter', function () {
-            if (!(vm.id === UserStore.data().id)) {
+            if (!(vm.id === $scope.user.id)) {
                 $scope.$watch("vm.broadcasting", function (newValue, oldValue) {
                     if (newValue && !_.isEmpty($scope.broadcastObject)) {
                         vm.allowedAccess = false;
@@ -88,6 +88,8 @@
                                     vm.allowedAccess = true;
                                     vm.isBroadcasting = userBroadcasting_CONSTANT.broadcasting;
                                 }
+                                else
+                                    vm.isBroadcasting = userBroadcasting_CONSTANT.notBroadcasting;
                                 break;
                             case Group_CONSTANT:
                                 BroadcastStatus.access().then(function (response) {

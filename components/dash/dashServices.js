@@ -5,7 +5,7 @@
 
         Broadcast.On = function (coords, groupID, broadcastType) {
             var deffered = $q.defer();
-            var msg = { 'Coords': { "Longitude": coords.longitude, "Latitude": coords.latitude }, "GroupID": groupID, "BroadcastType": broadcastType };
+            var msg = { 'Coords': { "Longitude": coords.longitude, "Latitude": coords.latitude }, "BroadcastGroupID": groupID, "BroadcastType": broadcastType };
             $http.post(baseURL_CONSTANT + "api/broadcast/on", msg)
             .success(function (d) {
                 data = d;

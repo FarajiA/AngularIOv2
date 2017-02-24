@@ -797,8 +797,6 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-
-
 app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toaster', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster) {
 
     var mc = this;

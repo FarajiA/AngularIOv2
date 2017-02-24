@@ -10,7 +10,7 @@
         vm.anyonewithLink = AnyoneWithLink_CONSTANT;
         vm.everyone = Everyone_CONSTANT;
         vm.groupOnly = Group_CONSTANT;
-        vm.coords = {longitude: "-09898723.28", latitude: "541.1488994"};
+        vm.coords = { longitude: "-118.198020", latitude: "33.771682" };
         
         Groups.allGroups(vm.groupIndex).then(function (response) {
             vm.Groups = response.results;
