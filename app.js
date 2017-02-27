@@ -47,7 +47,6 @@ const block_CONSTANT = {
 };
 
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
-
 var app = angular.module('App',
         ['ionic',
         'oc.lazyLoad',
@@ -62,7 +61,6 @@ var app = angular.module('App',
         'App.Dash'
         */
 ]);
-
 
 app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -577,6 +575,25 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   }
               ]
           }
+      })
+      .state('settings', {
+          url: '/settings',
+          templateUrl: 'components/settings/settings.html',
+          controller: 'SettingsController as vm',
+          resolve: {
+              loadExternals: [
+                  '$ocLazyLoad', function ($ocLazyLoad) {
+                      return $ocLazyLoad.load({
+                          name: 'settings',
+                          files: [
+                              'components/settings/settings.js',
+                              'components/settings/settingServices.js',
+                              'components/settings/settingsDirectives.js'
+                          ]
+                      });
+                  }
+              ]
+          }
       });
 
     
@@ -799,9 +816,7 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
 
 app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toaster', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster) {
 
-    var mc = this;
-    
-    $scope.user = UserStore.data();
+    var mc = this;    
 
     $scope.loadRequestState = false;
     $scope.loadChasingState = false;

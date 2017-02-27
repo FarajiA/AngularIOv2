@@ -1,0 +1,37 @@
+﻿<ion-view view-title="Settings">
+    <ion-nav-buttons side="left">
+        <button class="button button-clear ion-close settingButtons" ng-click="vm.back()" style="padding-left:10px;"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button class="button button-clear ion-checkmark settingButtons" ng-click="vm.settingsSubmit(vm.settingsData)" style="padding-right:10px;"></button>
+    </ion-nav-buttons>
+    <ion-content class="padding">
+        <form name="vm.form.settingsForm">
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <input type="text" name="firstname" maxlength="30" ng-model="vm.settingsData.firstName" ng-minlength="1" placeholder="First Name" required>
+                </label>
+                <label class="item item-input">
+                    <input type="text" name="lastname" maxlength="30" ng-model="vm.settingsData.lastName" maxlength="30" placeholder="Last Name">
+                </label>
+                <label class="item item-input">
+                    <i class="is-icon-envelope" ng-class="{'error': (vm.form.settingsForm.email.$error.emailvalid || vm.form.settingsForm.email.$invalid) && vm.form.settingsForm.email.$touched}"></i>
+                    <input type="email" email-validate ng-model="vm.settingsData.email" name="email" maxlength="50" placeholder="Email" required>
+                </label>
+                <div class="invalid-required" ng-show="vm.form.settingsForm.email.$error.emailvalid">* Email is with another account</div>
+                <label class="item item-input">
+                    <i class="icon is-icon-avatar" ng-class="{'error': vm.form.settingsForm.username.$error.usernamevalid || vm.form.registerForm.username.$error.charactersvalid || (vm.form.settingsForm.username.$invalid && vm.form.settingsForm.username.$touched), 'success': !(vm.form.settingsForm.username.$error.usernamevalid || vm.form.settingsForm.username.$error.charactersvalid) && vm.form.settingsForm.username.$dirty}"></i>
+                    <input type="text" username-validate="^[a-zA-Z0-9\._.-]+$" regex-validate-flags="gi" name="username" ng-minlength="1" ng-model="vm.settingsData.userName" placeholder="Username" required>
+                </label>
+                <div class="invalid-required" ng-show="vm.form.settingsForm.username.$error.usernamevalid">* Taken</div>
+                <div class="invalid-required" ng-show="vm.form.settingsForm.username.$error.charactersvalid">* Periods, underscores, and dashes only</div>
+                <div class="private">
+                    <ion-toggle ng-model="settingsData.private">
+                        Private
+                    </ion-toggle>
+                </div>
+                <div class="password"><button type="button" class="button button-custom" ng-click="vm.updatePassword()">Change Password</button></div>
+            </div>
+        </form>    
+    </ion-content>
+</ion-view>

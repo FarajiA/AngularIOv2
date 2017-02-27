@@ -93,8 +93,8 @@
                                 break;
                             case Group_CONSTANT:
                                 BroadcastStatus.access().then(function (response) {
-                                    vm.allowedAccess = response;
-                                    vm.isBroadcasting = response ? userBroadcasting_CONSTANT.broadcasting : userBroadcasting_CONSTANT.notBroadcasting;
+                                    vm.allowedAccess = response.allowed;
+                                    vm.isBroadcasting = response.allowed ? userBroadcasting_CONSTANT.broadcasting : userBroadcasting_CONSTANT.notBroadcasting;
                                 });
                                 break;
                             default:
