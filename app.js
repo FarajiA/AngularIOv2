@@ -554,7 +554,10 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           ]
                       });
                   }
-              ]
+              ],
+              data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                  $ionicSideMenuDelegate.canDragContent(false);
+              }]
           }
       })
       .state('dash-group', {
@@ -573,7 +576,10 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           ]
                       });
                   }
-              ]
+              ],
+              data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                  $ionicSideMenuDelegate.canDragContent(false);
+              }]
           }
       })
       .state('settings', {
@@ -592,7 +598,10 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           ]
                       });
                   }
-              ]
+              ],
+              data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                  $ionicSideMenuDelegate.canDragContent(false);
+              }]
           }
       });
 

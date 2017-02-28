@@ -9,8 +9,10 @@
         Setting.updateUser = function (user) {
             var deffered = $q.defer();
             var authData = localStorageService.get('authorizationData');
-            $http.get(baseURL + "api/blocks/" + index + "/" + countSet)
+            var msg = { "firstname": user.firstname, "lastname": user.lastname, "username": user.username, "email": user.email, "private": user.private };
+            $http.put(baseURL_CONSTANT + "api/user", msg)
             .success(function (d) {
+                localStorageService.set('authorizationData', { chaserID: UserObject.data().GUID, chaseruser: user.username, chasrpsswd: authData.chasrpsswd });
                 deffered.resolve(d);
             })
             .error(function (data, status) {
@@ -23,7 +25,7 @@
             var deffered = $q.defer();
             passwordUpdated = false;
             var msg = { "guid": guid, "password": password };
-            $http.post(baseURL + "api/update_password", msg)
+            $http.post(baseURL_CONSTANT + "api/accounts/ChangePassword", msg)
             .success(function (d) {
                 passwordUpdated = d;
                 localStorageService.set('authorizationData', { chaserID: UserObject.data().GUID, chaseruser: UserObject.data().username, chasrpsswd: password });
@@ -37,12 +39,23 @@
 
         Setting.usernameCheck = function (username) {
             var deffered = $q.defer();
-            var msg = { "guid": guid, "password": password };
-            $http.post(baseURL + "api/update_password", msg)
+            var msg = { "username": username };
+            $http.post(baseURL_CONSTANT + "api/accounts/user/checkuserusername", msg)
             .success(function (d) {
-                passwordUpdated = d;
-                localStorageService.set('authorizationData', { chaserID: UserObject.data().GUID, chaseruser: UserObject.data().username, chasrpsswd: password });
-                deffered.resolve();
+                deffered.resolve(d);
+            })
+            .error(function (data, status) {
+                console.log("Request failed " + status);
+            });
+            return deffered.promise;
+        };
+
+        Setting.emailCheck = function (email) {
+            var deffered = $q.defer();
+            var msg = { "email": email };
+            $http.post(baseURL_CONSTANT + "api/accounts/user/checkuseremail", msg)
+            .success(function (d) {
+                deffered.resolve(d);
             })
             .error(function (data, status) {
                 console.log("Request failed " + status);
