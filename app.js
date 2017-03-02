@@ -603,6 +603,27 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   $ionicSideMenuDelegate.canDragContent(false);
               }]
           }
+      })
+      .state('blocks', {
+          url: '/blocks',
+          templateUrl: 'components/blocks/blocks.html',
+          controller: 'BlocksController as vm',
+          resolve: {
+              loadExternals: [
+                  '$ocLazyLoad', function ($ocLazyLoad) {
+                      return $ocLazyLoad.load({
+                          name: 'blocks',
+                          files: [
+                              'components/blocks/blocks.js',
+                              'components/blocks/blocksServices.js'
+                          ]
+                      });
+                  }
+              ],
+              data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                  $ionicSideMenuDelegate.canDragContent(false);
+              }]
+          }
       });
 
     

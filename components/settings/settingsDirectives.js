@@ -87,6 +87,19 @@
                 });
             }
         }
+    }]).directive('pwupdateCheck', [function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ctrl) {
+                var me = attrs.ngModel;
+                var matchTo = attrs.pwupdateCheck;
+
+                scope.$watchGroup([me, matchTo], function (value) {
+                    ctrl.$setValidity('pwmatch', value[0] === value[1]);
+                });
+            }
+        }
     }]);
 
 })();

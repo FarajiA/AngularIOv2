@@ -9,14 +9,14 @@
         Setting.updateUser = function (user) {
             var deffered = $q.defer();
             var authData = localStorageService.get('authorizationData');
-            var msg = { "firstname": user.firstname, "lastname": user.lastname, "username": user.username, "email": user.email, "private": user.private };
-            $http.put(baseURL_CONSTANT + "api/user", msg)
+            var msg = { "firstname": user.firstName, "lastname": user.lastName, "Username": user.userName, "email": user.email, "Private": user.private};
+            $http.put(baseURL_CONSTANT + "api/accounts/user", msg)
             .success(function (d) {
-                localStorageService.set('authorizationData', { chaserID: UserObject.data().GUID, chaseruser: user.username, chasrpsswd: authData.chasrpsswd });
-                deffered.resolve(d);
+                localStorageService.set('authorizationData', { token: authData.token, userName: user.userName, refreshToken: authData.refreshToken, refreshExpiration: authData.refreshExpiration });
+                deffered.resolve(d.result);
             })
             .error(function (data, status) {
-                console.log("Request failed " + status);
+                deffered.resolve(false);
             });
             return deffered.promise;
         };
@@ -24,15 +24,13 @@
         Setting.updatePassword = function (password) {
             var deffered = $q.defer();
             passwordUpdated = false;
-            var msg = { "guid": guid, "password": password };
+            var msg = { "oldpassword": password.oldpassword, "newpassword": password.newpassword, "confirmpassword": password.confirmpassword };
             $http.post(baseURL_CONSTANT + "api/accounts/ChangePassword", msg)
             .success(function (d) {
-                passwordUpdated = d;
-                localStorageService.set('authorizationData', { chaserID: UserObject.data().GUID, chaseruser: UserObject.data().username, chasrpsswd: password });
-                deffered.resolve();
+                deffered.resolve(d);
             })
             .error(function (data, status) {
-                console.log("Request failed " + status);
+                deffered.resolve(false);
             });
             return deffered.promise;
         };

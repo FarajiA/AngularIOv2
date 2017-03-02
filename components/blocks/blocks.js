@@ -1,49 +1,51 @@
 ﻿; (function () {
     angular.module('App').controller('BlocksController', ['$scope', '$state', '$ionicLoading', '$ionicPopup', 'Block', function ($scope, $state, $ionicLoading, $ionicPopup, Block) {
-
         var vm = this;
         vm.index = 0;
 
+        $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+            viewData.enableBack = true;
+        });
+
         var init = function () {           
             Block.blocks(vm.index).then(function (response) {
-                $scope.blocks = response.Results;
-                $scope.index++;
+                vm.Blocks = response.results;
+                vm.blocksNo = response.total;
+                vm.index++;
             });
         };
 
         init();
 
-        vm.back = function () {
-            $state.go('main.dash');
-        };
-
         vm.Unblock = function (ID, username, index) {
-            /*
             var confirmPopup = $ionicPopup.confirm({
-                title: BlockConst.unblockConfirmTitle.replace(/0/gi, username)
+                title: block_CONSTANT.unblockConfirmTitle.replace(/0/gi, username)
             });
             confirmPopup.then(function (res) {
                 if (res) {
+                    $ionicLoading.show({
+                        template: 'Saving...'
+                    });
                     Block.DeleteBlock(ID).then(function (response) {
-                        if (response === 1) {
-                            $scope.blocksNo--;
-                            $scope.blocks.splice(index, 1);
+                        if (response) {
+                            vm.blocksNo--;
+                            vm.Blocks.splice(index, 1);
                         }
                         else {
                             var whoopsPopup = $ionicPopup.confirm({
-                                title: BlockConst.unblockOops
+                                title: block_CONSTANT.unblockOops
                             });
                         }
-                    });
+                    }).finally(function () {
+                        $ionicLoading.hide();
+                    });;
                 }
             });
-            */
-        }
+        };
 
         vm.loadMoreBlockers = function () {
 
-            /*
-            $scope.blocksNo = Block.data().Total;
+            vm.blocksNo = Block.data().Total;
             var pagingMax = Math.ceil($scope.blocksNo / countSet, 1);
             if ($scope.index < pagingMax && $scope.index > 0) {
                 Block.blocks($scope.index).then(function (response) {
@@ -56,7 +58,7 @@
                 $scope.noMoBlockers = true;
 
             $scope.$broadcast('scroll.infiniteScrollComplete');
-            */
+            
         };
 
 

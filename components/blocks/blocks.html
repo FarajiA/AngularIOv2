@@ -2,17 +2,17 @@
     <ion-content class="padding">
         <div id="result">
             <div id="blocks" class="blocks">
-                <div class="zeroResults" ng-show="vm.Groups.length === 0">
+                <div class="zeroResults" ng-show="vm.Blocks.length === 0">
                     <h2>no blocks</h2>
                 </div>
                 <ion-list ng-show="vm.Blocks.length != 0">
-                    <ion-item item="group" class="item-button-right group-item" ng-repeat="group in vm.Groups" type="item-text-wrap" href="#/groups/edit/{{group.id}}">
-                        <h2>{{group.name}}</h2>
-                        <p>{{group.membersAmount}} members</p>
-                        <ion-option-button class="button-assertive" ng-click="vm.deleteGroup(group.id, group.name)"><i class="icon ion-minus"></i></ion-option-button>
+                    <ion-item item="group" class="item-avatar item-icon-right" ng-repeat="block in vm.Blocks" ng-click="vm.Unblock(block.id, block.username, $index)" type="item-text-wrap">
+                        <img ng-src="{{block.photo && vm.imageURL + block.id + '.png' || 'img/default_avatar.png' }}"/>
+                        <h2>{{block.username}}</h2>
+                        <p>{{block.firstName}}&nbsp;{{block.lastName}}</p>
                     </ion-item>
                 </ion-list>
-                <ion-infinite-scroll ng-if="vm.moGroups" on-infinite="vm.loadMoreGroups()" distance="30%"></ion-infinite-scroll>
+                <ion-infinite-scroll ng-if="vm.moBlocks" on-infinite="vm.loadMoreBlockers()" distance="30%"></ion-infinite-scroll>
             </div>
         </div>
     </ion-content>

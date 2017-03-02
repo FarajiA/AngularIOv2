@@ -297,5 +297,8 @@ width: 60%;
 }
 
 .hero-content h4{color: rgba(255,255,255,.7); margin: 3px 0 5px;}
+
+/*setting page*/
 form#settingsForm label i {padding-right: 10px;}
 form#settingsForm .password {text-align:center;}
+.list .invalid-required {color: #cc3333; margin-left: 15px;}
