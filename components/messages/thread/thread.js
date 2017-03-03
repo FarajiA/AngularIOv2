@@ -2,6 +2,7 @@
     var app = angular.module('App');
     app.controller('ThreadController', ['$scope', '$timeout', '$state', '$stateParams', '$filter', '$templateCache', 'Thread', 'Messages', 'Encryption', function ($scope, $timeout, $state, $stateParams, $filter, $templateCache, Thread, Messages, Encryption) {
         //$templateCache.removeAll();
+
         /*
         $scope.$on("$ionicView.beforeEnter", function () {
                 $scope.showTabs.show = false;
@@ -13,12 +14,12 @@
         var vm = this;
         var activeMessage = Messages.active();
 
-        vm.corresponder = $filter('messageUsername')(activeMessage.username);
+        vm.corresponder = activeMessage.username;
         //var stuff = $stateParams.username;
 
         vm.userID = $stateParams.userID;
         vm.threadIndex = 0;
-        vm.user = $scope.user;
+        vm.user = $scope.$parent.user;
 
         var extra = $state.current.name;
         

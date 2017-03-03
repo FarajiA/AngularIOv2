@@ -16,10 +16,10 @@
             <a href='{{vm.chaserLink}}' class="tab-item">
                 <i>{{chasers}}</i> Followers
             </a>
-            <a href='{{vm.chasingLink}}' class="tab-item">
+            <a href='{{vm.chasingLink}}' ng-disabled="vm.chasingLink" class="tab-item">
                 <i>{{chasing}}</i> Following
             </a>
-            <a href="#/messages/{{vm.id}}" class="tab-item">
+            <a href='{{vm.messageLink}}' class="tab-item">
                 <i class="icon ion-ios-chatboxes-outline"></i>
             </a>
         </div>

@@ -45,7 +45,7 @@
 
         vm.MessageViewed = function (index) {
             vm.Messages[index].viewed = true;            
-            Messages.activemessage(index).then(function (response) {
+            Messages.activemessage(vm.Messages[index]).then(function (response) {
                // Encryption.clearKeys();
                 // Encryption.addKey(_.split(response.publickey, ','));
                 var unviewed = _.some(vm.Messages, ['viewed', false]);

@@ -68,9 +68,22 @@
             return deffered.promise;
         };
 
-        Message.activemessage = function (index) {
+        Message.recentMessage = function(user) {
             var deffered = $q.defer();
-            active = inboxMessages.results[index];
+            $http.get(baseURL_CONSTANT + "api/messages/recent/" + user)
+            .success(function (d) {
+                deffered.resolve(d);
+            })
+            .error(function (data, status) {
+                console.log("Request failed " + status);
+            });
+
+            return deffered.promise;
+        };
+
+        Message.activemessage = function (msg) {
+            var deffered = $q.defer();
+            active = msg;
             deffered.resolve(active);
             return deffered.promise;
         };

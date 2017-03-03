@@ -35,23 +35,6 @@
         }
 
     })
-    .filter('messageUsername', function () {
-
-        return function (username) {
-
-            var updated = {};
-            var users = _.split(username, ',');
-
-            if (users.length === 1)
-                updated = username;
-            else if (users.length === 2)
-                updated = users[0] + ", " + users[1];
-            else
-                updated = users[0] + "+" + (users.length - 1) + " others";
-
-            return updated;
-        }
-    })
     .filter('messageCorrespond', ['UserStore', function (UserStore) {
 
         return function (blast, ID, corresponder) {

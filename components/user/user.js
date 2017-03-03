@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('UserController', ['$scope', '$timeout', '$stateParams', '$ionicModal', '$location', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'CentralHub', function ($scope, $timeout, $stateParams, $ionicModal, $location, UserStore, User, BroadcastStatus, Block, CentralHub) {
+    app.controller('UserController', ['$scope', '$timeout', '$stateParams', '$ionicModal', '$location', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', function ($scope, $timeout, $stateParams, $ionicModal, $location, UserStore, User, BroadcastStatus, Block, Messages, CentralHub) {
         var vm = this;
         vm.username = $stateParams.username;
         vm.title = vm.username;
@@ -22,6 +22,10 @@
                 vm.broadcasting = response.broadcasting;
                 $scope.relationship = response.relationship;
                 $scope.broadcastObject = response.broadcast;
+
+                Message.recentMessage(vm.id).then(function (response) {
+                    vm.messageLink = "#/messages/" + vm.id;
+                });
 
                 if (_.toString($scope.relationship) == 1 || !vm.private) {
                     vm.chaserLink = '#/main/' + vm.segment + '/chasers/' + vm.id;
