@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('UserController', ['$scope', '$timeout', '$stateParams', '$ionicModal', '$location', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', function ($scope, $timeout, $stateParams, $ionicModal, $location, UserStore, User, BroadcastStatus, Block, Messages, CentralHub) {
+    app.controller('UserController', ['$scope', '$timeout', '$stateParams', '$ionicModal', '$location', '$ionicPopover', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', function ($scope, $timeout, $stateParams, $ionicModal, $location, $ionicPopover, UserStore, User, BroadcastStatus, Block, Messages, CentralHub) {
         var vm = this;
         vm.username = $stateParams.username;
         vm.title = vm.username;
@@ -23,8 +23,12 @@
                 $scope.relationship = response.relationship;
                 $scope.broadcastObject = response.broadcast;
 
-                Message.recentMessage(vm.id).then(function (response) {
+                Messages.recentMessage(vm.id).then(function (response) {
                     vm.messageLink = "#/messages/" + vm.id;
+                    var Msg = response || {};
+                    Msg.username = vm.username;
+                    Msg.publickey = vm.publicKey;
+                    Messages.activemessage(Msg);
                 });
 
                 if (_.toString($scope.relationship) == 1 || !vm.private) {
@@ -64,7 +68,6 @@
 
         $scope.$on('$destroy', function () {
             vm.mapModal.remove();
-
         });
 
         $scope.$on('mapUpdate', function (event, value) {
@@ -122,6 +125,121 @@
             */
         });
 
+        $ionicPopover.fromTemplateUrl('menuPopover.html', {
+            scope: $scope,
+        }).then(function (popover) {
+            vm.popover = popover;
+
+            vm.flagUser = function () {
+                $scope.popover.hide();
+
+                var reportPopup = $ionicPopup.show({
+                    templateUrl: 'components/user/report-modal.html',
+                    cssClass: 'reportUserPopup',
+                    title: 'Report',
+                    scope: $scope,
+                    buttons: [
+                      { text: 'Cancel' },
+                      {
+                          text: '<b>Report</b>',
+                          type: 'button-positive',
+                          onTap: function (e) {
+                              $ionicLoading.show();
+                              var reportResponse;
+                              var selected = $scope.selectedReportValue
+                              Report.Flag($scope.GUID, UserObject.data().GUID, selected).then(function (response) {
+                                  $ionicLoading.hide();
+                                  if (response.ID > 0) {
+                                      reportPopup.close();
+                                      var alertPopup = $ionicPopup.alert({
+                                          title: ReportingConst.flaggedTitle.replace(/0/gi, $scope.username),
+                                          template: ReportingConst.flaggedText
+                                      });
+                                  }
+                                  else {
+                                      reportPopup.close();
+                                      var alertPopup = $ionicPopup.alert({
+                                          title: 'Whoops!',
+                                          template: updatedUserConst.unsuccessfulUpdate
+                                      });
+                                  }
+                              }, function () {
+                                  $ionicLoading.hide();
+                              }).finally(function () {
+                                  $ionicLoading.hide();
+                              });
+                          }
+                      }
+                    ]
+                });
+            };
+
+            $scope.blockAction = function () {
+                $scope.popover.hide();
+                if (UserObject.getBlocked()) {
+                    $timeout(function () {
+                        angular.element(document.querySelector('#btnDecision')).triggerHandler('click');
+                    }, 100);
+                }
+                else {
+                    var blockPopup = $ionicPopup.show({
+                        title: BlockConst.blockedConfirmTitle,
+                        buttons: [
+                            {
+                                text: 'Cancel'
+                            },
+                            {
+                                text: '<b>Sure</b>',
+                                type: 'button-positive',
+                                onTap: function (e) {
+                                    Block.block($scope.GUID).then(function (response) {
+                                        $ionicLoading.hide();
+                                        if (response.ID > 0) {
+                                            blockPopup.close();
+                                            var alertPopup = $ionicPopup.alert({
+                                                title: BlockConst.blockedCompletedTitle.replace(/0/gi, $scope.username),
+                                                template: BlockConst.blockedCompletedText
+                                            });
+
+                                            alertPopup.then(function (res) {
+                                                $scope.$emit('emit_Chasers_Block', { action: true });
+                                            });
+
+                                            $scope.$emit('emit_Activity', { action: true });
+
+
+                                            getUserRequest();
+                                        }
+                                        else {
+                                            blockPopup.close();
+                                            var alertPopup = $ionicPopup.alert({
+                                                title: 'Oops!',
+                                                template: updatedUserConst.unsuccessfulUpdate
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        ]
+                    });
+                }
+            };
+        });
+
+        vm.FlagOptions = [
+            { text: "Inappropriate image", value: "img" },
+            { text: "Username or Name", value: "name" },
+            { text: "Being an idiot", value: "idiot" },
+            { text: "All the above", value: "all" }
+        ];
+
+        vm.ReportChange = function (item) {
+            $scope.selectedReportValue = item.value;
+        };
+
+       vm.reportdata = {
+            option: 'img'
+        };
 
 
 

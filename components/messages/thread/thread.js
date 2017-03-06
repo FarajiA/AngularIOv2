@@ -3,20 +3,14 @@
     app.controller('ThreadController', ['$scope', '$timeout', '$state', '$stateParams', '$filter', '$templateCache', 'Thread', 'Messages', 'Encryption', function ($scope, $timeout, $state, $stateParams, $filter, $templateCache, Thread, Messages, Encryption) {
         //$templateCache.removeAll();
 
-        /*
-        $scope.$on("$ionicView.beforeEnter", function () {
-                $scope.showTabs.show = false;
+        $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+            viewData.enableBack = true;
         });
-        $scope.$on("$ionicView.beforeLeave", function () {
-            $scope.showTabs.show = true;
-        });
-        */
+
         var vm = this;
         var activeMessage = Messages.active();
 
         vm.corresponder = activeMessage.username;
-        //var stuff = $stateParams.username;
-
         vm.userID = $stateParams.userID;
         vm.threadIndex = 0;
         vm.user = $scope.$parent.user;
