@@ -137,6 +137,9 @@
 
         var CheckifAccountExists = function (provider, token) {
             var info = $q.defer();
+            UserLogin.checkAccount(provider, token).then(function (response) {
+                info.resolve(response);
+            });
             return info.promise;
         };
 
@@ -152,7 +155,7 @@
                 } else {
                     console.log('getLoginStatus', success.status);
                     $ionicLoading.show({
-                        template: 'Checking account...'
+                        template: 'Verifying account...'
                     });
                     facebookConnectPlugin.login(['email', 'public_profile'], fbLoginSuccess, fbLoginError);
                 }
@@ -166,12 +169,13 @@
 
         vm.googleSignIn = function () {
             $ionicLoading.show({
-                template: 'Logging in...'
+                template: 'Verifying account...'
             });
             window.plugins.googleplus.login(GoogleOptions,
               function (user_data) {
-                  // For the purpose of this example I will store user data on local storage
-                  
+                  CheckifAccountExists("Google", user_data.idToken).then(function (response) {
+                      if (response){}
+                  });
                   $ionicLoading.hide();
                   $state.go('main.dash');
               },

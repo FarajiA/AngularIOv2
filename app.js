@@ -517,7 +517,10 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           ]
                       });
                   }
-              ]
+              ],
+              data: ['$ionicSideMenuDelegate', function ($ionicSideMenuDelegate) {
+                  $ionicSideMenuDelegate.canDragContent(false);
+              }]
           }
       })
       .state('groups', {

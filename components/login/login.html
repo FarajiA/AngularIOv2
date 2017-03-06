@@ -24,14 +24,14 @@
                 <a ng-click="vm.mForgotPassword.show()" class="forgot-password">Forgot Password</a>
             </div>
         </form>
-        <div class="footer">
-            <div class="link">
-                <a ng-click="vm.facebookSignIn();" onclick="return false;">Sign in with Facebook <i class="is-icon-next"></i></a><br/><br/>
-                <a ng-click="vm.googleSignIn();" onclick="return false;">Sign in with Google <i class="is-icon-next"></i></a>
-            </div>
-            <div class="link" ng-click="vm.mRegister.show()">
-                <a>Wanna sign up?<i class="is-icon-next"></i></a>
-            </div>
+        <div class="footer social-footer">
+            <button class="button button-facebook" ng-click="vm.facebookSignIn();"><i class="icon ion-social-facebook"></i></button>
+            <button class="button button-google" ng-click="vm.googleSignIn();"><i class="icon ion-social-google"></i></button>
         </div>
-    </ion-content>
+        <div class="new-account">
+            <button class="button button-block"  ng-click="vm.mRegister.show()">
+                Create Account
+            </button>
+            </div>
+</ion-content>
 </ion-view>  

@@ -5,12 +5,11 @@
         var emailForgotten = [];
         var Login = {};
 
-        Login.setUser = function (provider, token) {
+        Login.checkAccount = function (provider, token) {
             var deffered = $q.defer();
             var msg = { "provider": provider, "ExternalAccessToken": token };
             $http.post(baseURL_CONSTANT + "api/accounts/existingaccount")
             .success(function (d) {
-                data = d.result;
                 deffered.resolve(d.result);
             })
             .error(function (data, status) {

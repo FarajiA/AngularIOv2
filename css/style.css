@@ -65,6 +65,11 @@ p.description {color:#fff;}
   background: url(../img/bg-login.jpg) !important;
   background-size: cover !important;
   }
+.social-footer {text-align:center}
+.social-footer button{margin:15px}
+.social-footer .button-facebook {background-color:#3b5999; color:#fff}
+.social-footer .button-google{background-color: #cc3333; color:#fff}
+.new-account { margin: 40px 50px 0px;}
 /* Search 
 =============== */
 #search-nav .right-buttons .button-clear { color: inherit;}
