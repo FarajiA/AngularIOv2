@@ -189,6 +189,13 @@ width: 60%;
     text-align:right;
 }
 
+/* activity styling */
+.requests ion-item a {padding-right: 20px !important;}
+.requests ion-item a h2{ display:inline-block }
+.requests ion-item a p { display:inline-block }
+.requests ion-item a .buttons {float: right; position: relative; top:-22px;}
+.requests ion-item a .buttons button:first-child { margin-right: 45px; background-color: green; color: #fff; }
+
 /* Compose msg styling
 =========================*/
 .md-chips { border-bottom: #999 solid 1px; }

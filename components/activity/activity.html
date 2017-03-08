@@ -29,11 +29,15 @@
                 <div class="zeroResults" ng-show="vm.Requests.length === 0">
                     <h2>no requests</h2>
                 </div>
-                <ion-list ng-show="vm.Chasers.length > 0">
-                    <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Broadcasting" type="item-text-wrap" href="#/main/activity/user/{{chaser.username}}">
+                <ion-list ng-show="vm.Requests.length > 0">
+                    <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Requests" type="item-text-wrap" href="javascript:void(0);">
                         <img ng-src="{{chaser.photo && vm.imageURL + chaser.id + '.png' || 'img/default_avatar.png' }}">
-                        <h2>{{chaser.username}}</h2>
+                        <h2>{{chaser.username}}</h2><br/>
                         <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
+                        <div class="buttons">
+                            <button class="button icon ion-checkmark button-small button-positive" ng-click="vm.decision(chaser.id, chaser.username, true, $index)"></button>
+                            <button class="button button-small icon ion-close button-assertive" ng-click="vm.decision(chaser.id, chaser.username, false, $index)"></button>
+                        </div>
                     </ion-item>
                 </ion-list>
                 <ion-infinite-scroll ng-if="vm.moRequests" on-infinite="vm.loadMoreRequests()" distance="30%"></ion-infinite-scroll>

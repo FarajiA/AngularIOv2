@@ -5,7 +5,7 @@
 
         User.Info = function (username) {
             var deffered = $q.defer();
-            $http.get(baseURL_CONSTANT + "api/accounts/user/" + username)
+            $http.get(baseURL_CONSTANT + "api/accounts/user/" + username + "/")
             .success(function (d) {
                 deffered.resolve(d.result);
                 data = d.result;

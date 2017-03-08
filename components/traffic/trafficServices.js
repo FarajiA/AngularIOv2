@@ -1,7 +1,7 @@
 ﻿; (function () {
-    angular.module('App').factory("Traffic", ['$http', '$q', 'UserStore', function ($http, $q, UserStore) {
-        var getChasing = [];
-        var getChasers = [];
+    angular.module('App').factory("Traffic", ['$rootScope', '$http', '$q', 'UserStore', function ($rootScope, $http, $q, UserStore) {
+        var getChasing = {};
+        var getChasers = {};
         var Traffic = {};
 
         Traffic.chasers = function (index) {

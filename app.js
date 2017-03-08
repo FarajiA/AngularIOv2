@@ -45,7 +45,14 @@ const block_CONSTANT = {
     unblockConfirmTitle: 'Unblock 0?',
     unblockOops: 'Oops! Something went wrong, try again.'
 };
-
+const request_CONSTANT = {
+    acceptRequest: 'Accept',
+    declineRequest: 'Decline',
+    acceptRequestMsg: 'Allow 0 to chase you?',
+    declineRequestMsg: "Reject 0's request?",
+    acceptRequestSuccess: '0 accepted',
+    declineRequestSuccess: '0 declined'
+};
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',
@@ -77,6 +84,28 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform) {
    
     AuthService.fillAuthData();
     Encryption.fillKeyData();
+
+    $rootScope.$on('emit_Chasers', function (event, args) {
+        $rootScope.$broadcast('update_Chasers', args);
+    });
+
+    $rootScope.$on('emit_Activity', function (event, args) {
+        $rootScope.$broadcast('update_activity', args);
+    });
+
+    /*
+    $rootScope.$on('emit_Broadcasting', function (event, args) {
+        $rootScope.$broadcast('update_location', args);
+    });
+    $rootScope.$on('emit_UserView', function (event, args) {
+        $rootScope.$broadcast('turnOn_locationWatch', args);
+    });
+
+    $rootScope.$on('emit_Chasers_Block', function (event, args) {
+        $rootScope.$broadcast('update_Chasers_block', args);
+    });
+
+    */
     
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
         var authdata = AuthService.authentication;
@@ -979,7 +1008,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
 
         switch (notify.type) {
             case 0:
-                Traffic.chasers(0);
+                $scope.$emit('emit_Chasers', { action: "chasers" });
                 title = newChaserTitle_CONSTANT;
                 text = newChasing_CONSTANT;
                 state = "main.traffic";
@@ -987,7 +1016,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                     $scope.badge.Traffic = 1;
                 break;
             case 1:
-                Activity.requests(0);
+                $scope.$emit('emit_Activity', { action: "requests" }); 
                 title = newRequestTitle_CONSTANT;
                 text = newRequest_CONSTANT;
                 state = "main.activity";
@@ -998,7 +1027,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 });
                 break;
             case 2:
-                Traffic.chasing(0);
+                $scope.$emit('emit_Chasers', { action: "chasing" });
                 title = newChasingTitle_CONSTANT;
                 text = newChasing_CONSTANT;
                 state = "main.traffic";
@@ -1009,7 +1038,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 });
                 break;
             case 3:
-                Activity.broadcasting(0);
+                $scope.$emit('emit_Activity', { action: "broadcasts" });
                 title = newBroadcastingTitle_CONSTANT;
                 text = newBroadcasting_CONSTANT;
                 state = "main.activity"

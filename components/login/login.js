@@ -163,7 +163,7 @@
         };
 
         var GoogleOptions = {
-            androidApiKey: " 32004928430-fu72cmv7oom069hj7b1cr0ft45fdb5nk.apps.googleusercontent.com",
+            androidApiKey: "32004928430-fu72cmv7oom069hj7b1cr0ft45fdb5nk.apps.googleusercontent.com",
             webClientId: "32004928430-i22lnlmlsuinehebs5rv9640pi3phoos.apps.googleusercontent.com"
         };
 

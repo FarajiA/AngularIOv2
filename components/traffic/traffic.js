@@ -10,15 +10,38 @@
         vm.loadChasingState = $scope.$parent.loadChasingState;
         vm.showChasing = ($stateParams.chasing === "chasing") || vm.loadChasingState;
 
-        /* var unbindGetChasers = */$scope.$watch('vm.TrafficService.getChasers()', function (newVal, oldVal) {
+        vm.doRefresh = function() {
+            GetChasers();
+            GetChasing();
+        };
+
+        $scope.$on('update_Chasers', function (event, args) {
+            if (args.action === "chasers")
+                GetChasers();
+            if (args.action === "chasing")
+                GetChasing();
+        });
+                
+        var unbindGetChasers =  $scope.$watch('vm.TrafficService.getChasers()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Chasers = newVal.results;
                 vm.chasersNo = newVal.total;
                 vm.moChasers = (vm.chasersNo > countSet_CONSTANT);
                 vm.chasersIndex++;
-                //unbindGetChasers();
+                unbindGetChasers();
             }
-        });
+        });     
+
+        var GetChasers = function () {
+            vm.chasersIndex = 0;
+            Traffic.chasers(vm.chasersIndex).then(function (data) {
+                vm.Chasers = data.results;
+                vm.chasersNo = data.total;
+                vm.moChasers = (vm.chasersNo > countSet_CONSTANT);
+                vm.chasersIndex++;
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+        };
 
         vm.loadMoreChasers = function () {
             var deffered = $q.defer();
@@ -40,15 +63,26 @@
             return deffered.promise;
         };
         
-        /* var unbindGetChasing = */$scope.$watch('vm.TrafficService.getChasing()', function (newVal, oldVal) {
+       var unbindGetChasing = $scope.$watch('vm.TrafficService.getChasing()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Chasing = newVal.results;
                 vm.chasingNo = newVal.total;
                 vm.moChasing = (vm.chasingNo > countSet_CONSTANT);
                 vm.chasingIndex++;
-                //unbindGetChasing();
+                unbindGetChasing();
             }
-        });
+       });
+
+       var GetChasing = function () {
+           vm.chasingIndex = 0;
+           Traffic.chasing(vm.chasingIndex).then(function (data) {
+               vm.Chasing = data.results;
+               vm.chasingNo = data.total;
+               vm.moChasing = (vm.chasingNo > countSet_CONSTANT);
+               vm.chasingIndex++;
+               $scope.$broadcast('scroll.refreshComplete');
+           });
+       };
 
         vm.loadMoreChasing = function () {
             var deffered = $q.defer();

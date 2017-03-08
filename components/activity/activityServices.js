@@ -22,7 +22,6 @@
 
         Activity.requests = function (index) {
             var deffered = $q.defer();
-
             $http.get(baseURL_CONSTANT + "api/requests/" + index + "/" + countSet_CONSTANT, {
                 cache: false
             })
@@ -39,18 +38,26 @@
 
         Activity.requestDecline = function (userGuid) {
             var deffered = $q.defer();
-            var guid = UserStore.data().id;
-            
+            $http.delete(baseURL_CONSTANT + "api/requests/decline/" + userGuid)
+                .success(function (d) {
+                    deffered.resolve(d);
+                })
+            .error(function (data, status) {
+                console.log("Request failed " + status);
+            });      
 
             return deffered.promise;
         };
 
         Activity.requestAccept = function (userGuid) {
             var deffered = $q.defer();
-            var guid = UserStore.data().id;
-            var msg = { "requester": userGuid, "requestee": guid };
-            
-
+            $http.get(baseURL_CONSTANT + "api/requests/accept/" + userGuid)
+                .success(function (d) {
+                deffered.resolve(d);
+            })
+            .error(function (data, status) {
+                console.log("Request failed " + status);
+            });
             return deffered.promise;
         };
 
@@ -67,7 +74,7 @@
 
             return deffered.promise;
         };
-
+        
         Activity.broadcastingData = function () { return broadcastingData; };
         Activity.requestsData = function () { return requestsData; };
 
