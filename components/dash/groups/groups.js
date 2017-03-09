@@ -1,10 +1,14 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('DashGroupController', ['$scope', '$state', '$ionicHistory', 'Groups', 'Broadcast', 'ShareLink', function ($scope, $state, $ionicHistory, Groups,Broadcast, ShareLink) {
+    app.controller('DashGroupController', ['$scope', '$state', '$ionicHistory', 'Groups', 'Broadcast', 'CentralHub', 'ShareLink', function ($scope, $state, $ionicHistory, Groups,Broadcast,CentralHub, ShareLink) {
 
         var vm = this;
         vm.groupIndex = 0;
         vm.groupsTotal = 0;
+
+        $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+            viewData.enableBack = true;
+        });
 
         vm.allChasers = AllChasers_CONSTANT;
         vm.anyonewithLink = AnyoneWithLink_CONSTANT;

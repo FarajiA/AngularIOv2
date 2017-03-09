@@ -152,7 +152,6 @@
                      deffered.reject(err);
                  });
              }
-
              return deffered.promise;
          };
 

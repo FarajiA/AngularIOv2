@@ -13,13 +13,13 @@ const genericError_CONSTANT = "Oops try again";
 const newMesssageTitle_CONSTANT = "New Message";
 const newRequestTitle_CONSTANT = "New Request";
 const newChasingTitle_CONSTANT = "Accepted Request";
-const newChaserTitle_CONSTANT = "New Chaser";
+const newChaserTitle_CONSTANT = "New Follower";
 const newBroadcastingTitle_CONSTANT = "New Broadcast";
-const newBroadcasting_CONSTANT = "{0} is broadcasting";
-const newMesssage_CONSTANT = "{0} sent you a message.";
-const newRequest_CONSTANT = "{0} sent you a request.";
-const newChasing_CONSTANT = "{0} accepted your request.";
-const newChaser_CONSTANT = "{0} started chasing you.";
+const newBroadcasting_CONSTANT = "0 <br/> is broadcasting";
+const newMesssage_CONSTANT = "0 <br/>sent you a message.";
+const newRequest_CONSTANT = "0 <br/>sent you a request.";
+const newChasing_CONSTANT = "0 <br/>accepted your request.";
+const newChaser_CONSTANT = "0 <br/>started following you.";
 const composeNewMsg_CONSTANT = "Enter message";
 const groupDeleteConfirmTitle_CONSTANT = "Delete {0} group?";
 const groupAddButtonText_CONSTANT = "Add Group";
@@ -32,8 +32,8 @@ const userBroadcasting_CONSTANT = {
     notBroadcasting: 'Not broadcasting'
 };
 const decision_CONSTANT = {
-    following: 'Chasing',
-    follow: 'Chase',
+    following: 'Following',
+    follow: 'Follow',
     requested: 'Requested',
     unblock: 'Unblock',
     block: 'Block'
@@ -736,6 +736,7 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
     authServiceFactory.logOut = function () {
 
         localStorageService.remove('authorizationData');
+        localStorageService.remove('KeyData');
 
         authServiceFactory.authentication.isAuth = false;
         authServiceFactory.authentication.userName = "";
@@ -1053,7 +1054,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
 
         $scope.$apply(function () {
             if ($state.current.name != "main.messages-thread") {
-                $toaster.pop('success', notify.username, title /*_.replace(text, '{0}', notify.username) */, "", 'trustedHtml', function (toaster) {
+                $toaster.pop('success', text.replace('0', notify.username), "" /*title_.replace(text, '0', notify.username) */, "", 'trustedHtml', function (toaster) {
                     $state.go(state);
                     return true;
                 });

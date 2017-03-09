@@ -1,5 +1,7 @@
-﻿<ion-view view-title="Groups">    
-    <ion-content class="padding">
+﻿<ion-view view-title="Groups">
+    <ion-nav-buttons side="right">
+        <button class="button button-icon ion-plus-circled" ui-sref="group-edit({groupID : 0})"></button>
+    </ion-nav-buttons><ion-content class="padding">
         <div id="result">
             <div id="groups" class="groups">
                 <div class="zeroResults" ng-show="vm.Groups.length === 0">
