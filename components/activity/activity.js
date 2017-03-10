@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('ActivityController', ['$scope', '$stateParams', '$ionicPopup', 'Activity',function ($scope, $stateParams,$ionicPopup,Activity) {
+    app.controller('ActivityController', ['$scope', '$q', '$stateParams', '$ionicPopup', 'Activity',function ($scope, $q, $stateParams,$ionicPopup,Activity) {
         // reusable authorization
         var vm = this;
         vm.ActivityService = Activity;
@@ -22,8 +22,8 @@
             if (_.has(newVal, 'index')) {
                 vm.Broadcasting = newVal.results;
                 vm.broadcastersNo = newVal.total;
-                vm.moBroadcasters = (vm.broadcastersNo > countSet_CONSTANT);
                 vm.broadcastingIndex++;
+                vm.moBroadcasters = (vm.broadcastersNo > countSet_CONSTANT * vm.broadcastingIndex);
                 unbindBroadcasters();
             }
         });
@@ -33,8 +33,8 @@
             Activity.broadcasting(vm.broadcastingIndex).then(function (data) {
                 vm.Broadcasting = data.results;
                 vm.broadcastersNo = data.total;
-                vm.moBroadcasters = (vm.broadcastersNo < countSet_CONSTANT)
                 vm.broadcastingIndex++;
+                vm.moBroadcasters = (vm.broadcastersNo > countSet_CONSTANT * vm.broadcastingIndex)
             });
         };
 
@@ -46,8 +46,8 @@
                     var merged = vm.Broadcasting.concat(data.results);
                     vm.broadcastersNo = data.total;
                     vm.Broadcasting = merged;
-                    vm.moBroadcasters = (vm.broadcastersNo < countSet_CONSTANT)
                     vm.broadcastingIndex++;
+                    vm.moBroadcasters = (vm.broadcastersNo > countSet_CONSTANT * vm.broadcastingIndex)
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                     deffered.resolve();
                 });
@@ -62,8 +62,8 @@
             if (_.has(newVal, 'index')) {
                 vm.Requests = newVal.results;
                 vm.requestsNo = newVal.total;
-                vm.moRequests = (vm.requestsNo > countSet_CONSTANT);
-                vm.broadcastingIndex++;
+                vm.requestsIndex++;
+                vm.moRequests = (vm.requestsNo > countSet_CONSTANT * vm.requestsIndex);
                 unbindRequests();
             }
         });
@@ -73,8 +73,8 @@
             Activity.requests(vm.requestsIndex).then(function (data) {
                 vm.Requests = data.results;
                 vm.requestsNo = data.total;
-                vm.moRequests = (vm.requestsNo < countSet_CONSTANT)
                 vm.requestsIndex++;
+                vm.moRequests = (vm.requestsNo > countSet_CONSTANT * vm.requestsIndex)
             });
         };
 
@@ -86,8 +86,8 @@
                     var merged = vm.Requests.concat(data.results);
                     vm.requestsNo = data.total;
                     vm.Requests = merged;
-                    vm.moRequests = (vm.requestsNo < countSet_CONSTANT)
                     vm.requestsIndex++;
+                    vm.moRequests = (vm.requestsNo > countSet_CONSTANT * vm.requestsIndex)
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                     deffered.resolve();
                 });

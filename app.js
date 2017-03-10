@@ -15,11 +15,11 @@ const newRequestTitle_CONSTANT = "New Request";
 const newChasingTitle_CONSTANT = "Accepted Request";
 const newChaserTitle_CONSTANT = "New Follower";
 const newBroadcastingTitle_CONSTANT = "New Broadcast";
-const newBroadcasting_CONSTANT = "0 <br/> is broadcasting";
-const newMesssage_CONSTANT = "0 <br/>sent you a message.";
-const newRequest_CONSTANT = "0 <br/>sent you a request.";
-const newChasing_CONSTANT = "0 <br/>accepted your request.";
-const newChaser_CONSTANT = "0 <br/>started following you.";
+const newBroadcasting_CONSTANT = "0 is broadcasting";
+const newMesssage_CONSTANT = "0 sent you a message.";
+const newRequest_CONSTANT = "0 sent you a request.";
+const newChasing_CONSTANT = "0 accepted your request.";
+const newChaser_CONSTANT = "0 started following you.";
 const composeNewMsg_CONSTANT = "Enter message";
 const groupDeleteConfirmTitle_CONSTANT = "Delete {0} group?";
 const groupAddButtonText_CONSTANT = "Add Group";
@@ -877,7 +877,7 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toaster', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster) {
+app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toaster', 'ControllerChecker', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker) {
 
     var mc = this;    
 
@@ -1017,7 +1017,11 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                     $scope.badge.Traffic = 1;
                 break;
             case 1:
-                $scope.$emit('emit_Activity', { action: "requests" }); 
+                var exists = ControllerChecker.exists("ActivityController");
+                if (exists)
+                    $scope.$emit('emit_Activity', { action: "requests" }); 
+                else
+                    Activity.requests(0);
                 title = newRequestTitle_CONSTANT;
                 text = newRequest_CONSTANT;
                 state = "main.activity";
@@ -1039,7 +1043,11 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 });
                 break;
             case 3:
-                $scope.$emit('emit_Activity', { action: "broadcasts" });
+                var exists = ControllerChecker.exists("ActivityController");
+                if (exists)
+                    $scope.$emit('emit_Activity', { action: "broadcasts" });
+                else
+                    Activity.broadcasting(0);
                 title = newBroadcastingTitle_CONSTANT;
                 text = newBroadcasting_CONSTANT;
                 state = "main.activity"

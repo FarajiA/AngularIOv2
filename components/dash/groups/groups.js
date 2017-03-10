@@ -24,11 +24,14 @@
 
         vm.broadcast = function (groupID, type) {
             Broadcast.On(vm.coords, groupID, type).then(function (response) {               
-                $scope.shareLink = response.share;
-                ShareLink.setLink(response.share);
-                $ionicHistory.goBack();
-                Broadcast.Notify(type, groupID);
-                CentralHub.views($scope.$parent.proxyCentralHub);
+                if (!_.isEmpty(response.broadcastType)) {
+                    $scope.$parent.user.broadcasting = true;
+                    $scope.shareLink = response.share;
+                    ShareLink.setLink(response.share);
+                    $ionicHistory.goBack();
+                    Broadcast.Notify(type, groupID);
+                    CentralHub.views($scope.$parent.proxyCentralHub);
+                }
             });
 
         };
