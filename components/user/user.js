@@ -7,6 +7,7 @@
         vm.broadcast = {};
         vm.imageURL = imgURL_CONSTANT;
         $scope.chaserBroadcast = {};
+        vm.alreadyBlocked = false;
         var path = $location.path().split("/") || "Unknown";
         vm.segment = path[2];
 
@@ -22,6 +23,7 @@
                 vm.broadcasting = response.broadcasting;
                 $scope.relationship = response.relationship;
                 $scope.broadcastObject = response.broadcast;
+                vm.blockText = $scope.relationship == 3 ? decision_CONSTANT.block : decision_CONSTANT.unblock;
 
                 Messages.recentMessage(vm.id).then(function (response) {
                     vm.messageLink = "#/messages/" + vm.id;
@@ -131,7 +133,7 @@
             vm.popover = popover;
 
             vm.flagUser = function () {
-                $scope.popover.hide();
+                vm.popover.hide();
 
                 var reportPopup = $ionicPopup.show({
                     templateUrl: 'components/user/report-modal.html',
@@ -146,14 +148,14 @@
                           onTap: function (e) {
                               $ionicLoading.show();
                               var reportResponse;
-                              var selected = $scope.selectedReportValue
-                              Report.Flag($scope.GUID, UserObject.data().GUID, selected).then(function (response) {
+                              var selected = vm.selectedReportValue;
+                              Report.Flag(vm.id, UserObject.data().GUID, selected).then(function (response) {
                                   $ionicLoading.hide();
                                   if (response.ID > 0) {
                                       reportPopup.close();
                                       var alertPopup = $ionicPopup.alert({
-                                          title: ReportingConst.flaggedTitle.replace(/0/gi, $scope.username),
-                                          template: ReportingConst.flaggedText
+                                          title: reporting_CONSTANT.flaggedTitle.replace(/0/gi, vm.username),
+                                          template: reporting_CONSTANT.flaggedText
                                       });
                                   }
                                   else {
@@ -174,8 +176,8 @@
                 });
             };
 
-            $scope.blockAction = function () {
-                $scope.popover.hide();
+            vm.blockAction = function () {
+                vm.popover.hide();
                 if (UserObject.getBlocked()) {
                     $timeout(function () {
                         angular.element(document.querySelector('#btnDecision')).triggerHandler('click');
@@ -183,7 +185,7 @@
                 }
                 else {
                     var blockPopup = $ionicPopup.show({
-                        title: BlockConst.blockedConfirmTitle,
+                        title: block_CONSTANT.blockedConfirmTitle,
                         buttons: [
                             {
                                 text: 'Cancel'
@@ -192,13 +194,13 @@
                                 text: '<b>Sure</b>',
                                 type: 'button-positive',
                                 onTap: function (e) {
-                                    Block.block($scope.GUID).then(function (response) {
+                                    Block.block(vm.id).then(function (response) {
                                         $ionicLoading.hide();
                                         if (response.ID > 0) {
                                             blockPopup.close();
                                             var alertPopup = $ionicPopup.alert({
-                                                title: BlockConst.blockedCompletedTitle.replace(/0/gi, $scope.username),
-                                                template: BlockConst.blockedCompletedText
+                                                title: block_CONSTANT.blockedCompletedTitle.replace(/0/gi, $scope.username),
+                                                template: block_CONSTANT.blockedCompletedText
                                             });
 
                                             alertPopup.then(function (res) {
@@ -214,7 +216,7 @@
                                             blockPopup.close();
                                             var alertPopup = $ionicPopup.alert({
                                                 title: 'Oops!',
-                                                template: updatedUserConst.unsuccessfulUpdate
+                                                template: genericError_CONSTANT2
                                             });
                                         }
                                     });
@@ -234,7 +236,7 @@
         ];
 
         vm.ReportChange = function (item) {
-            $scope.selectedReportValue = item.value;
+            vm.selectedReportValue = item.value;
         };
 
        vm.reportdata = {

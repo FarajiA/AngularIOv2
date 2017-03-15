@@ -17,8 +17,8 @@
             if (_.has(newVal, 'index')) {
                 vm.Messages = newVal.results;
                 vm.messagesNo = newVal.total;
-                vm.moMessages = (vm.messagesNo > countSet_CONSTANT);
                 vm.messagesIndex++;
+                vm.moMessages = (vm.messagesNo > countSet_CONSTANT);
                 //unbindGetInbox();
             }
         });

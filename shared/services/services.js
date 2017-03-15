@@ -225,5 +225,15 @@
                 }
             }
         };
-    }]);
+     }]).service('BroadcastInfo', [function () {
+         var broadcast = [];
+         var Object = {};
+
+         Object.setBroadcast = function (Broadcast) {
+             broadcast = Broadcast;
+         };
+
+         Object.broadcast = function () { return broadcast; };
+         return Object;
+     }]);
 })();

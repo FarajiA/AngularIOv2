@@ -1,5 +1,8 @@
 ﻿<ion-view cache-view="false" hide-tabs>
     <ion-nav-title> {{vm.groupTitle}} </ion-nav-title>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon icon ion-android-more-vertical" ng-click="vm.popover.show($event)"></button>
+    </ion-nav-buttons>
     <ion-content class="padding">
         <div class="list">
             <label class="item item-input item-floating-label input-calm">
@@ -47,4 +50,16 @@
             </a>
         </div>
     </ion-footer-bar>
+
+    <script id="editGroup.html" type="text/ng-template">
+        <ion-popover-view class="groupPopover">
+            <ion-content>
+                <div class="list">
+                    <a class="item" ng-click="vm.deleteGroup()">
+                        Delete Group
+                    </a>
+                </div>
+            </ion-content>
+        </ion-popover-view>
+    </script>
 </ion-view>

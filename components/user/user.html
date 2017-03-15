@@ -1,6 +1,6 @@
 ﻿<ion-view view-title="{{vm.title}}">
     <ion-nav-buttons side="right">
-        <button class="button button-icon icon ion-android-more-vertical"></button>
+        <button class="button button-icon icon ion-android-more-vertical" ng-click="vm.popover.show($event)"></button>
     </ion-nav-buttons>
     <ion-content>
         <div class="hero" style="background-image: url('{{vm.photo && vm.imageURL + vm.id  + '.png' || 'img/default_avatar.png' }}');">
@@ -8,7 +8,7 @@
         <div class="hero-content">
             <div class="avatar" style="background-image: url('{{vm.photo && vm.imageURL + vm.id  + '.png' || 'img/default_avatar.png' }}');"></div>
             <h4>{{vm.fullName}}</h4>
-            <button user-choice ng-model="relationship" class="button button-small" ng-class="{'ion-star':symbol == 0 || symbol == 1 ,'ion-paper-airplane':symbol == 2,'ion-nuclear':symbol == 3}">
+            <button user-choice id="btnDecision" ng-model="relationship" class="button button-small" ng-class="{'ion-star':symbol == 0 || symbol == 1 ,'ion-paper-airplane':symbol == 2,'ion-nuclear':symbol == 3}">
                 {{isFollowing}}
             </button>
         </div>

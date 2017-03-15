@@ -10,6 +10,7 @@ const Everyone_CONSTANT = "2";
 const Group_CONSTANT = "3";
 
 const genericError_CONSTANT = "Oops try again";
+const genericError_CONSTANT2 = "Something went wrong. Try again";
 const newMesssageTitle_CONSTANT = "New Message";
 const newRequestTitle_CONSTANT = "New Request";
 const newChasingTitle_CONSTANT = "Accepted Request";
@@ -21,7 +22,7 @@ const newRequest_CONSTANT = "0 sent you a request.";
 const newChasing_CONSTANT = "0 accepted your request.";
 const newChaser_CONSTANT = "0 started following you.";
 const composeNewMsg_CONSTANT = "Enter message";
-const groupDeleteConfirmTitle_CONSTANT = "Delete {0} group?";
+const groupDeleteConfirmTitle_CONSTANT = "Delete 0 group?";
 const groupAddButtonText_CONSTANT = "Add Group";
 const groupSaveButtonText_CONSTANT = "Save Changes";
 const groupEditGroup_CONSTANT = "Edit Group";
@@ -29,7 +30,9 @@ const groupNewGroup_CONSTANT = "New Group";
 const groupMax_CONSTANT = "10 members maximum";
 const userBroadcasting_CONSTANT = {
     broadcasting: 'Broadcasting',
-    notBroadcasting: 'Not broadcasting'
+    notBroadcasting: 'Not broadcasting',
+    broadcastGroupConflictTitle: 'Unable to delete',
+    broadcastGroupConflict: 'You are currently broadcasting to this group, broadcast must end first.'
 };
 const decision_CONSTANT = {
     following: 'Following',
@@ -45,6 +48,12 @@ const block_CONSTANT = {
     unblockConfirmTitle: 'Unblock 0?',
     unblockOops: 'Oops! Something went wrong, try again.'
 };
+
+var reporting_CONSTANT = {
+    flaggedTitle: '0 reported!',
+    flaggedText: 'All reports are taken seriously and will be reviewed. Thanks.'
+}
+
 const request_CONSTANT = {
     acceptRequest: 'Accept',
     declineRequest: 'Decline',
@@ -877,7 +886,7 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toaster', 'ControllerChecker', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker) {
+app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toaster', 'ControllerChecker', 'BroadcastInfo', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, BroadcastInfo) {
 
     var mc = this;    
 
@@ -1009,7 +1018,11 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
 
         switch (notify.type) {
             case 0:
-                $scope.$emit('emit_Chasers', { action: "chasers" });
+                var exists = ControllerChecker.exists("TrafficController");
+                if (exists)
+                    $scope.$emit('emit_Chasers', { action: "chasers" });
+                else
+                    Traffic.chasers(0);
                 title = newChaserTitle_CONSTANT;
                 text = newChasing_CONSTANT;
                 state = "main.traffic";
@@ -1032,7 +1045,11 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 });
                 break;
             case 2:
-                $scope.$emit('emit_Chasers', { action: "chasing" });
+                var exists = ControllerChecker.exists("TrafficController");
+                if (exists)
+                    $scope.$emit('emit_Chasers', { action: "chasing" });
+                else
+                    Traffic.chasing(0)
                 title = newChasingTitle_CONSTANT;
                 text = newChasing_CONSTANT;
                 state = "main.traffic";

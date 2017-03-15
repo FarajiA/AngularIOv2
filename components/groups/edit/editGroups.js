@@ -1,12 +1,13 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('AddEditController', ['$scope', '$rootScope', '$ionicHistory', '$state', '$ionicPopup', '$stateParams', 'Traffic', 'Groups', 'Search', function ($scope, $rootScope, $ionicHistory, $state, $ionicPopup, $stateParams, Traffic, Groups, Search) {
+    app.controller('AddEditController', ['$scope', '$rootScope', '$ionicHistory', '$state', '$ionicPopup', '$ionicPopover', '$stateParams', 'Traffic', 'Groups', 'Search', 'BroadcastInfo', function ($scope, $rootScope, $ionicHistory, $state, $ionicPopup, $ionicPopover, $stateParams, Traffic, Groups, Search, BroadcastInfo) {
 
         var vm = this;
         vm.groupID = _.toNumber($stateParams.groupID);
         vm.groupMembersIndex = 0;
         vm.groupMembersTotal = 0;
         vm.groupName = "";
+        var broadcast = $scope.$parent.user.broadcast;
         $scope.showChasers = true;
         vm.deleteMemberList = [];
 
@@ -18,6 +19,12 @@
         $scope.initial = { first: true };
         $scope.searchresults.array = Traffic.getChasers().results;
         $scope.Members = { array: [] };
+
+        $ionicPopover.fromTemplateUrl('editGroup.html', {
+            scope: $scope
+        }).then(function (popover) {
+            vm.popover = popover;
+        });
 
         if (vm.groupID > 0)
         {
@@ -90,6 +97,30 @@
                 });
             }
         };
+
+        vm.deleteGroup = function () {
+            if (broadcast.broadcastGroupID === vm.groupID) {
+                var alertPopup = $ionicPopup.alert({
+                    title: userBroadcasting_CONSTANT.broadcastGroupConflictTitle,
+                    template: userBroadcasting_CONSTANT.broadcastGroupConflict
+                });
+            }
+            else {
+                Groups.deleteGroup(vm.groupID).then(function (response) {
+                    if (response)
+                        $ionicHistory.goBack();
+                    else {
+                        var alertPopup = $ionicPopup.alert({
+                            title: genericError_CONSTANT
+                        });
+                    }
+                });
+            }
+        };
+
+        $scope.$on('$destroy', function () {
+           vm.popover.remove();
+        });
         
         $scope.$on("$ionicView.leave", function (event, data) {
             _.forEach(Traffic.getChasers().results, function (parentValue, parentKey) {

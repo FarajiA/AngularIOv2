@@ -262,10 +262,8 @@ width: 60%;
 }
 
 /* Groups 
-======================================
-.groups .group-item h2 {display:inline}
-.groups .group-item p {display:inline; font-size:12px}
- */
+====================================== */
+.groupPopover {height: 60px;}
 
 /* Select Broadcast Groups 
 ====================================== */
@@ -320,7 +318,7 @@ width: 60%;
 }
 
 .hero-content h4{color: rgba(255,255,255,.7); margin: 3px 0 5px;}
-
+.popover.flagPopover {height:112px;}
 /*setting page*/
 form#settingsForm label i {padding-right: 10px;}
 form#settingsForm .password {text-align:center;}

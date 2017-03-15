@@ -74,7 +74,7 @@
             return deffered.promise;
         };
 
-        Groups.deleteGroup = function (groupID, index) {
+        Groups.deleteGroup = function (groupID) {
             var deffered = $q.defer();
             $http.delete(baseURL_CONSTANT + "api/groups/" + groupID)
             .success(function (d) {

@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('DashGroupController', ['$scope', '$state', '$ionicHistory', 'Groups', 'Broadcast', 'CentralHub', 'ShareLink', function ($scope, $state, $ionicHistory, Groups,Broadcast,CentralHub, ShareLink) {
+    app.controller('DashGroupController', ['$scope', '$state', '$ionicHistory', 'Groups', 'Broadcast', 'CentralHub', 'ShareLink', 'BroadcastInfo', function ($scope, $state, $ionicHistory, Groups, Broadcast, CentralHub, ShareLink, BroadcastInfo) {
 
         var vm = this;
         vm.groupIndex = 0;
@@ -26,8 +26,10 @@
             Broadcast.On(vm.coords, groupID, type).then(function (response) {               
                 if (!_.isEmpty(response.broadcastType)) {
                     $scope.$parent.user.broadcasting = true;
+                    $scope.$parent.user.broadcast = response;
                     $scope.shareLink = response.share;
                     ShareLink.setLink(response.share);
+                    BroadcastInfo.setBroadcast(response);
                     $ionicHistory.goBack();
                     Broadcast.Notify(type, groupID);
                     CentralHub.views($scope.$parent.proxyCentralHub);

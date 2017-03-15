@@ -4,7 +4,9 @@
         // reusable authorization
         var vm = this;
 
-        
+        vm.broadcast = function () {
+
+        };
 
         
 
