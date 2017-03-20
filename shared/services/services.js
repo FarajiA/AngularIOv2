@@ -132,6 +132,10 @@
              }
          };
 
+         EncryptionObject.clearKeyData = function () {
+             localStorageService.remove('KeyData');
+         };
+
          EncryptionObject.generatePrivateKey = function (passphrase) {
              var deffered = $q.defer();
              var RSAkey = cryptico.generateRSAKey(passphrase, Bits);

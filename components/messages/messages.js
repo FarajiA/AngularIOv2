@@ -6,20 +6,18 @@
         vm.MessageService = Messages;
         vm.imageURL = imgURL_CONSTANT;
         vm.messagesIndex = 0;
+
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
             viewData.enableBack = true;
-        });
+        });       
 
-        vm.user = UserStore.data();
-
-        /*var unbindGetInbox = */
-        $scope.$watch('vm.MessageService.inboxMessages()', function (newVal, oldVal) {
+        var unbindGetInbox = $scope.$watch('vm.MessageService.inboxMessages()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Messages = newVal.results;
                 vm.messagesNo = newVal.total;
                 vm.messagesIndex++;
                 vm.moMessages = (vm.messagesNo > countSet_CONSTANT);
-                //unbindGetInbox();
+                unbindGetInbox();
             }
         });
         

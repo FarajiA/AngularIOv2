@@ -200,6 +200,10 @@ width: 60%;
     text-align:right;
 }
 
+#messages .item-avatar .item-content > img:first-child { top: 22px; }
+#messages .item-avatar .item-content {padding-top: 12px;}
+
+
 /* activity styling */
 .requests ion-item a {padding-right: 20px !important;}
 .requests ion-item a h2{ display:inline-block }

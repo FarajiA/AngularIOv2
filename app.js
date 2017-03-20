@@ -185,6 +185,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                       name: 'dash',
                       files: [
                           'components/dash/dash.js',
+                          'components/dash/dashServices.js',
                       ]
                   });
               }],
@@ -1159,9 +1160,9 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                             mc.phraseModal.hide();
                     });
                 }
-                else {
+                else 
                     console.log("Didn't Match");
-                }
+                
             });
         }
     };
