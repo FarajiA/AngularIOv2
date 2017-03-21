@@ -2,7 +2,21 @@
     <ion-nav-buttons side="right">
         <button class="button button-icon icon ion-android-more-vertical"></button>
     </ion-nav-buttons>
-    <ion-content class="padding">
+    <ion-content delegate-handle="userMessageScroll">
+        <!-- Chat bubbles -->
+        <div class="list chat-bubble">
+            <div class="item item-avatar b-none" ng-class="item.username != vm.corresponder?'me':'friend'" ng-repeat="item in vm.MessageThread" href="#">
+                <img ng-src="{{item.photo && vm.imageURL + item.userID + '.png' || 'img/default_avatar.png' }}" ng-if="item.username == vm.corresponder">
+                <div class="bubble">
+                    <i class="icon-tail"></i>
+                    <span class="content" ng-bind-html="item.body | nl2br | messageDecrypt"></span>
+                </div>
+                <span class="message-status" ng-if="item.username != vm.corresponder">Sent</span>
+                <div class="timestamp">{{item.date | messageDate : true}}</div>
+            </div>
+        </div>
+
+        <!--
         <irontec-simple-chat messages="vm.MessageThread"
                              username="vm.username"
                              input-placeholder-text="Enter message"
@@ -12,7 +26,18 @@
                              corresponder="vm.corresponder"
                              user="vm.user.id">
         </irontec-simple-chat>
+        -->
         <ion-infinite-scroll ng-if="vm.moMessages" on-infinite="vm.loadMoreMessages()" distance="30%"></ion-infinite-scroll>
     </ion-content>
+    <ion-footer-bar class="bar-light item-input-inset" keyboard-attach elastic>
+        <label class="item-input-wrapper no-bg">
+            <textarea rows="1" msd-elastic placeholder="Message" id="type-area" ng-model="vm.writingMessage"></textarea>
+        </label>
+        <div class="footer-btn-wrap">
+            <button type=submit class="button button-clear footer-btn" ng-click="sendText()" ng-disabled="vm.writingMessage.length == 0">
+                Send
+            </button>
+        </div>
+    </ion-footer-bar>
 </ion-view>
 

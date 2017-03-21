@@ -12,7 +12,7 @@
              <img ng-src="{{message.photo && vm.imageURL + message.corresponder + '.png' || 'img/default_avatar.png' }}" />
              <h2>{{message.username}}</h2>             
              <p>{{message.body | messageDecrypt}}</p>
-             <p class="date">{{message.date | messageDate }}</p>
+             <p class="date">{{message.date | messageDate : false }}</p>
            </ion-item>
         </ion-list>
     </div>

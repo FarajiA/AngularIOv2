@@ -16,7 +16,7 @@
                 vm.Messages = newVal.results;
                 vm.messagesNo = newVal.total;
                 vm.messagesIndex++;
-                vm.moMessages = (vm.messagesNo > countSet_CONSTANT);
+                vm.moMessages = (vm.messagesNo > countSet_CONSTANT * vm.messagesIndex);
                 unbindGetInbox();
             }
         });
@@ -30,7 +30,7 @@
                     vm.messagesNo = data.total;
                     vm.Messages = messagesMerged;
                     vm.messagesIndex++;
-                    vm.moMessages = (vm.messagesNo > countSet_CONSTANT);
+                    vm.moMessages = (vm.messagesNo > countSet_CONSTANT * vm.messagesIndex);
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                     deffered.resolve();
                 });

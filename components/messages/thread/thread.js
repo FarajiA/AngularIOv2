@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('ThreadController', ['$scope', '$timeout', '$state', '$stateParams', '$filter', '$templateCache', 'Thread', 'Messages', 'Encryption', function ($scope, $timeout, $state, $stateParams, $filter, $templateCache, Thread, Messages, Encryption) {
+    app.controller('ThreadController', ['$scope', '$state', '$stateParams', '$ionicScrollDelegate', 'Thread', 'Messages', 'Encryption', function ($scope, $state, $stateParams, $ionicScrollDelegate, Thread, Messages, Encryption) {
         //$templateCache.removeAll();
 
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
@@ -9,12 +9,21 @@
 
         var vm = this;
         var activeMessage = Messages.active();
+        var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
+        vm.imageURL = imgURL_CONSTANT;
 
         vm.corresponder = activeMessage.username;
         vm.userID = $stateParams.userID;
         vm.threadIndex = 0;
         vm.user = $scope.$parent.user;
+        var _scrollBottom = function (target) {
+            target = target || '#type-area';
+            viewScroll.scrollBottom(true);
+            //_keepKeyboardOpen(target);
+            //if ($scope.isNew) $scope.isNew = false;
+        }
 
+        viewScroll.scrollBottom(true);
         var extra = $state.current.name;
         
         var getUserThread = function () {
@@ -22,6 +31,7 @@
                 vm.MessageThread = _.reverse(response.results);
                 vm.messagesNo = response.total;
                 vm.threadIndex++;
+                vm.moMessages = (vm.messagesNo > countSet_CONSTANT * vm.threadIndex);
 
                 if (_.some(vm.MessageThread, ['viewed', false]))
                     Thread.viewed(vm.userID);
@@ -46,21 +56,24 @@
             Encryption.Encrypt(userMsgObject).then(function (response) {
                 msgObject.body = response.msg;
                 vm.MessageThread.push(msgObject);
+                _scrollBottom();
             });
 
             activeMessage = Messages.active();
             var recipients = [[activeMessage.corresponder, activeMessage.publickey]];
             recipients.unshift([vm.user.id, vm.user.publicKey]);
             
+            /*
             Thread.sendMessage(recipients, userMsgObject.msg, activeMessage.messageID).then(function (response) {
                 if (response) {
                     Thread.sendNotification(response.messageID);
                     Messages.updateActive(response)
                     Messages.updateThread(response, false);
-                }
+             }
             }, function (error) {
                 console.log("message didn't send");
-            });           
+            });
+            */
         };
 
         vm.loadMoreMessages = function () {
@@ -72,12 +85,12 @@
                     vm.messagesNo = data.total;
                     vm.Messages = messagesMerged;
                     vm.threadIndex++;
-                    vm.moMessages = (vm.messagesNo > countSet_CONSTANT);
+                    vm.moMessages = (vm.messagesNo > countSet_CONSTANT * vm.threadIndex);
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                     deffered.resolve();
                 });
             }
-            else if (vm.messagesIndex >= pagingMessageMax)
+            else if (vm.threadIndex >= pagingMessageMax)
                 vm.moMessages = false;
 
             return deffered.promise;

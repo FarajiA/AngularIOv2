@@ -1,3 +1,6 @@
+/// <reference path="lib/elastic.js" />
+/// <reference path="lib/elastic.js" />
+/// <reference path="lib/elastic.js" />
 const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
@@ -507,6 +510,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'thread',
                       files: [
+                          'lib/elastic.js',
                           'components/messages/thread/thread.js',
                           'components/messages/messagesFilters.js',
                           'components/messages/thread/threadDirectives.js',
@@ -528,9 +532,11 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'compose',
                       files: [
+                          'lib/elastic.js',
                           'components/messages/compose/compose.js',
                           'components/messages/thread/threadServices.js',
-                          'components/search/searchServices.js'
+                          'components/search/searchServices.js',
+                          'components/messages/messagesFilters.js'
                       ]
                   });
               }],
