@@ -13,7 +13,7 @@
         <div id="result">
             <div id="chasers" ng-show="!vm.showChasing" class="chasers">
                 <div class="zeroResults" ng-show="vm.Chasers.length === 0">
-                    <h2>no chasers homie</h2>
+                    <h2>no followers homie</h2>
                 </div>
                 <ion-list ng-show="vm.Chasers.length > 0">
                     <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Chasers" type="item-text-wrap" href="#/main/traffic/user/{{chaser.username}}">
@@ -26,7 +26,7 @@
             </div>
             <div id="chasing" ng-show="vm.showChasing" class="chasing">
                 <div class="zeroResults" ng-show="vm.Chasing.length === 0">
-                    <h2>not chasing anyone</h2>
+                    <h2>not following anyone</h2>
                 </div>
                 <ion-list ng-show="vm.Chasing.length > 0">
                     <ion-item class="item-avatar item-icon-right" ng-repeat="chaser in vm.Chasing" type="item-text-wrap" href="#/main/traffic/user/{{chaser.username}}">

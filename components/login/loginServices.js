@@ -8,7 +8,7 @@
         Login.checkAccount = function (provider, token) {
             var deffered = $q.defer();
             var msg = { "provider": provider, "ExternalAccessToken": token };
-            $http.post(baseURL_CONSTANT + "api/accounts/existingaccount")
+            $http.post(baseURL_CONSTANT + "api/accounts/existingaccount", msg)
             .success(function (d) {
                 deffered.resolve(d);
             })

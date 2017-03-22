@@ -92,26 +92,34 @@
         };
 
         vm.newUsername = function (username) {
-            $ionicLoading.show({
-                template: 'Registering...'
-            });
-            var user_data = {
-                username: username,
-                provider: vm.masterAuthReponse.provider,
-                externalaccesstoken: vm.masterAuthReponse.token
-            };
-            AuthService.registerExternal(user_data).then(function (response) {
-                $scope.$parent.userInitiate(response.userName).then(function () {
-                    $state.go('main.dash');
+            if (vm.form.usernameForm.$valid) {
+                $ionicLoading.show({
+                    template: 'Creating Account...'
                 });
-            });
+                var user_data = {
+                    username: username,
+                    provider: vm.masterAuthReponse.provider,
+                    externalaccesstoken: vm.masterAuthReponse.accessToken
+                };
+                AuthService.registerExternal(user_data).then(function (response) {
+                    $scope.$parent.userInitiate(response.userName).then(function () {
+                        $state.go('main.dash');
+                    });
+                });
+            }
+            else {
+                $ionicLoading.hide();
+                var alertPopup = $ionicPopup.alert({
+                    title: "Username Taken"
+                });
+            }
         };
 
         var fbLoginError = function (error) {
+            $ionicLoading.hide();
             var alertPopup = $ionicPopup.alert({
                 title: genericError_CONSTANT
             });
-            $ionicLoading.hide();
         };
         var fbLoginSuccess = function (response) {
             $ionicLoading.show({
@@ -164,7 +172,7 @@
                         console.log("error logging user in: " + err)
                     };
                 }
-                else if (!reponse) {
+                else if (!response) {
                     info.resolve(response);
                 }                
             }, function () {

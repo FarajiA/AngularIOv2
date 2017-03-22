@@ -1,7 +1,5 @@
-/// <reference path="lib/elastic.js" />
-/// <reference path="lib/elastic.js" />
-/// <reference path="lib/elastic.js" />
-const baseURL_CONSTANT = "http://localhost:59822/";
+
+const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -400,8 +398,8 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'search',
                       files: [
+                          'components/search/searchservices.js',
                           'components/search/search.js',
-                          'components/search/searchServices.js',
                           'components/search/searchDirectives.js'
                       ]
                   });
@@ -535,7 +533,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           'lib/elastic.js',
                           'components/messages/compose/compose.js',
                           'components/messages/thread/threadServices.js',
-                          'components/search/searchServices.js',
+                          'components/search/searchservices.js',
                           'components/messages/messagesFilters.js'
                       ]
                   });
@@ -811,33 +809,13 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
         return deferred.promise;
     };
 
-    authServiceFactory.obtainAccessToken = function (externalData) {
-
-        var deferred = $q.defer();
-
-        $http.get(baseURL_CONSTANT + 'api/account/ObtainLocalAccessToken', { params: { provider: externalData.provider, externalAccessToken: externalData.externalAccessToken } }).success(function (response) {
-            localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: "", useRefreshTokens: false });
-
-            authServiceFactory.authentication.isAuth = true;
-            authServiceFactory.authentication.userName = response.userName;
-            authServiceFactory.authentication.useRefreshTokens = false;
-
-            deferred.resolve(response);
-        }).error(function (err, status) {
-            authServiceFactory.logOut();
-            deferred.reject(err);
-        });
-
-        return deferred.promise;
-
-    };
-
     authServiceFactory.registerExternal = function (registerExternalData) {
 
         var deferred = $q.defer();
 
-        $http.post(baseURL_CONSTANT + 'api/account/registerexternal', registerExternalData).success(function (response) {
-            localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: "", useRefreshTokens: false });
+        $http.post(baseURL_CONSTANT + 'api/accounts/registerexternal', registerExternalData).success(function (response) {
+            var refreshTokenDate = date.setDate(date.getDate() + 7);
+            localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: response.refresh_token, refreshExpiration: refreshTokenDate });
 
             authServiceFactory.authentication.isAuth = true;
             authServiceFactory.authentication.userName = response.userName;
