@@ -1,16 +1,17 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('ThreadController', ['$scope', '$state', '$stateParams', '$ionicScrollDelegate', 'Thread', 'Messages', 'Encryption', function ($scope, $state, $stateParams, $ionicScrollDelegate, Thread, Messages, Encryption) {
+    app.controller('ThreadController', ['$scope', '$q', '$state', '$stateParams', '$ionicScrollDelegate', 'Thread', 'Messages', 'Encryption', function ($scope, $q, $state, $stateParams, $ionicScrollDelegate, Thread, Messages, Encryption) {
         //$templateCache.removeAll();
 
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-            viewData.enableBack = true;
+            viewData.enableBack = true;            
         });
 
         var vm = this;
         var activeMessage = Messages.active();
         var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
         vm.imageURL = imgURL_CONSTANT;
+        vm.inputPlaceholderText = composeNewMsg_CONSTANT;
 
         vm.corresponder = activeMessage.username;
         vm.userID = $stateParams.userID;
@@ -23,7 +24,19 @@
             //if ($scope.isNew) $scope.isNew = false;
         }
 
-        viewScroll.scrollBottom(true);
+        /*
+        var _keepKeyboardOpen = function (target) {
+            target = target || '#type-area';
+
+            txtInput = angular.element(document.body.querySelector(target));
+            console.log('keepKeyboardOpen ' + target);
+            txtInput.one('blur', function () {
+                console.log('textarea blur, focus back on it');
+                txtInput[0].focus();
+            });
+        }
+        */
+        
         var extra = $state.current.name;
         
         var getUserThread = function () {
@@ -31,8 +44,8 @@
                 vm.MessageThread = _.reverse(response.results);
                 vm.messagesNo = response.total;
                 vm.threadIndex++;
-                vm.moMessages = (vm.messagesNo > countSet_CONSTANT * vm.threadIndex);
-
+                vm.moMessages = (vm.messagesNo > msgCountSet_CONSTANT * vm.threadIndex);
+                viewScroll.scrollBottom(false);
                 if (_.some(vm.MessageThread, ['viewed', false]))
                     Thread.viewed(vm.userID);
             });
@@ -46,15 +59,16 @@
             }
         });
 
-        vm.sendMessage = function (msg) {
+        vm.sendMessage = function () {
             var msgObject = { 'username': vm.user.userName, 'date': new Date() };
             var userMsgObject = {
                 'id': vm.user.id,
                 'key': vm.user.publicKey,
-                'msg': msg
+                'msg': vm.writingMessage
             }
             Encryption.Encrypt(userMsgObject).then(function (response) {
                 msgObject.body = response.msg;
+                vm.writingMessage = "";
                 vm.MessageThread.push(msgObject);
                 _scrollBottom();
             });
@@ -63,7 +77,6 @@
             var recipients = [[activeMessage.corresponder, activeMessage.publickey]];
             recipients.unshift([vm.user.id, vm.user.publicKey]);
             
-            /*
             Thread.sendMessage(recipients, userMsgObject.msg, activeMessage.messageID).then(function (response) {
                 if (response) {
                     Thread.sendNotification(response.messageID);
@@ -73,19 +86,25 @@
             }, function (error) {
                 console.log("message didn't send");
             });
-            */
         };
 
         vm.loadMoreMessages = function () {
             var deffered = $q.defer();
-            var pagingMessageMax = Math.ceil(vm.messagesNo / countSet_CONSTANT, 1);
+            var pagingMessageMax = Math.ceil(vm.messagesNo / msgCountSet_CONSTANT, 1);
             if (vm.threadIndex < pagingMessageMax && vm.threadIndex > 0) {
                 Thread.thread(vm.threadIndex, vm.userID).then(function (data) {
-                    var messagesMerged = vm.MessageThread.concat(data.results);
+                    var results = _.reverse(data.results);
+                    var messagesMerged = vm.MessageThread.concat(results);
+                    var messagedMerged2 = _.concat(vm.MessageThread, results);
+
+                    var pushedOpp = vm.MessageThread.unshift(results);
+                    var pushedOpp2 = vm.MessageThread.push(results);
+
+
                     vm.messagesNo = data.total;
-                    vm.Messages = messagesMerged;
+                    vm.MessageThread = messagesMerged;
                     vm.threadIndex++;
-                    vm.moMessages = (vm.messagesNo > countSet_CONSTANT * vm.threadIndex);
+                    vm.moMessages = (vm.messagesNo > msgCountSet_CONSTANT * vm.threadIndex);
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                     deffered.resolve();
                 });

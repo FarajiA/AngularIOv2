@@ -216,10 +216,13 @@ width: 60%;
 .chat-bubble .item-avatar > img:first-child{
     top: 24px;
 }
+.bubble {margin-bottom: 5px !important;}
+
 .chat-bubble .bubble {
   position: relative;
   margin-bottom: 8px;
-  padding: 0; }
+  padding: 0;
+  }
   .chat-bubble .bubble .content {
     display: inline-block;
     background:#f9d5d1;
@@ -251,7 +254,10 @@ width: 60%;
 
 .chat-bubble .message-status {
   font-size: 12px;
-  color: #aaa; }
+  color: #aaa;
+  position: relative;
+  top: 3px;
+}
 
 .chat-bubble .me {
   text-align: right; 
@@ -306,6 +312,8 @@ width: 60%;
 #messages .item-avatar .item-content > img:first-child { top: 22px; }
 #messages .item-avatar .item-content {padding-top: 12px;}
 
+#threadcontent {background-color:#fff;}
+#thread .md-chips {width:inherit;}
 
 /* activity styling */
 .requests ion-item a {padding-right: 20px !important;}

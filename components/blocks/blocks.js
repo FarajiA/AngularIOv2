@@ -2,7 +2,7 @@
     angular.module('App').controller('BlocksController', ['$scope', '$state', '$ionicLoading', '$ionicPopup', 'Block', function ($scope, $state, $ionicLoading, $ionicPopup, Block) {
         var vm = this;
         vm.index = 0;
-
+        vm.imageURL = imgURL_CONSTANT;
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
             viewData.enableBack = true;
         });
@@ -12,6 +12,7 @@
                 vm.Blocks = response.results;
                 vm.blocksNo = response.total;
                 vm.index++;
+                vm.moBlocks = (response.total > countSet_CONSTANT * vm.index);
             });
         };
 

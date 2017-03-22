@@ -53,23 +53,6 @@
         }
 
     })
-    /*
-    .filter('messageCorrespond', ['UserStore', function (UserStore) {
-
-        return function (blast, ID, corresponder) {
-
-            var updated = {};
-            var user = UserStore.data();
-
-            if (blast && user.id === ID)
-                updated = "blast";
-            else
-                updated = corresponder;
-
-            return updated;
-        }
-    }])
-    */
     .filter('messageDecrypt', ['Encryption', function (Encryption) {
         return function (message) {
             var updated = {};

@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('ComposeController', ['$scope', '$timeout', '$state', 'Search', 'Thread', 'Encryption', 'Messages', function ($scope, $timeout, $state, Search, Thread, Encryption, Messages) {
+    app.controller('ComposeController', ['$scope', '$timeout', '$state', '$ionicPopup', 'Search', 'Thread', 'Encryption', 'Messages', function ($scope, $timeout, $state, $ionicPopup, Search, Thread, Encryption, Messages) {
 
         $scope.$on("$ionicView.beforeEnter", function () {
             $scope.showTabs.show = false;
@@ -17,9 +17,9 @@
         vm.writingMessage = "";
         vm.listRecipients = [];
         vm.keys = [];
+        vm.imageURL = imgURL_CONSTANT;
 
         vm.inputPlaceholderText = composeNewMsg_CONSTANT;
-
         Thread.composeList(vm.composeIndex).then(function (response) {
             vm.listRecipients = response.results;
             vm.composeIndex++
@@ -27,7 +27,7 @@
 
         vm.updateRecipients = function (user) {
             if (vm.selectedUsers.length <= 9) {
-                var present = _.some(vm.selectedUsers, ['id', user.id]);             
+                var present = _.some(vm.selectedUsers, ['id', user.id]);
 
                 if (present) {
                     _.remove(vm.selectedUsers, function (n) {
@@ -36,7 +36,7 @@
                 }
                 else {
                     var item = {};
-                    item.thumbnailUrl = '././img/tyrion.jpg';
+                    item.thumbnailUrl = user.photo ? vm.imageURL + user.id +'.png' : '././img/default_avatar.png';
                     item.title = user.username;
                     item.subtitle = user.firstName + ' ' + user.lastName;
                     item.id = user.id;
@@ -45,13 +45,15 @@
                     vm.keys = vm.keys.concat(item.publickey);
                     vm.selectedUsers.push(item);
                 }
-           }
-            else 
-                console.log("10 maximum allowed");
-
+            }
+            else {
+                var alertPopup = $ionicPopup.alert({
+                    title: "10 maximum allowed"
+                });
+            }
         };
         
-        // demo of initial collection used for md Chips
+        /*
         vm.itemsCollection = [{
             thumbnailUrl: '././img/sansa.jpg',
             title: 'Sansa Stark',
@@ -63,7 +65,7 @@
             subtitle: 'test@text.com',
             id: 'Bhmrr556lmd879'
         }];
-
+        */
         vm.selectedUsers = [];
 
         $scope.$watch('vm.SearchService.data()', function (newVal, oldVal) {
@@ -90,19 +92,23 @@
             //Encryption.clearKeys();
             //_.split(response.publickey, ',') 
             //Encryption.addKey(vm.keys).then(function (response) {
+            $ionicLoading.show({
+                template: 'Sending...'
+            });
             var selected = _.zip(_.map(vm.selectedUsers, 'id'), _.map(vm.selectedUsers, 'publickey'));
             var userKey = [$scope.user.id, $scope.user.publicKey];
             selected.unshift(userKey);
             Thread.sendMessage(selected, vm.writingMessage, 0).then(function (response) {               
                 Messages.updateThread(response, false).then(function(response){
+                    $ionicLoading.hide();
                     $state.go("main.messages");
                 });
                 Thread.sendNotification(response.messageID);
+            }, function () {
+                $ionicLoading.hide();
             });
               
             //});
-
-
         };
 
 

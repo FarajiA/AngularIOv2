@@ -4,12 +4,15 @@
     </ion-nav-buttons>
     <ion-content delegate-handle="userMessageScroll">
         <!-- Chat bubbles -->
+        <!--<ion-infinite-scroll ng-if="vm.moMessages" on-infinite="vm.loadMoreMessages()" distance="30%"></ion-infinite-scroll> -->
+        <ion-infinite-scroll-reverse ng-if="vm.moMessages" icon="ion-loading-c" distance="5%" on-infinite="vm.loadMoreMessages()" reverse="true">
+        </ion-infinite-scroll-reverse>
         <div class="list chat-bubble">
             <div class="item item-avatar b-none" ng-class="item.username != vm.corresponder?'me':'friend'" ng-repeat="item in vm.MessageThread" href="#">
                 <img ng-src="{{item.photo && vm.imageURL + item.userID + '.png' || 'img/default_avatar.png' }}" ng-if="item.username == vm.corresponder">
                 <div class="bubble">
                     <i class="icon-tail"></i>
-                    <span class="content" ng-bind-html="item.body | nl2br | messageDecrypt"></span>
+                    <span class="content" ng-bind-html="item.body | messageDecrypt | nl2br"></span>
                 </div>
                 <span class="message-status" ng-if="item.username != vm.corresponder">Sent</span>
                 <div class="timestamp">{{item.date | messageDate : true}}</div>
@@ -27,14 +30,14 @@
                              user="vm.user.id">
         </irontec-simple-chat>
         -->
-        <ion-infinite-scroll ng-if="vm.moMessages" on-infinite="vm.loadMoreMessages()" distance="30%"></ion-infinite-scroll>
+
     </ion-content>
     <ion-footer-bar class="bar-light item-input-inset" keyboard-attach elastic>
         <label class="item-input-wrapper no-bg">
-            <textarea rows="1" msd-elastic placeholder="Message" id="type-area" ng-model="vm.writingMessage"></textarea>
+            <textarea rows="1" msd-elastic placeholder="{{vm.inputPlaceholderText}}" maxlength="140" id="type-area" ng-model="vm.writingMessage"></textarea>
         </label>
         <div class="footer-btn-wrap">
-            <button type=submit class="button button-clear footer-btn" ng-click="sendText()" ng-disabled="vm.writingMessage.length == 0">
+            <button type=submit class="button button-clear footer-btn" ng-click="vm.sendMessage()" ng-disabled="vm.writingMessage.length == 0">
                 Send
             </button>
         </div>

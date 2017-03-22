@@ -6,21 +6,7 @@
 
         Thread.thread = function (index, user) {
             var deffered = $q.defer();
-            /*
-            if (user === 'blast') {
-                var activeThread = Messages.active();
-                var recipients = _.split(activeThread.corresponder, ',');
-                var msg = { 'recipients': recipients };
-                $http.post(baseURL_CONSTANT + "api/messages/blast/" + index + "/" + countSet_CONSTANT, msg)
-               .success(function (d) {
-                   deffered.resolve(d);
-               })
-               .error(function (data, status) {
-                   console.log("Request failed " + status);
-               });
-
-            } else { */
-                $http.get(baseURL_CONSTANT + "api/messages/" + user + "/" + index + "/" + countSet_CONSTANT, {
+            $http.get(baseURL_CONSTANT + "api/messages/" + user + "/" + index + "/" + msgCountSet_CONSTANT, {
                     cache: false
                 })
                 .success(function (d) {

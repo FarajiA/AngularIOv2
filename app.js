@@ -1,10 +1,12 @@
 
-const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
 const refreshTokenLife_CONSTANT = 7;
 const countSet_CONSTANT = 20;
+const msgCountSet_CONSTANT = 5;
 const AllChasers_CONSTANT = "0";
 const AnyoneWithLink_CONSTANT = "1";
 const Everyone_CONSTANT = "2";
@@ -22,7 +24,7 @@ const newMesssage_CONSTANT = "0 sent you a message.";
 const newRequest_CONSTANT = "0 sent you a request.";
 const newChasing_CONSTANT = "0 accepted your request.";
 const newChaser_CONSTANT = "0 started following you.";
-const composeNewMsg_CONSTANT = "Enter message";
+const composeNewMsg_CONSTANT = "Message";
 const groupDeleteConfirmTitle_CONSTANT = "Delete 0 group?";
 const groupAddButtonText_CONSTANT = "Add Group";
 const groupSaveButtonText_CONSTANT = "Save Changes";
@@ -534,7 +536,8 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           'components/messages/compose/compose.js',
                           'components/messages/thread/threadServices.js',
                           'components/search/searchservices.js',
-                          'components/messages/messagesFilters.js'
+                          'components/messages/messagesFilters.js',
+                          'components/messages/thread/threadDirectives.js',
                       ]
                   });
               }],

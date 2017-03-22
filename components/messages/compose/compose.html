@@ -1,6 +1,6 @@
 ﻿<ion-view view-title="New Message" hide-tabs>
-    <ion-content class="padding">
-        <div id="thread stuff" class="msg-container-base">
+    <ion-content class="padding" id="threadcontent">
+        <div id="thread" class="msg-container-base">
             <div class="recipients">
                 <div><span>To:</span></div>
                 <div>
@@ -8,12 +8,16 @@
                               disabled='false' md-on-delete='vm.mdOnDelete' unique='true' />
                 </div>
                 <div>
+                    <div class="zeroResults" ng-show="vm.listRecipients.length === 0">
+                        <h2>no results</h2>
+                    </div>
                     <ion-list>
                         <ion-checkbox ng-model="user.checked" ng-checked="user.checked" ng-repeat="user in vm.listRecipients" ng-change="vm.updateRecipients(user)">{{user.username}}<p>{{user.firstName}}&nbsp;{{user.lastName}}</p></ion-checkbox>
                     </ion-list>
                     <ion-infinite-scroll ng-if="vm.moRecipients" on-infinite="vm.loadMorelistRecipients()" distance="30%"></ion-infinite-scroll>       
                 </div>
             </div>
+            <!-- 
             <div class="panel-footer chat-bottom-bar">
                 <form style="display:flex" ng-submit="vm.submitFunction()">
                     <div class="input-group">
@@ -22,6 +26,18 @@
                     </div>
                 </form>
             </div>
+            -->
         </div>
     </ion-content>
+
+    <ion-footer-bar class="bar-light item-input-inset" keyboard-attach elastic>
+        <label class="item-input-wrapper no-bg">
+            <textarea rows="1" msd-elastic placeholder="{{vm.inputPlaceholderText}}" id="type-area" ng-model="vm.writingMessage"></textarea>
+        </label>
+        <div class="footer-btn-wrap">
+            <button type=submit class="button button-clear footer-btn" ng-submit="vm.submitFunction()" ng-disabled="vm.writingMessage.length == 0 || vm.selectedUsers.length == 0">
+                Send
+            </button>
+        </div>
+    </ion-footer-bar>
 </ion-view>

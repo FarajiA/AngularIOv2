@@ -6,11 +6,11 @@
         vm.MessageService = Messages;
         vm.imageURL = imgURL_CONSTANT;
         vm.messagesIndex = 0;
-
+        /*
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
             viewData.enableBack = true;
         });       
-
+        */
         var unbindGetInbox = $scope.$watch('vm.MessageService.inboxMessages()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Messages = newVal.results;
