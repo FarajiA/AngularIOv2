@@ -3,6 +3,10 @@
 
         var vm = this;
         vm.form = {};
+        vm.masterAuthReponse = {
+            token: "",
+            provider:""
+        };
 
         $ionicModal.fromTemplateUrl('components/login/templates/forgot_password.html', {
             scope: $scope,
@@ -87,8 +91,26 @@
             }
         };
 
+        vm.newUsername = function (username) {
+            $ionicLoading.show({
+                template: 'Registering...'
+            });
+            var user_data = {
+                username: username,
+                provider: vm.masterAuthReponse.provider,
+                externalaccesstoken: vm.masterAuthReponse.token
+            };
+            AuthService.registerExternal(user_data).then(function (response) {
+                $scope.$parent.userInitiate(response.userName).then(function () {
+                    $state.go('main.dash');
+                });
+            });
+        };
+
         var fbLoginError = function (error) {
-            console.log('fbLoginError', error);
+            var alertPopup = $ionicPopup.alert({
+                title: genericError_CONSTANT
+            });
             $ionicLoading.hide();
         };
         var fbLoginSuccess = function (response) {
@@ -101,30 +123,24 @@
             }
             var authResponse = response.authResponse;
           
-            CheckifAccountExists(authResponse).then(function (exists) {
-                if (exists) {
-                    $state.go('main.dash');
+            CheckifAccountExists("Facebook", authResponse.accessToken).then(function (exists) {
+                if (!exists) {
                     $ionicLoading.hide();
-                }
-                else {
-
-
+                    vm.mUsername.show();
+                    vm.masterAuthReponse.provider = "Facebook";
+                    vm.masterAuthReponse.token = authResponse.accessToken;
                 };
             });
             
             
         };
+       /*
         // This method is to get the user profile info from the facebook api
         var getFacebookProfileInfo = function (authResponse) {
             var info = $q.defer();
 
             facebookConnectPlugin.api('/me?fields=email,name&access_token=' + authResponse.accessToken, null,
               function (response) {
-                  console.log(response);
-                  UserStore.setUser("Facebook", authResponse.accessToken).then(function (response) {
-                      var success = response;
-                  });
-
                   info.resolve(response);
               },
               function (response) {
@@ -134,29 +150,48 @@
             );
             return info.promise;
         };
-
+       */
         var CheckifAccountExists = function (provider, token) {
             var info = $q.defer();
             UserLogin.checkAccount(provider, token).then(function (response) {
-                info.resolve(response);
+                if (_.has(response, 'access_token')) {
+                    AuthService.externalLogin(response);
+                    $scope.$parent.userInitiate(response.userName).then(function () {
+                        $ionicLoading.hide();
+                        $state.go('main.dash');
+                        info.resolve(response);
+                    }), function (err) {
+                        console.log("error logging user in: " + err)
+                    };
+                }
+                else if (!reponse) {
+                    info.resolve(response);
+                }                
+            }, function () {
+                var alertPopup = $ionicPopup.alert({
+                    title: genericError_CONSTANT
+                });
+                $ionicLoading.hide();
             });
             return info.promise;
         };
 
         vm.facebookSignIn = function () {
+            $ionicLoading.show({
+                template: 'Verifying account...'
+            });
             facebookConnectPlugin.getLoginStatus(function (success) {
                 if (success.status === 'connected') {
-                    console.log('getLoginStatus', success.status);
-
                     var authResponse = success.authResponse;
                     CheckifAccountExists("Facebook", authResponse.accessToken).then(function (exists) {
-                        var stuff = exists;
+                        $ionicLoading.hide();
+                        if (!exists) {
+                            vm.mUsername.show();
+                            authResponse.provider = "Facebook";
+                            vm.masterAuthReponse = authResponse;
+                        }
                     });
                 } else {
-                    console.log('getLoginStatus', success.status);
-                    $ionicLoading.show({
-                        template: 'Verifying account...'
-                    });
                     facebookConnectPlugin.login(['email', 'public_profile'], fbLoginSuccess, fbLoginError);
                 }
             });
@@ -174,10 +209,13 @@
             window.plugins.googleplus.login(GoogleOptions,
               function (user_data) {
                   CheckifAccountExists("Google", user_data.idToken).then(function (response) {
-                      if (response){}
+                      $ionicLoading.hide();
+                      if (!exists) {
+                          vm.mUsername.show();
+                          authResponse.provider = "Google";
+                          vm.masterAuthReponse = user_data;
+                      }
                   });
-                  $ionicLoading.hide();
-                  $state.go('main.dash');
               },
               function (msg) {
                   $ionicLoading.hide();

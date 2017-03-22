@@ -3,7 +3,7 @@
     <div class="header text-center clearfix">
       <div class="title">Please choose username.</div>
     </div>
-    <form name="vm.form.usernameForm" ng-submit="vm.newUsername(usernameData)" novalidate="">
+    <form name="vm.form.usernameForm" ng-submit="vm.newUsername(usernameData.username)" novalidate="">
       <div class="list list-inset">
         <label class="item item-input">
           <i class="icon is-icon-avatar" ng-class="{'error': vm.form.usernameForm.username.$error.usernamevalid || vm.form.usernameForm.$error.charactersvalid || (vm.form.usernameForm.username.$invalid && vm.form.usernameForm.username.$touched), 'success': !(vm.form.usernameForm.username.$error.usernamevalid || vm.form.usernameForm.username.$error.charactersvalid) && vm.form.usernameForm.username.$dirty}"></i>

@@ -10,11 +10,10 @@
             var msg = { "provider": provider, "ExternalAccessToken": token };
             $http.post(baseURL_CONSTANT + "api/accounts/existingaccount")
             .success(function (d) {
-                deffered.resolve(d.result);
+                deffered.resolve(d);
             })
             .error(function (data, status) {
                 deffered.reject(data);
-                console.log("Request failed " + status);
             });
             return deffered.promise;
         };

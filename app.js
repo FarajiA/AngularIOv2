@@ -749,6 +749,16 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
         return deferred.promise;
     };
 
+    authServiceFactory.externalLogin = function (data) {
+        var refreshTokenDate = date.setDate(date.getDate() + refreshTokenLife_CONSTANT);
+        localStorageService.set('authorizationData', { token: data.access_token, userName: data.username, refreshToken: data.refresh_token, refreshExpiration: data.refreshTokenDate });
+        authServiceFactory.authentication.isAuth = true;
+        authServiceFactory.authentication.userName = data.userName;
+        authServiceFactory.authentication.token = data.access_token;
+        authServiceFactory.authentication.refreshToken = data.refresh_token;
+        authServiceFactory.authentication.refreshTokenExp = data.refreshTokenDate;
+    };
+
     authServiceFactory.logOut = function () {
 
         localStorageService.remove('authorizationData');
@@ -827,15 +837,14 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
         var deferred = $q.defer();
 
         $http.post(baseURL_CONSTANT + 'api/account/registerexternal', registerExternalData).success(function (response) {
-
             localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: "", useRefreshTokens: false });
 
             authServiceFactory.authentication.isAuth = true;
             authServiceFactory.authentication.userName = response.userName;
-            authServiceFactory.authentication.useRefreshTokens = false;
-
+            authServiceFactory.authentication.token = response.access_token;
+            authServiceFactory.authentication.refreshToken = response.refresh_token;
+            authServiceFactory.authentication.refreshTokenExp = refreshTokenDate;
             deferred.resolve(response);
-
         }).error(function (err, status) {
             authServiceFactory.logOut();
             deferred.reject(err);
