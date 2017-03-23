@@ -99,11 +99,16 @@
                 var user_data = {
                     username: username,
                     provider: vm.masterAuthReponse.provider,
-                    externalaccesstoken: vm.masterAuthReponse.accessToken
+                    externalaccesstoken: vm.masterAuthReponse.token
                 };
                 AuthService.registerExternal(user_data).then(function (response) {
                     $scope.$parent.userInitiate(response.userName).then(function () {
                         $state.go('main.dash');
+                    }, function () {
+                        var alertPopup = $ionicPopup.alert({
+                            title: genericError_CONSTANT
+                        });
+                        $ionicLoading.hide();
                     });
                 });
             }
@@ -196,7 +201,7 @@
                         if (!exists) {
                             vm.mUsername.show();
                             authResponse.provider = "Facebook";
-                            vm.masterAuthReponse = authResponse;
+                            vm.masterAuthReponse.token = authResponse.accessToken;
                         }
                     });
                 } else {
@@ -216,12 +221,12 @@
             });
             window.plugins.googleplus.login(GoogleOptions,
               function (user_data) {
-                  CheckifAccountExists("Google", user_data.idToken).then(function (response) {
+                  CheckifAccountExists("Google", user_data.idToken).then(function (exists) {
                       $ionicLoading.hide();
                       if (!exists) {
                           vm.mUsername.show();
-                          authResponse.provider = "Google";
-                          vm.masterAuthReponse = user_data;
+                          vm.masterAuthReponse.provider = "Google";
+                          vm.masterAuthReponse.token = user_data.idToken;
                       }
                   });
               },

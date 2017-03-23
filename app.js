@@ -1,6 +1,6 @@
 
-//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -795,13 +795,11 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
             $http.post(baseURL_CONSTANT + 'oauth/token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, skipAuthorization: true }).success(function (response) {
                 var refreshTokenDate = date.setDate(date.getDate() + 7);
                 localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: response.refresh_token, refreshExpiration: refreshTokenDate });
-
                 authServiceFactory.authentication.isAuth = true;
                 authServiceFactory.authentication.userName = response.userName;
                 authServiceFactory.authentication.token = response.access_token;
                 authServiceFactory.authentication.refreshToken = response.refresh_token;
                 authServiceFactory.authentication.refreshTokenExp = refreshTokenDate;
-
                 deferred.resolve(response);
             }).error(function (err, status) {
                 authServiceFactory.logOut();
@@ -815,11 +813,10 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
     authServiceFactory.registerExternal = function (registerExternalData) {
 
         var deferred = $q.defer();
-
+        var date = new Date();
         $http.post(baseURL_CONSTANT + 'api/accounts/registerexternal', registerExternalData).success(function (response) {
             var refreshTokenDate = date.setDate(date.getDate() + 7);
             localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: response.refresh_token, refreshExpiration: refreshTokenDate });
-
             authServiceFactory.authentication.isAuth = true;
             authServiceFactory.authentication.userName = response.userName;
             authServiceFactory.authentication.token = response.access_token;
