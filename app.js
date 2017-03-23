@@ -6,7 +6,7 @@ const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
 const refreshTokenLife_CONSTANT = 7;
 const countSet_CONSTANT = 20;
-const msgCountSet_CONSTANT = 5;
+const msgCountSet_CONSTANT = 10;
 const AllChasers_CONSTANT = "0";
 const AnyoneWithLink_CONSTANT = "1";
 const Everyone_CONSTANT = "2";
@@ -502,7 +502,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
           }
       })
       .state('messages-thread', {
-          url: '/messages/:userID',
+          url: '/messages/:username/:userID',
           templateUrl: 'components/messages/thread/thread.html',
           controller: 'ThreadController as vm',
           resolve: {
@@ -1067,12 +1067,12 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 Messages.inbox(0);
                 title = newMesssageTitle_CONSTANT;
                 text = newMesssage_CONSTANT;
-                state = "main.messages";
+                state = "messages";
                 break;
         }
 
         $scope.$apply(function () {
-            if ($state.current.name != "main.messages-thread") {
+            if (!($state.current.name == "messages-thread" && $stateParams.username == notify.username)) {
                 $toaster.pop('success', text.replace('0', notify.username), "" /*title_.replace(text, '0', notify.username) */, "", 'trustedHtml', function (toaster) {
                     $state.go(state);
                     return true;

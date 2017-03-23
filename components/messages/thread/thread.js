@@ -9,6 +9,11 @@
 
         var vm = this;
         var activeMessage = Messages.active();
+        var sending_constant = 1;
+        var sent_constant = 2;
+        var failed_constant = 3;
+        vm.initialLoadCompleted = false;
+
         var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
         vm.imageURL = imgURL_CONSTANT;
         vm.inputPlaceholderText = composeNewMsg_CONSTANT;
@@ -41,7 +46,8 @@
         
         var getUserThread = function () {
             Thread.thread(vm.threadIndex, vm.userID).then(function(response) {
-                vm.MessageThread = _.reverse(response.results);
+                vm.MessageThread = _.reverse(response.results);;
+                vm.initialLoadCompleted = true;
                 vm.messagesNo = response.total;
                 vm.threadIndex++;
                 vm.moMessages = (vm.messagesNo > msgCountSet_CONSTANT * vm.threadIndex);
@@ -69,6 +75,7 @@
             Encryption.Encrypt(userMsgObject).then(function (response) {
                 msgObject.body = response.msg;
                 vm.writingMessage = "";
+                msgObject.status = sending_constant;
                 vm.MessageThread.push(msgObject);
                 _scrollBottom();
             });
@@ -79,12 +86,13 @@
             
             Thread.sendMessage(recipients, userMsgObject.msg, activeMessage.messageID).then(function (response) {
                 if (response) {
+                    msgObject.status = sent_constant;
                     Thread.sendNotification(response.messageID);
                     Messages.updateActive(response)
                     Messages.updateThread(response, false);
              }
             }, function (error) {
-                console.log("message didn't send");
+                msgObject.status = failed_constant;
             });
         };
 
@@ -93,14 +101,8 @@
             var pagingMessageMax = Math.ceil(vm.messagesNo / msgCountSet_CONSTANT, 1);
             if (vm.threadIndex < pagingMessageMax && vm.threadIndex > 0) {
                 Thread.thread(vm.threadIndex, vm.userID).then(function (data) {
-                    var results = _.reverse(data.results);
-                    var messagesMerged = vm.MessageThread.concat(results);
-                    var messagedMerged2 = _.concat(vm.MessageThread, results);
-
-                    var pushedOpp = vm.MessageThread.unshift(results);
-                    var pushedOpp2 = vm.MessageThread.push(results);
-
-
+                    _.reverse(data.results);
+                    var messagesMerged = data.results.concat(vm.MessageThread);
                     vm.messagesNo = data.total;
                     vm.MessageThread = messagesMerged;
                     vm.threadIndex++;

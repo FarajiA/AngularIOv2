@@ -12,7 +12,7 @@
                 <h2>no messages</h2>
             </div>
             <ion-list ng-show="vm.Messages.length > 0">
-                <ion-item class="item-avatar item-icon-right" ng-class="{'bold' : !message.viewed }" href="#/messages/{{message.corresponder}}" ng-repeat="message in vm.Messages track by $id($index)" ng-click="vm.MessageViewed($index)" type="item-text-wrap" nav-direction="forward">
+                <ion-item class="item-avatar item-icon-right" ng-class="{'bold' : !message.viewed }" href="#/messages/{{message.username}}/{{message.corresponder}}" ng-repeat="message in vm.Messages track by $id($index)" ng-click="vm.MessageViewed($index)" type="item-text-wrap" nav-direction="forward">
                     <img ng-src="{{message.photo && vm.imageURL + message.corresponder + '.png' || 'img/default_avatar.png' }}" />
                     <h2>{{message.username}}</h2>
                     <p>{{message.body | messageDecrypt}}</p>

@@ -5,7 +5,7 @@
     <ion-content delegate-handle="userMessageScroll">
         <!-- Chat bubbles -->
         <!--<ion-infinite-scroll ng-if="vm.moMessages" on-infinite="vm.loadMoreMessages()" distance="30%"></ion-infinite-scroll> -->
-        <ion-infinite-scroll-reverse ng-if="vm.moMessages" icon="ion-loading-c" distance="5%" on-infinite="vm.loadMoreMessages()" reverse="true">
+        <ion-infinite-scroll-reverse immediate-check="false" ng-if="vm.moMessages && vm.initialLoadCompleted" icon="ion-loading-c" distance="25%" on-infinite="vm.loadMoreMessages()" reverse="true">
         </ion-infinite-scroll-reverse>
         <div class="list chat-bubble">
             <div class="item item-avatar b-none" ng-class="item.username != vm.corresponder?'me':'friend'" ng-repeat="item in vm.MessageThread" href="#">
@@ -14,7 +14,12 @@
                     <i class="icon-tail"></i>
                     <span class="content" ng-bind-html="item.body | messageDecrypt | nl2br"></span>
                 </div>
-                <span class="message-status" ng-if="item.username != vm.corresponder">Sent</span>
+                <div id="item.status" ng-if="item.username != vm.corresponder" ng-switch on="item.status">
+                    <span class="message-status" ng-switch-when='1'><ion-spinner icon="lines"></ion-spinner></span>
+                    <span class="message-status" ng-switch-when='2'>Sent</span>
+                    <span class="message-status" style="color:red" ng-switch-when='3'>FAILED</span>
+                    <span class="message-status" ng-switch-default>Sent</span>
+                </div>
                 <div class="timestamp">{{item.date | messageDate : true}}</div>
             </div>
         </div>

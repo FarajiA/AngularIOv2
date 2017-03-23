@@ -11,13 +11,14 @@
             viewData.enableBack = true;
         });       
         */
-        var unbindGetInbox = $scope.$watch('vm.MessageService.inboxMessages()', function (newVal, oldVal) {
+        /* var unbindGetInbox = */
+        $scope.$watch('vm.MessageService.inboxMessages()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Messages = newVal.results;
                 vm.messagesNo = newVal.total;
                 vm.messagesIndex++;
                 vm.moMessages = (vm.messagesNo > countSet_CONSTANT * vm.messagesIndex);
-                unbindGetInbox();
+                //unbindGetInbox();
             }
         });
         
