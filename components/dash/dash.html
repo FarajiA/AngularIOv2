@@ -3,7 +3,7 @@
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
-        <button class="button button-icon icon ion-ios-chatboxes-outline" ui-sref="messages"><span class="badge badge-assertive">{{badge.Messages}}</span></button>
+        <button class="button button-icon icon ion-ios-chatboxes-outline msgTitle" ng-click="mc.CheckBadge(2)" ui-sref="messages"><span ng-if="badge.Messages == 1" class="badge badge-assertive">{{badge.Messages}}</span></button>
     </ion-nav-buttons>
     <ion-content has-header="true" padding="true" id="dash" has-bouncing="false">
         <button class="button button-large icon ion-radio-waves"  ng-click="vm.broadcast()"

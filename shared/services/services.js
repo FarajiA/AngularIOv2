@@ -46,7 +46,7 @@
         });
 
         proxy.on('receiveMessage', function (message) {
-            $rootScope.$emit("centralHubMessage", message);
+            $rootScope.$emit('emit_NewMessage', message);
         });
 
         connection.start({ jsonp: true }).done(function (response) {

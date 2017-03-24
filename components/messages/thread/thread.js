@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('ThreadController', ['$scope', '$q', '$state', '$stateParams', '$ionicScrollDelegate', 'Thread', 'Messages', 'Encryption', function ($scope, $q, $state, $stateParams, $ionicScrollDelegate, Thread, Messages, Encryption) {
+    app.controller('ThreadController', ['$scope', '$q', '$state', '$timeout', '$stateParams', '$ionicScrollDelegate', 'Thread', 'Messages', 'Encryption', function ($scope, $q, $state,$timeout, $stateParams, $ionicScrollDelegate, Thread, Messages, Encryption) {
         //$templateCache.removeAll();
 
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
@@ -107,7 +107,9 @@
                     vm.MessageThread = messagesMerged;
                     vm.threadIndex++;
                     vm.moMessages = (vm.messagesNo > msgCountSet_CONSTANT * vm.threadIndex);
-                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                    $timeout(function () {
+                        $scope.$broadcast('scroll.infiniteScrollComplete');
+                    });                
                     deffered.resolve();
                 });
             }
@@ -118,5 +120,22 @@
         };
 
 
+        $scope.$on("update_thread", function (e, message) {
+                if (vm.corresponder == message.username) {
+                    Messages.updateActive(message).then(function (){
+                        $scope.activeThread = message;
+                    });
+                    vm.messagesNo++;
+                    message.viewed = true;
+                    vm.MessageThread.push(message);
+                    viewScroll.scrollBottom(true);
+                    Messages.viewed(message.corresponder).then(function (response){
+                        Messages.updateThread(message, false);
+                    });
+                }
+                else {
+                    $scope.$parent.badge.Messages = 1;
+                }
+            });        
     }]);
 })();

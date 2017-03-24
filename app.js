@@ -1,6 +1,5 @@
-
-const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
-//const baseURL_CONSTANT = "http://localhost:59822/";
+//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -105,6 +104,9 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform) {
         $rootScope.$broadcast('update_activity', args);
     });
 
+    $rootScope.$on('emit_NewMessage', function (event, args) {
+        $rootScope.$broadcast('update_thread', args)
+    });
     /*
     $rootScope.$on('emit_Broadcasting', function (event, args) {
         $rootScope.$broadcast('update_location', args);
@@ -921,9 +923,8 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
     };
 
     mc.badgeMessageCheck = function (msgsArray) {
-        if (_.isEqual($scope.badge.Messages, 1)) {
+        if (_.isEqual($scope.badge.Messages, 1))
             var messages = _.some(msgsArray.results, ['viewed', false]);
-        }
     };
 
     $ionicModal.fromTemplateUrl('passphrase.html', {
@@ -1068,6 +1069,8 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 title = newMesssageTitle_CONSTANT;
                 text = newMesssage_CONSTANT;
                 state = "messages";
+                if ($state.current.name != state || $state.current.name != "messages-thread")
+                    $scope.badge.Messages = 1;
                 break;
         }
 
@@ -1085,31 +1088,6 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
         $scope.userInitiate();
     });
 
-    $scope.$parent.$on("centralHubMessage", function (e, message) {
-
-        if ($state.current.name == "main.messages-thread") {
-            var stateParams = $stateParams.userID;
-            var activeMessage = Messages.active();
-
-            if (activeMessage.corresponder == message.corresponder) {
-                Messages.updateActive(message).then(function () {
-                    $scope.activeThread = message;
-                });
-
-                var msgResults = Messages.inboxMessages();
-                message.viewed = true;
-                Messages.viewed(message.corresponder).then(function (response) {
-                    Messages.updateThread(message, false);
-                });
-            }
-        }
-        else
-            Messages.updateThread(message, true).then(function (response) {
-                $scope.badge.Messages = 1;
-            });
-    });
-
-
     $scope.$parent.$on("centralHubBroadcast", function (e, coords) {
         $scope.$broadcast('mapUpdate', coords)
     });
@@ -1123,9 +1101,8 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 mc.badgeActivityCheck();
                 break;
             case 2:
-                if (_.isEqual($scope.badge.Messages, 1)) {
+                if (_.isEqual($scope.badge.Messages, 1)) 
                     $scope.badge.Messages = 0;
-                }
                 break;
         }
     };

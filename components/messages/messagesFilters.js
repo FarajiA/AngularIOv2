@@ -10,7 +10,8 @@
             var weekAgo = currentDate.setHours(currentDate.getHours() - 168);
             var yearAgo = currentDate.setHours(currentDate.getHours() - 8760);
 
-            var date = moment(dateValue).local();
+            var UTCdate = moment.utc(dateValue);
+            var date = UTCdate.local();
 
             var lessthanHourAgo = moment(hourAgo).isBefore(date);
             var lessthanDayAgo = moment(dayAgo).isBefore(date);
@@ -20,22 +21,25 @@
             if (lessthanHourAgo)
                     updated = moment(date).startOf('minute').fromNow();
 
+            else if (lessthanDayAgo)
+                updated = moment(date).format("h:mm A");
+
             else if (lessthanWeekAgo)
                 if (!detail)
-                    updated = moment(date).local().format('dddd h:mm A');
+                    updated = moment(date).format('dddd');
                 else
-                    updated = moment(date).local().format('dddd');
+                    updated = moment(date).format('dddd h:mm A');
 
             else if (lessthanYearAgo)
                 if (!detail)
-                    updated = moment(date).local().format('MMM DD');
+                    updated = moment(date).format('MMM D');
                 else
-                    updated = moment(date).local().format('MMM DD h:mm A');
+                    updated = moment(date).format('MMM D h:mm A');
             else
                 if (!detail)
-                    updated = moment(date).format("MMMM DD YYYY");
+                    updated = moment(date).format("MMMM D YYYY");
                 else
-                    updated = moment(date).format("MMMM DD YYYY h:mm A");
+                    updated = moment(date).format("MMMM D YYYY h:mm A");
             /*
             else if (lessthanDayAgo)
                 updated = moment(date).startOf('hour').fromNow();
