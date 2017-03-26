@@ -601,7 +601,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           files: [
                             'components/groups/edit/editGroups.js',
                             'components/groups/edit/editGroupsDirectives.js',
-                            'components/search/searchServices.js'
+                            'components/search/searchservices.js'
                           ]
                       });
                   }
@@ -753,6 +753,7 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
     };
 
     authServiceFactory.externalLogin = function (data) {
+        var date = new Date();
         var refreshTokenDate = date.setDate(date.getDate() + refreshTokenLife_CONSTANT);
         localStorageService.set('authorizationData', { token: data.access_token, userName: data.username, refreshToken: data.refresh_token, refreshExpiration: data.refreshTokenDate });
         authServiceFactory.authentication.isAuth = true;
@@ -817,7 +818,7 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
         var deferred = $q.defer();
         var date = new Date();
         $http.post(baseURL_CONSTANT + 'api/accounts/registerexternal', registerExternalData).success(function (response) {
-            var refreshTokenDate = date.setDate(date.getDate() + 7);
+            var refreshTokenDate = date.setDate(date.getDate() + refreshTokenLife_CONSTANT);
             localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: response.refresh_token, refreshExpiration: refreshTokenDate });
             authServiceFactory.authentication.isAuth = true;
             authServiceFactory.authentication.userName = response.userName;
