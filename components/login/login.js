@@ -103,12 +103,17 @@
                 };
                 AuthService.registerExternal(user_data).then(function (response) {
                     $scope.$parent.userInitiate(response.userName).then(function () {
+                        vm.mUsername.hide();
+                        $ionicLoading.hide();
                         $state.go('main.dash');
                     }, function () {
+                        $ionicLoading.hide();
                         var alertPopup = $ionicPopup.alert({
                             title: genericError_CONSTANT
                         });
-                        $ionicLoading.hide();
+                        alertPopup.then(function (res) {
+                            vm.mUsername.hide();
+                        });
                     });
                 });
             }
@@ -200,7 +205,7 @@
                         $ionicLoading.hide();
                         if (!exists) {
                             vm.mUsername.show();
-                            authResponse.provider = "Facebook";
+                            vm.masterAuthReponse.provider = "Facebook";
                             vm.masterAuthReponse.token = authResponse.accessToken;
                         }
                     });

@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -983,6 +983,10 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                     mc.badgeTrafficCheck();
 
                 $scope.proxyCentralHub = CentralHub.initialize('centralHub');
+
+                if (_.isEmpty(Encryption.Key.privateKey))
+                    mc.phraseModal.show();
+
                 deffered.resolve(true);
             }, function (reason) {
                 // Error callback where reason is the value of the first rejected promise
@@ -992,9 +996,6 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
             deffered.reject(error);
         }).finally(function () {
             mc.loadingDone = true;
-
-            if (_.isEmpty(Encryption.Key.privateKey))
-                mc.phraseModal.show();
         });
 
         return deffered.promise;

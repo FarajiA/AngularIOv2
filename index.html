@@ -120,12 +120,18 @@
               </ion-modal-view>
           </script>
           <script id="passphrase.html" type="text/ng-template">
-              <ion-modal-view>
-                  <ion-header-bar class="bar bar-header ">
-                      <h1 class="title">Enter passphrase</h1>
-                      <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
-                  </ion-header-bar>
-                  <ion-content class="padding">
+              <ion-modal-view class="modal-forgotpass modal-inspius modal-noback">
+                  <ion-content>
+                      <div class="header text-center clearfix">
+                          <div class="title">Enter passphrase</div>
+                      </div>
+                      <!--
+        <ion-header-bar class="bar bar-header ">
+            <h1 class="title">Enter passphrase</h1>
+            <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
+        </ion-header-bar>
+        -->
+
                       <div class="list">
                           <label class="item item-input">
                               <!-- <span class="input-label">Enter Passphrase</span> -->
