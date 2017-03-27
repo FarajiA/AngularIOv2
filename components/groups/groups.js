@@ -27,7 +27,6 @@
                 });
             }
             else {
-
                 var confirmPopup = $ionicPopup.confirm({
                     title: _.replace(groupDeleteConfirmTitle_CONSTANT, '0', name)
                 });

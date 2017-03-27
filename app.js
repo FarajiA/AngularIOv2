@@ -1,5 +1,5 @@
-const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
-//const baseURL_CONSTANT = "http://localhost:59822/";
+//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -106,19 +106,20 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
-
+        /*
         $cordovaPushV5.initialize(options).then(function () {
-            /*
+           
             // start listening for new notifications
             $cordovaPushV5.onNotification();
             // start listening for errors
             $cordovaPushV5.onError();
-            */
+            
             // register to get registrationId
             $cordovaPushV5.register().then(function (registrationId) {
                 console.log(registrationId);
             })
         });
+        */
 
     });
    
@@ -897,7 +898,6 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
                 console.log("refresh token");
             },
              function (err) {
-                 console.log("an error");
                  state.go("login");
              });
 
@@ -1146,17 +1146,17 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
     };
 
     mc.savePhrase = function () {
-        var passphrase = _.toLower(mc.passPhrase);
+        var passphrase = mc.passPhrase;//_.toLower(mc.passPhrase);
         if (_.isEmpty(Encryption.Key.publicKey)) {
-            Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
+            Encryption.generatePrivateKey(passphrase/*.replace(/\s+/g, '')*/).then(function (response) {
                 if (response)
                     mc.phraseModal.hide();
             });
         }
         else {
-            Encryption.verifyPassphrase(passphrase.replace(/\s+/g, '')).then(function (response) {
+            Encryption.verifyPassphrase(passphrase/*.replace(/\s+/g, '')*/).then(function (response) {
                 if (response) {
-                    Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
+                    Encryption.generatePrivateKey(passphrase/*.replace(/\s+/g, '')*/).then(function (response) {
                         if (response)
                             mc.phraseModal.hide();
                     });
