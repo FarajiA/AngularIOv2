@@ -71,7 +71,8 @@ var app = angular.module('App',
         'LocalStorageModule',
         'toaster',
         'irontec.simpleChat',
-        'mdChips'//,
+        'mdChips',
+        'ngCordova'
         /*
         'App.Activity',
         'App.Messages',
@@ -80,8 +81,22 @@ var app = angular.module('App',
         */
 ]);
 
-app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform) {
-    $ionicPlatform.ready(function() {
+app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $cordovaPushV5) {
+
+    var options = {
+        android: {
+            senderID: "927875139886"
+        },
+        ios: {
+            alert: "true",
+            badge: "true",
+            sound: "true"
+        },
+        windows: {}
+    };
+
+   
+    $ionicPlatform.ready(function () {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
         if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -91,6 +106,20 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform) {
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
+
+        $cordovaPushV5.initialize(options).then(function () {
+            /*
+            // start listening for new notifications
+            $cordovaPushV5.onNotification();
+            // start listening for errors
+            $cordovaPushV5.onError();
+            */
+            // register to get registrationId
+            $cordovaPushV5.register().then(function (registrationId) {
+                console.log(registrationId);
+            })
+        });
+
     });
    
     AuthService.fillAuthData();
