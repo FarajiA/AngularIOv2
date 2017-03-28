@@ -4,7 +4,7 @@
         // reusable authorization
         var vm = this;
         vm.ActivityService = Activity;
-        vm.imageURL = imgURL_CONSTANT;
+        vm.imageURL = $scope.$parent.imageURL;
         vm.broadcastingIndex = 0;
         vm.requestsIndex = 0;
 

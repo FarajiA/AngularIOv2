@@ -3,7 +3,7 @@
     app.controller('TrafficController', ['$scope', '$timeout', '$stateParams', 'Traffic', 'UserStore', function ($scope, $timeout, $stateParams, Traffic, UserStore) {
         var vm = this;
         vm.TrafficService = Traffic;
-        vm.imageURL = imgURL_CONSTANT;
+        vm.imageURL = $scope.$parent.imageURL;
         vm.chasersIndex = 0;
         vm.chasingIndex = 0;
 

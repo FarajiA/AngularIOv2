@@ -69,10 +69,10 @@ var app = angular.module('App',
         ['ionic',
         'oc.lazyLoad',
         'LocalStorageModule',
-        'toaster',
-        'irontec.simpleChat',
+        'toastr',
         'mdChips',
-        'ngCordova'
+        'ngCordova',
+        'toastr'
         /*
         'App.Activity',
         'App.Messages',
@@ -81,7 +81,7 @@ var app = angular.module('App',
         */
 ]);
 
-app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $cordovaPushV5) {
+app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $cordovaPushV5, $templateCache) {
 
     var options = {
         android: {
@@ -169,13 +169,16 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
             $state.go('login');
     });
     
+    $templateCache.put('directives/toast/toast.html',
+        "<div id=\"{{extraData.id}}\" class=\"{{toastClass}} {{toastType}}\" ng-click=\"tapToast()\">\n <div ng-switch on=\"allowHtml\">\n <ion-item class=\"item-avatar item-icon-right item item-complex\" type=\"item-text-wrap\" href=\"#\"><img ng-src=\"{{extraData.photo && extraData.url + extraData.id + '.png' || 'img/default_avatar.png' }}\"><h2>{{title}}</h2><p>{{message}}</p><i class=\"icon {{extraData.icon}}\"></i></ion-item><div ng-switch-when=\"true\" ng-if=\"title\" class=\"{{titleClass}}\" ng-bind-html=\"title\"></div>\n<div ng-switch-when=\"true\" class=\"{{messageClass}}\" ng-bind-html=\"message\"></div>\n  </div>\n<progress-bar ng-if=\"progressBar\"></progress-bar>\n</div>\n"
+    );
 });
 
 app.config(RouteMethods, ocLazyLoadProvider);
-RouteMethods.$inject = ["$stateProvider", "$urlRouterProvider", "$httpProvider", "$ionicConfigProvider", "$provide"];
+RouteMethods.$inject = ["$stateProvider", "$urlRouterProvider", "$httpProvider", "$ionicConfigProvider", "$provide", "toastrConfig"];
 ocLazyLoadProvider.$inject = ["$ocLazyLoadProvider"];
 
-function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $provide) {
+function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $provide, toastrConfig) {
 
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
     $ionicConfigProvider.tabs.position('bottom');
@@ -199,8 +202,43 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
         };
         return $delegate;
     });
-
-
+   
+    angular.extend(toastrConfig, {
+        //allowHtml: true,
+        iconClasses: {
+            error: 'toast-error',
+            info: 'toast-info',
+            success: 'toast-success',
+            warning: 'toast-warning',
+            message: 'toast-message',
+            request: 'toast-request',
+            broadcast: 'toast-broadcast',
+            follower: 'toast-follower'
+        },
+        positionClass: 'toast-top-full-width',
+        //tapToDismiss: true,
+        //messageClass: 'toast-message',
+        //templates: {
+        //    toast: 'shared/templates/toast.html'
+        //},
+        timeOut: 500000,
+        titleClass: 'toast-title',
+        toastClass: 'toast'
+    });
+    /*
+    $provide.decorator('toast', function ($delegate) {
+        var directive, link;
+        directive = $delegate[0];
+        link = directive.link;
+        directive.compile = function () {
+            return function Link(scope, element, attrs, ctrls) {
+                scope.tippyTop = "junk";
+                return link.apply(this, arguments);
+            };
+        };
+        return $delegate;
+    });
+    */
     $stateProvider.state('main', {
         url: '/main',
         abstract: true,
@@ -722,6 +760,10 @@ function ocLazyLoadProvider($ocLazyLoadProvider) {
     });
 };
 
+//function toasterConfig(toastrConfig) {
+    
+//};
+
 /************ Factory Services **********/
 // Store and Process User data
 app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', function ($http, $q, localStorageService, UserStore) {
@@ -912,7 +954,7 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toaster', 'ControllerChecker', 'BroadcastInfo', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, BroadcastInfo) {
+app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'BroadcastInfo', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, BroadcastInfo) {
 
     var mc = this;    
 
@@ -924,6 +966,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
     $scope.activeThread = {};
     $scope.showTabs = {};
     $scope.showTabs.show = true;
+    $scope.imageURL = imgURL_CONSTANT;
 
     $scope.shareLink = "";
     mc.showShare = $scope.shareLink.length > 0;
@@ -1139,24 +1182,36 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
     };
 
     mc.showDangToast = function () {
+        var user_data = {
+            url: $scope.imageURL,
+            id: "67d5f188-f862-4ecf-8082-5fd4f7f67308",
+            photo: true,
+            icon: "ion-email"
+        }
+        $toaster.info('We are open today from 10 to 22', 'Information', {
+            iconClass: 'toast-message',
+            extraData : user_data
+        });
+        /*
         $toaster.pop('success', 'New Thang', 'Notification stuff goes here', "", 'trustedHtml', function (toaster) {
             console.log("stuff yea whatever");
             return true;
         });
+        */
     };
 
     mc.savePhrase = function () {
-        var passphrase = mc.passPhrase;//_.toLower(mc.passPhrase);
+        var passphrase = _.toLower(mc.passPhrase);
         if (_.isEmpty(Encryption.Key.publicKey)) {
-            Encryption.generatePrivateKey(passphrase/*.replace(/\s+/g, '')*/).then(function (response) {
+            Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
                 if (response)
                     mc.phraseModal.hide();
             });
         }
         else {
-            Encryption.verifyPassphrase(passphrase/*.replace(/\s+/g, '')*/).then(function (response) {
+            Encryption.verifyPassphrase(passphrase.replace(/\s+/g, '')).then(function (response) {
                 if (response) {
-                    Encryption.generatePrivateKey(passphrase/*.replace(/\s+/g, '')*/).then(function (response) {
+                    Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
                         if (response)
                             mc.phraseModal.hide();
                     });

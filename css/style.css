@@ -191,7 +191,27 @@ ion-content#dash {top: 0px;} */
 
 /* Customize Toaster 
 =======================================*/
-#toast-container.custom > div {  
+
+#toast-container .item {
+    border: none;
+}
+
+#toast-container .item h2, #toast-container .item p, #toast-container .item .icon {
+    color:#1f9dc1
+}
+
+#toast-container .item {
+    border: none;
+}
+
+#toast-container .toast {
+  background-color:#fff;
+  padding-left:15px;
+}
+#toast-container .toast-info .toast-info {
+}
+#toast-container > div {/* display: inline-block; */}
+#toast-container > div {
   opacity: 1;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   filter: alpha(opacity=100);

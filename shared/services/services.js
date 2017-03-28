@@ -37,9 +37,10 @@
 
         proxy = connection.createHubProxy(hubName);
 
-        proxy.on('notificationReceived', function (userName, type) {
+        proxy.on('notificationReceived', function (userName, photo, type) {
             var notification = {
                 username: userName,
+                photo: photo,
                 type: type
             };
             $rootScope.$emit("centralHubNotification", notification);

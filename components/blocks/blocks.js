@@ -2,7 +2,7 @@
     angular.module('App').controller('BlocksController', ['$scope', '$state', '$ionicLoading', '$ionicPopup', 'Block', function ($scope, $state, $ionicLoading, $ionicPopup, Block) {
         var vm = this;
         vm.index = 0;
-        vm.imageURL = imgURL_CONSTANT;
+        vm.imageURL = $scope.$parent.imageURL;
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
             viewData.enableBack = true;
         });
