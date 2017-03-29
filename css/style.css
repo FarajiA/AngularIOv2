@@ -206,7 +206,8 @@ ion-content#dash {top: 0px;} */
 
 #toast-container .toast {
   background-color:#fff;
-  padding-left:15px;
+  padding: 0 0 0 15px;
+  opacity: 1;
 }
 #toast-container .toast-info .toast-info {
 }

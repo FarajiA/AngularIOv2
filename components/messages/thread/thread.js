@@ -1,8 +1,7 @@
 ﻿; (function () {
     var app = angular.module('App');
     app.controller('ThreadController', ['$scope', '$q', '$state', '$timeout', '$stateParams', '$ionicScrollDelegate', 'Thread', 'Messages', 'Encryption', function ($scope, $q, $state,$timeout, $stateParams, $ionicScrollDelegate, Thread, Messages, Encryption) {
-        //$templateCache.removeAll();
-
+        
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
             viewData.enableBack = true;            
         });
@@ -81,7 +80,7 @@
             });
 
             activeMessage = Messages.active();
-            var recipients = [[activeMessage.corresponder, activeMessage.publickey]];
+            var recipients = [[vm.userID, activeMessage.publickey]];
             recipients.unshift([vm.user.id, vm.user.publicKey]);
             
             Thread.sendMessage(recipients, userMsgObject.msg, activeMessage.messageID).then(function (response) {

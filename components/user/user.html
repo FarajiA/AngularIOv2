@@ -1,4 +1,7 @@
 ﻿<ion-view view-title="{{vm.title}}">
+    <ion-nav-buttons ng-if="vm.showBack" side="left">
+        <button class="button button-icon icon ion-chevron-left" ng-click="vm.goBack()"></button>
+    </ion-nav-buttons>
     <ion-nav-buttons side="right">
         <button class="button button-icon icon ion-android-more-vertical" ng-click="vm.popover.show($event)"></button>
     </ion-nav-buttons>

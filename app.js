@@ -17,7 +17,7 @@ const newMesssageTitle_CONSTANT = "New Message";
 const newRequestTitle_CONSTANT = "New Request";
 const newChasingTitle_CONSTANT = "Accepted Request";
 const newChaserTitle_CONSTANT = "New Follower";
-const newBroadcastingTitle_CONSTANT = "New Broadcast";
+const newBroadcastingTitle_CONSTANT = "Broadcasting";
 const newBroadcasting_CONSTANT = "0 is broadcasting";
 const newMesssage_CONSTANT = "0 sent you a message.";
 const newRequest_CONSTANT = "0 sent you a request.";
@@ -59,7 +59,7 @@ var reporting_CONSTANT = {
 const request_CONSTANT = {
     acceptRequest: 'Accept',
     declineRequest: 'Decline',
-    acceptRequestMsg: 'Allow 0 to chase you?',
+    acceptRequestMsg: 'Allow 0 to follow you?',
     declineRequestMsg: "Reject 0's request?",
     acceptRequestSuccess: '0 accepted',
     declineRequestSuccess: '0 declined'
@@ -170,7 +170,7 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
     });
     
     $templateCache.put('directives/toast/toast.html',
-        "<div id=\"{{extraData.id}}\" class=\"{{toastClass}} {{toastType}}\" ng-click=\"tapToast()\">\n <div ng-switch on=\"allowHtml\">\n <ion-item class=\"item-avatar item-icon-right item item-complex\" type=\"item-text-wrap\" href=\"#\"><img ng-src=\"{{extraData.photo && extraData.url + extraData.id + '.png' || 'img/default_avatar.png' }}\"><h2>{{title}}</h2><p>{{message}}</p><i class=\"icon {{extraData.icon}}\"></i></ion-item><div ng-switch-when=\"true\" ng-if=\"title\" class=\"{{titleClass}}\" ng-bind-html=\"title\"></div>\n<div ng-switch-when=\"true\" class=\"{{messageClass}}\" ng-bind-html=\"message\"></div>\n  </div>\n<progress-bar ng-if=\"progressBar\"></progress-bar>\n</div>\n"
+        "<div id=\"{{extraData.id}}\" class=\"{{toastClass}} {{toastType}}\" ng-click=\"tapToast()\">\n <div ng-switch on=\"allowHtml\">\n <ion-item class=\"item-avatar item-icon-right item item-complex\" type=\"item-text-wrap\" href=\"javascript:void(0)\"><img ng-src=\"{{extraData.photo && extraData.url + extraData.id + '.png' || 'img/default_avatar.png' }}\"><h2>{{title}}</h2><p>{{message}}</p><i class=\"icon {{extraData.icon}}\"></i></ion-item><div ng-switch-when=\"true\" ng-if=\"title\" class=\"{{titleClass}}\" ng-bind-html=\"title\"></div>\n<div ng-switch-when=\"true\" class=\"{{messageClass}}\" ng-bind-html=\"message\"></div>\n  </div>\n<progress-bar ng-if=\"progressBar\"></progress-bar>\n</div>\n"
     );
 });
 
@@ -204,7 +204,6 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
     });
    
     angular.extend(toastrConfig, {
-        //allowHtml: true,
         iconClasses: {
             error: 'toast-error',
             info: 'toast-info',
@@ -216,29 +215,11 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
             follower: 'toast-follower'
         },
         positionClass: 'toast-top-full-width',
-        //tapToDismiss: true,
-        //messageClass: 'toast-message',
-        //templates: {
-        //    toast: 'shared/templates/toast.html'
-        //},
-        timeOut: 500000,
+        timeOut: 5000,
         titleClass: 'toast-title',
         toastClass: 'toast'
     });
-    /*
-    $provide.decorator('toast', function ($delegate) {
-        var directive, link;
-        directive = $delegate[0];
-        link = directive.link;
-        directive.compile = function () {
-            return function Link(scope, element, attrs, ctrls) {
-                scope.tippyTop = "junk";
-                return link.apply(this, arguments);
-            };
-        };
-        return $delegate;
-    });
-    */
+
     $stateProvider.state('main', {
         url: '/main',
         abstract: true,
@@ -995,7 +976,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
         }
     };
 
-    mc.badgeMessageCheck = function (msgsArray) {
+    $scope.badgeMessageCheck = function (msgsArray) {
         if (_.isEqual($scope.badge.Messages, 1))
             var messages = _.some(msgsArray.results, ['viewed', false]);
     };
@@ -1084,6 +1065,8 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
         var title;
         var text;
         var state;
+        var icon;
+        var parameters;
 
         switch (notify.type) {
             case 0:
@@ -1095,6 +1078,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 title = newChaserTitle_CONSTANT;
                 text = newChasing_CONSTANT;
                 state = "main.traffic";
+                icon = "is-icon-avatar";
                 if ($state.current.name != state)
                     $scope.badge.Traffic = 1;
                 break;
@@ -1107,6 +1091,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 title = newRequestTitle_CONSTANT;
                 text = newRequest_CONSTANT;
                 state = "main.activity";
+                icon = "ion-paper-airplane";
                 if ($state.current.name != state)
                     $scope.badge.Activity = 1;
                 $scope.$apply(function () {
@@ -1122,6 +1107,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 title = newChasingTitle_CONSTANT;
                 text = newChasing_CONSTANT;
                 state = "main.traffic";
+                icon = "is-icon-avatar";
                 if ($state.current.name != state)
                     $scope.badge.Traffic = 1;
                 $scope.$apply(function () {
@@ -1136,24 +1122,37 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                     Activity.broadcasting(0);
                 title = newBroadcastingTitle_CONSTANT;
                 text = newBroadcasting_CONSTANT;
-                state = "main.activity"
+                state = "main.activity-detail";
+                icon = "ion-radio-waves";
+                parameters = { username: notify.username }
                 break;
             case 4:
                 Messages.inbox(0);
                 title = newMesssageTitle_CONSTANT;
                 text = newMesssage_CONSTANT;
                 state = "messages";
-                if ($state.current.name != state || $state.current.name != "messages-thread")
+                icon = "ion-chatbox";
+                if ($state.current.name != state && $state.current.name != "messages-thread")
                     $scope.badge.Messages = 1;
                 break;
         }
 
         $scope.$apply(function () {
             if (!($state.current.name == "messages-thread" && $stateParams.username == notify.username)) {
-                $toaster.pop('success', text.replace('0', notify.username), "" /*title_.replace(text, '0', notify.username) */, "", 'trustedHtml', function (toaster) {
-                    $state.go(state);
-                    return true;
-                });
+                var user_data = {
+                    url: $scope.imageURL,
+                    id: notify.Id,
+                    photo: notify.photo,
+                    icon: icon
+                };
+                $toaster.info(title, notify.username, {
+                    extraData: user_data,
+                    onTap: function (toast) {
+                        $state.go(state, parameters);
+                        return true;
+                    },
+                });               
+                
             }
         });
     });
@@ -1189,8 +1188,10 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
             icon: "ion-email"
         }
         $toaster.info('We are open today from 10 to 22', 'Information', {
-            iconClass: 'toast-message',
-            extraData : user_data
+            extraData: user_data,
+            onTap: function (a, b) {
+                $state.go("main.activity-detail", { username: "janis-jk" });
+            },
         });
         /*
         $toaster.pop('success', 'New Thang', 'Notification stuff goes here', "", 'trustedHtml', function (toaster) {

@@ -6,6 +6,9 @@
         vm.MessageService = Messages;
         vm.imageURL = imgURL_CONSTANT;
         vm.messagesIndex = 0;
+        
+        
+        $scope.$parent.badge.Messages = 0;
         /*
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
             viewData.enableBack = true;

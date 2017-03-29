@@ -1,7 +1,10 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('UserController', ['$scope', '$timeout', '$stateParams', '$ionicModal', '$location', '$ionicPopover', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', function ($scope, $timeout, $stateParams, $ionicModal, $location, $ionicPopover, UserStore, User, BroadcastStatus, Block, Messages, CentralHub) {
+    app.controller('UserController', ['$scope', '$timeout', '$stateParams', '$ionicModal', '$location', '$ionicPopover', '$ionicHistory', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', function ($scope, $timeout, $stateParams, $ionicModal, $location, $ionicPopover, $ionicHistory, UserStore, User, BroadcastStatus, Block, Messages, CentralHub) {
         var vm = this;
+        $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+            viewData.enableBack = true;
+        });
         vm.username = $stateParams.username;
         vm.title = vm.username;
         vm.broadcast = {};
@@ -10,6 +13,7 @@
         vm.alreadyBlocked = false;
         var path = $location.path().split("/") || "Unknown";
         vm.segment = path[2];
+        vm.showBack = _.isEmpty($ionicHistory.viewHistory().backView);
 
         var getUserRequest = function () {
             User.Info(vm.username).then(function (response) {
@@ -26,7 +30,7 @@
                 vm.blockText = $scope.relationship == 3 ? decision_CONSTANT.block : decision_CONSTANT.unblock;
 
                 Messages.recentMessage(vm.id).then(function (response) {
-                    vm.messageLink = "#/messages/" + vm.id;
+                    vm.messageLink = "#/messages/" + vm.username + "/" + vm.id;
                     var Msg = response || {};
                     Msg.username = vm.username;
                     Msg.publickey = vm.publicKey;
@@ -243,7 +247,13 @@
             option: 'img'
         };
 
-
+       vm.goBack = function () {
+           var back = $ionicHistory.viewHistory().backView;
+           if (!_.isEmpty(back))
+               $ionicHistory.goBack();
+           else
+               $state.go('main.dash');
+       };
 
 
     }]);
