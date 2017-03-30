@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('AddEditController', ['$scope', '$rootScope', '$ionicHistory', '$state', '$ionicPopup', '$ionicPopover', '$stateParams', 'Traffic', 'Groups', 'Search', 'BroadcastInfo', function ($scope, $rootScope, $ionicHistory, $state, $ionicPopup, $ionicPopover, $stateParams, Traffic, Groups, Search, BroadcastInfo) {
+    app.controller('AddEditController', ['$scope', '$rootScope', '$ionicHistory', '$state', '$ionicPopup', '$ionicPopover', '$stateParams', 'Traffic', 'Groups', 'Search', function ($scope, $rootScope, $ionicHistory, $state, $ionicPopup, $ionicPopover, $stateParams, Traffic, Groups, Search) {
 
         var vm = this;
         vm.groupID = _.toNumber($stateParams.groupID);

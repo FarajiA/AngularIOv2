@@ -1,10 +1,10 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('GroupsController', ['$scope', '$ionicPopup', '$ionicHistory', 'BroadcastInfo', 'Groups', function ($scope, $ionicPopup, $ionicHistory, BroadcastInfo, Groups) {
+    app.controller('GroupsController', ['$scope', '$ionicPopup', '$ionicHistory', 'Groups', function ($scope, $ionicPopup, $ionicHistory, Groups) {
 
         var vm = this;        
         vm.groupsTotal = 0;
-        var broadcast = BroadcastInfo.broadcast();
+        //var broadcast = BroadcastInfo.broadcast();
        
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
             viewData.enableBack = true;

@@ -935,7 +935,7 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'BroadcastInfo', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, BroadcastInfo) {
+app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker) {
 
     var mc = this;    
 
@@ -949,8 +949,8 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
     $scope.showTabs.show = true;
     $scope.imageURL = imgURL_CONSTANT;
 
-    $scope.shareLink = "";
-    mc.showShare = $scope.shareLink.length > 0;
+    //$scope.shareLink = "";
+    //mc.showShare = $scope.shareLink.length > 0;
 
     var authdata = AuthService.authentication;
     $scope.badge = {
@@ -959,7 +959,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
         Messages: ""
     };
 
-    mc.badgeTrafficCheck = function () {
+    $scope.badgeTrafficCheck = function () {
         if (_.isEqual($scope.badge.Traffic, 1)) {
             Traffic.viewed().then(function (response) {
                 $scope.badge.Traffic = 0;
@@ -1033,7 +1033,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 if ($state.current.name === 'main.activity')
                     mc.badgeActivityCheck();
                 if ($state.current.name === 'main.traffic')
-                    mc.badgeTrafficCheck();
+                    $scope.badgeTrafficCheck();
 
                 $scope.proxyCentralHub = CentralHub.initialize('centralHub');
 
@@ -1149,7 +1149,6 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                     extraData: user_data,
                     onTap: function (toast) {
                         $state.go(state, parameters);
-                        return true;
                     },
                 });               
                 
@@ -1168,7 +1167,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
     mc.CheckBadge = function (badge) {
         switch (badge) {
             case 0:
-                mc.badgeTrafficCheck();
+                $scope.badgeTrafficCheck();
                 break;
             case 1:
                 mc.badgeActivityCheck();
@@ -1190,7 +1189,7 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
         $toaster.info('We are open today from 10 to 22', 'Information', {
             extraData: user_data,
             onTap: function (a, b) {
-                $state.go("main.activity-detail", { username: "janis-jk" });
+                $state.go("main.activity-detail", { username: "janis-jk" });                
             },
         });
         /*

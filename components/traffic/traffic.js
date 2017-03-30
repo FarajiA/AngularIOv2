@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('TrafficController', ['$scope', '$timeout', '$stateParams', 'Traffic', 'UserStore', function ($scope, $timeout, $stateParams, Traffic, UserStore) {
+    app.controller('TrafficController', ['$scope','$rootScope', '$timeout', '$stateParams', 'Traffic', 'UserStore', function ($scope,$rootScope, $timeout, $stateParams, Traffic, UserStore) {
         var vm = this;
         vm.TrafficService = Traffic;
         vm.imageURL = $scope.$parent.imageURL;
@@ -9,25 +9,38 @@
 
         vm.loadChasingState = $scope.$parent.loadChasingState;
         vm.showChasing = ($stateParams.chasing === "chasing") || vm.loadChasingState;
+        $scope.$parent.badgeTrafficCheck()
 
         vm.doRefresh = function() {
             GetChasers();
             GetChasing();
         };
-
+        /*
         $scope.$on('update_Chasers', function (event, args) {
+            LoadFromBroadcast(args);
+        });
+        */
+
+        $rootScope.$on('update_Chasers', function (evt, args) {
             if (args.action === "chasers")
                 GetChasers();
             if (args.action === "chasing")
                 GetChasing();
         });
-                
+
+        function LoadFromBroadcast(args) {
+            if (args.action === "chasers")
+                GetChasers();
+            if (args.action === "chasing")
+                GetChasing();
+        };
+
         var unbindGetChasers =  $scope.$watch('vm.TrafficService.getChasers()', function (newVal, oldVal) {
             if (_.has(newVal, 'index')) {
                 vm.Chasers = newVal.results;
                 vm.chasersNo = newVal.total;
-                vm.moChasers = (vm.chasersNo > countSet_CONSTANT);
                 vm.chasersIndex++;
+                vm.moChasers = (vm.chasersNo > countSet_CONSTANT * vm.chasersIndex);
                 unbindGetChasers();
             }
         });     
@@ -37,9 +50,8 @@
             Traffic.chasers(vm.chasersIndex).then(function (data) {
                 vm.Chasers = data.results;
                 vm.chasersNo = data.total;
-                vm.moChasers = (vm.chasersNo > countSet_CONSTANT);
                 vm.chasersIndex++;
-                $scope.$broadcast('scroll.refreshComplete');
+                vm.moChasers = (vm.chasersNo > countSet_CONSTANT * vm.chasersIndex);
             });
         };
 
@@ -52,7 +64,7 @@
                     vm.chasersNo = data.total;
                     vm.Chasers = chaserMerged;
                     vm.chasersIndex++;
-                    vm.moChasers = (vm.chasersNo > countSet_CONSTANT);
+                    vm.moChasers = (vm.chasersNo > countSet_CONSTANT * vm.chasersIndex);
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                     deffered.resolve();
                 });
@@ -67,8 +79,8 @@
             if (_.has(newVal, 'index')) {
                 vm.Chasing = newVal.results;
                 vm.chasingNo = newVal.total;
-                vm.moChasing = (vm.chasingNo > countSet_CONSTANT);
                 vm.chasingIndex++;
+                vm.moChasing = (vm.chasingNo > countSet_CONSTANT * vm.chasingIndex);
                 unbindGetChasing();
             }
        });
@@ -78,9 +90,8 @@
            Traffic.chasing(vm.chasingIndex).then(function (data) {
                vm.Chasing = data.results;
                vm.chasingNo = data.total;
-               vm.moChasing = (vm.chasingNo > countSet_CONSTANT);
                vm.chasingIndex++;
-               $scope.$broadcast('scroll.refreshComplete');
+               vm.moChasing = (vm.chasingNo > countSet_CONSTANT * vm.chasingIndex);
            });
        };
 
@@ -93,7 +104,7 @@
                     vm.chasingNo = data.total;
                     vm.Chasers = chaserMerged;
                     vm.chasingIndex++;
-                    vm.moChasing = (vm.chasersNo > countSet_CONSTANT);
+                    vm.moChasing = (vm.chasersNo > countSet_CONSTANT * vm.chasingIndex);
                     $scope.$broadcast('scroll.infiniteScrollComplete');
                     deffered.resolve();
                 });

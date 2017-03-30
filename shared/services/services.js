@@ -207,7 +207,8 @@
          
          EncryptionObject.ActiveKeys = function () { return keys; };
          return EncryptionObject;
-     }]).factory('ShareLink', [function () {
+     }])/*
+        .factory('ShareLink', [function () {
          var link = [];
          var Object = {};
 
@@ -217,7 +218,8 @@
 
          Object.getLink = function () { return link; };
          return Object;
-     }]).service('ControllerChecker', ['$controller', function ($controller) {
+     }]) */
+     .service('ControllerChecker', ['$controller', function ($controller) {
         return {
             exists: function (controllerName) {
                 if (typeof window[controllerName] == 'function') {
@@ -231,7 +233,8 @@
                 }
             }
         };
-     }]).service('BroadcastInfo', [function () {
+     }])/*
+        .service('BroadcastInfo', [function () {
          var broadcast = [];
          var Object = {};
 
@@ -241,5 +244,6 @@
 
          Object.broadcast = function () { return broadcast; };
          return Object;
-     }]);
+     }])
+     */;
 })();

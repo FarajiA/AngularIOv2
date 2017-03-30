@@ -1,5 +1,5 @@
 ﻿; (function () {
-    angular.module('App').directive('userChoice', ['$ionicPopup', '$timeout', 'User', 'Decision', 'Block', function ($ionicPopup, $timeout, User, Decision, Block) {
+    angular.module('App').directive('userChoice', ['$rootScope', '$ionicPopup', '$timeout', 'User', 'Decision', 'Block', function ($rootScope, $ionicPopup, $timeout, User, Decision, Block) {
         return {
             restrict: 'A',
             require: '?ngModel',
@@ -26,14 +26,13 @@
                                 scope.chasers++;
                                 scope.relationship = 1;
                                 User.data().relationship = 1;
-                                scope.$emit('emit_Action', { action: "chasing" });
+                                $rootScope.$broadcast('emit_Chasers', { action: "chasing" });
                             }
                         });
-
-                    });
+                    });                      
                 };
 
-                var UserUnfollow = function () {
+                var UserUnfollow = function () {                   
                     scope.$apply(function () {
                         Decision.unfollow(User.data().id).then(function (response) {
                             if (response) {
@@ -41,11 +40,24 @@
                                 scope.chasers--;
                                 scope.relationship = 0;
                                 User.data().relationship = 0;
-                                scope.$emit('emit_Action', { action: "chasing" });
+                                $rootScope.$broadcast('emit_Chasers', { action: "chasing" });
                             }
                         });
-
                     });
+                    
+                    /*
+                    scope.$emit('emit_Chasers', { action: "chasing" });
+                    $rootScope.$broadcast('update_Chasers', { action: "chasing" });
+
+                    $rootScope.$broadcast('updateorgs', { action: "chasing" }); //works
+
+                    scope.$apply(function () {
+                        scope.$emit('emit_Chasers', { action: "chasing" });
+                        $rootScope.$emit('rootScope:emit', 'Emit!');
+                        $rootScope.$broadcast('updateorgs', { action: "chasing" });
+                        scope.doStuff();
+                    });
+                    */
                 };
 
                 var UserUnblock = function () {

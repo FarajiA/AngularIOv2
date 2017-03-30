@@ -2,8 +2,8 @@
     angular.module('App')
         .controller('DashController', ['$scope','$state', '$ionicPopup', 'Broadcast', function ($scope, $state, $ionicPopup, Broadcast) {
         // reusable authorization
-        var vm = this;
-
+        var vm = this;       
+        
         vm.broadcast = function () {
             if (!$scope.$parent.user.broadcasting)
                 $state.go("dash-group");
@@ -18,7 +18,8 @@
                     }
                 });
             };
-        };        
+        };
+        
 
     }]);
 })();
