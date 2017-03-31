@@ -1,34 +1,6 @@
 ﻿; (function () {
     'use strict';
-    /*
-    angular.module('App')
-        .directive('hideTabs', function ($rootScope, $ionicTabsDelegate) {
-        return {
-            restrict: 'A',
-            link: function ($scope, $el) {
-                $scope.$on("$ionicView.beforeEnter", function () {
-                    $ionicTabsDelegate.showBar(false);
-                });
-                $scope.$on("$ionicView.beforeLeave", function () {
-                    $ionicTabsDelegate.showBar(true);
-                });
-            }
-        };
-    });
+    /*! angular-count-to 2013-07-16 */
+    angular.module("countTo", []).directive("countTo", ["$timeout", function (a) { return { replace: !1, scope: !0, link: function (b, c, d) { var e, f, g, h, i, j, k, l = c[0], m = function () { f = 30, i = 0, b.timoutId = null, j = parseInt(d.countTo) || 0, b.value = parseInt(d.value, 10) || 0, g = 1e3 * parseFloat(d.duration) || 0, h = Math.ceil(g / f), k = (j - b.value) / h, e = b.value }, n = function () { b.timoutId = a(function () { e += k, i++, i >= h ? (a.cancel(b.timoutId), e = j, l.innerText = j) : (l.innerText = Math.round(e), n()) }, f) }, o = function () { b.timoutId && a.cancel(b.timoutId), m(), n() }; return d.$observe("countTo", function (a) { a && o() }), d.$observe("value", function () { o() }), !0 } } }])
 
- 
-    angular.module('App')
-       .directive('mdChips', function ($rootScope) {
-           return {
-               restrict: 'E',
-               priority: 1, // give it higher priority than built-in ng-click
-               link: function (scope, element, attr) {
-                   element.bind('input', function (event) {
-                       // do something with $rootScope here, as your question asks for that
-                      console.log('overridden');
-                   })
-               }
-           }
-       })
-   */
 })();

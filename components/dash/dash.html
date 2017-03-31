@@ -10,8 +10,13 @@
             <i class="icon ion-android-share-alt"></i>
         </button>
 
+        <div class="viewSlideUp" ng-if="user.broadcast.viewing >= 0" ng-show="user.broadcast.viewing != null">
+            <p class="figure" ng-bind="user.broadcast.viewing"></p>
+            viewing
+        </div>
+
         <button class="button button-large icon ion-radio-waves"
-                ng-click="mc.showDangToast()" ng-class="{ 'broadcasting' : user.broadcasting, 'notbroadcasting' : !user.broadcasting,'loading-click': broadcastloading }"></button>
+                ng-click="vm.broadcast()" ng-class="user.broadcasting ? 'broadcasting' : (!user.broadcasting && !loading-click ? 'notbroadcasting' : 'broadcastloading')"></button>
 
         <!--
           <button class="button button-large icon ion-radio-waves"  ng-click="vm.broadcast()" ng-class="{ 'broadcasting' : user.broadcasting, 'notbroadcasting' : !user.broadcasting,'loading-click': broadcastloading }"></button>

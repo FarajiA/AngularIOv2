@@ -9,8 +9,10 @@
                 $state.go("dash-group");
             else {
                 Broadcast.Off().then(function (response) {
-                    if (response)
+                    if (response) {
                         $scope.$parent.user.broadcasting = false;
+                        $scope.$parent.user.broadcast.viewing = null;
+                    }
                     else {
                         var alertPopup = $ionicPopup.alert({
                             title: genericError_CONSTANT

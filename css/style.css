@@ -36,7 +36,7 @@ ion-content#dash {top: 0px;} */
 .share-float{
   background: #64B75E;
   color: white;
-  z-index: 12 !important;
+  z-index: 12;
   position: absolute;
   top: 10%;
   left: 5%;
@@ -56,6 +56,27 @@ ion-content#dash {top: 0px;} */
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4) !important;
     background: #fff !important; 
 }
+
+
+.viewSlideUp {
+    transition: .5s linear all;
+    height: 51px;
+    overflow: hidden;
+    position: absolute;
+    top: 10%;
+    text-align: center;
+    right: 5%;
+    color: #fff;
+    font-size: 16px;
+    background-color: #64B75E;
+    width: 80px;
+    border-radius: 0px 15px;
+    padding: 5px;
+}
+.viewSlideUp.ng-hide {
+    height:0;
+}
+p.figure {margin:0;}
 
 /* Search 
 =============== */

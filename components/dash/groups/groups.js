@@ -27,9 +27,6 @@
                 if (!_.isEmpty(response.broadcastType)) {
                     $scope.$parent.user.broadcasting = true;
                     $scope.$parent.user.broadcast = response;
-                    //$scope.shareLink = response.share;
-                    //ShareLink.setLink(response.share);
-                    //BroadcastInfo.setBroadcast(response);
                     $ionicHistory.goBack();
                     Broadcast.Notify(type, groupID);
                     CentralHub.views($scope.$parent.proxyCentralHub);

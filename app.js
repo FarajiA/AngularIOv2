@@ -240,6 +240,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                       files: [
                           'components/dash/dash.js',
                           'components/dash/dashServices.js',
+                          'components/dash/dashDirectives.js',
                       ]
                   });
               }],
@@ -949,6 +950,8 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
     $scope.showTabs.show = true;
     $scope.imageURL = imgURL_CONSTANT;
 
+    $scope.viewFigures = false;
+
     //$scope.shareLink = "";
     //mc.showShare = $scope.shareLink.length > 0;
 
@@ -1039,6 +1042,9 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
 
                 if (_.isEmpty(Encryption.Key.privateKey))
                     mc.phraseModal.show();
+
+                if ($scope.user.broadcasting)
+                    CentralHub.views($scope.proxyCentralHub);
 
                 deffered.resolve(true);
             }, function (reason) {
@@ -1162,6 +1168,12 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
 
     $scope.$parent.$on("centralHubBroadcast", function (e, coords) {
         $scope.$broadcast('mapUpdate', coords)
+    });
+
+    $scope.$parent.$on("centralHubViewing", function (e, views) {
+        $scope.$apply(function () {
+            $scope.user.broadcast.viewing = views;
+        });
     });
 
     mc.CheckBadge = function (badge) {
