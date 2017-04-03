@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -106,9 +106,8 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
-        /*
-        $cordovaPushV5.initialize(options).then(function () {
-           
+        
+        $cordovaPushV5.initialize(options).then(function () {           
             // start listening for new notifications
             $cordovaPushV5.onNotification();
             // start listening for errors
@@ -117,10 +116,18 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
             // register to get registrationId
             $cordovaPushV5.register().then(function (registrationId) {
                 console.log(registrationId);
-            })
+            });
         });
-        */
 
+        // triggered every time notification received
+        $rootScope.$on('$cordovaPushV5:notificationReceived', function (event, data) {
+            console.log(data);
+        });
+
+        // triggered every time error occurs
+        $rootScope.$on('$cordovaPushV5:errorOcurred', function (event, e) {
+            console.log(e);
+        });        
     });
    
     AuthService.fillAuthData();
@@ -936,7 +943,7 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker) {
+app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', '$cordovaPushV5', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, $cordovaPushV5) {
 
     var mc = this;    
 
@@ -1200,8 +1207,8 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
         }
         $toaster.info('We are open today from 10 to 22', 'Information', {
             extraData: user_data,
-            onTap: function (a, b) {
-                $state.go("main.activity-detail", { username: "janis-jk" });                
+            onTap: function (a, b) {    
+                $state.go("main.activity-detail", { username: "janisj" });
             },
         });
         /*
