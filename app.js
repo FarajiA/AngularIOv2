@@ -1,5 +1,5 @@
-const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
-//const baseURL_CONSTANT = "http://localhost:59822/";
+//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -81,7 +81,7 @@ var app = angular.module('App',
         */
 ]);
 
-app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $cordovaPushV5, $templateCache) {
+app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $templateCache) {
 
     var options = {
         android: {
@@ -105,29 +105,7 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
         if (window.StatusBar) {
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
-        }
-        
-        $cordovaPushV5.initialize(options).then(function () {           
-            // start listening for new notifications
-            $cordovaPushV5.onNotification();
-            // start listening for errors
-            $cordovaPushV5.onError();
-            
-            // register to get registrationId
-            $cordovaPushV5.register().then(function (registrationId) {
-                console.log(registrationId);
-            });
-        });
-
-        // triggered every time notification received
-        $rootScope.$on('$cordovaPushV5:notificationReceived', function (event, data) {
-            console.log(data);
-        });
-
-        // triggered every time error occurs
-        $rootScope.$on('$cordovaPushV5:errorOcurred', function (event, e) {
-            console.log(e);
-        });        
+        }        
     });
    
     AuthService.fillAuthData();
@@ -1023,6 +1001,21 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
         UserStore.setUser().then(function (response) {
             $scope.user = response;
             Encryption.Key.publicKey = response.publicKey;
+
+            $cordovaPushV5.initialize(options).then(function () {
+                // start listening for new notifications
+                $cordovaPushV5.onNotification();
+                // start listening for errors
+                $cordovaPushV5.onError();
+
+                // register to get registrationId
+
+
+                $cordovaPushV5.register().then(function (registrationId) {
+                    console.log(registrationId);
+                });
+            });
+
             $q.all([
                 Traffic.chasers(0),
                 Traffic.chasing(0),
@@ -1197,6 +1190,16 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
                 break;
         }
     };
+
+    // triggered every time notification received
+    $rootScope.$on('$cordovaPushV5:notificationReceived', function (event, data) {
+        console.log(data);
+    });
+
+    // triggered every time error occurs
+    $rootScope.$on('$cordovaPushV5:errorOcurred', function (event, e) {
+        console.log(e);
+    });
 
     mc.showDangToast = function () {
         var user_data = {

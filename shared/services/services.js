@@ -27,8 +27,7 @@
 
     UserObject.data = function () { return data; };
     return UserObject;
-}])
-   .factory('CentralHub', ['$q', '$rootScope', 'AuthService', function ($q, $rootScope, AuthService) {
+}]).factory('CentralHub', ['$q', '$rootScope', 'AuthService', function ($q, $rootScope, AuthService) {
     var proxy = null;
 
     var initialize = function (hubName) {
@@ -99,8 +98,7 @@
         streamBroadcast: streamBroadcast
     };
 
-   }])
-     .factory('Encryption', ['$http', '$q', 'localStorageService', 'AuthService', 'UserStore', function ($http, $q, localStorageService, AuthService, UserStore) {
+   }]).factory('Encryption', ['$http', '$q', 'localStorageService', 'AuthService', 'UserStore', function ($http, $q, localStorageService, AuthService, UserStore) {
          var EncryptionObject = this;
 
          var keys = [];
@@ -207,19 +205,7 @@
          
          EncryptionObject.ActiveKeys = function () { return keys; };
          return EncryptionObject;
-     }])/*
-        .factory('ShareLink', [function () {
-         var link = [];
-         var Object = {};
-
-         Object.setLink = function (Link){
-             link = Link;
-         };
-
-         Object.getLink = function () { return link; };
-         return Object;
-     }]) */
-     .service('ControllerChecker', ['$controller', function ($controller) {
+     }]).service('ControllerChecker', ['$controller', function ($controller) {
         return {
             exists: function (controllerName) {
                 if (typeof window[controllerName] == 'function') {
@@ -233,17 +219,31 @@
                 }
             }
         };
-     }])/*
-        .service('BroadcastInfo', [function () {
-         var broadcast = [];
-         var Object = {};
+     }]).factory('Device', ['$http', '$q', function ($http, $q) {
+         var data = [];
+         var Device = {};
 
-         Object.setBroadcast = function (Broadcast) {
-             broadcast = Broadcast;
+         Device.registered = function (model, token) {
+             var deffered = $q.defer();
+             var msg = { 'token': token, 'model': model };
+             $http.post(baseURL_CONSTANT + "api/devices/registered", msg)
+             .success(function (d) {
+                 deffered.resolve(d);
+             })
+             .error(function (data, status) {
+                 deffered.reject(data);
+             });
+             return deffered.promise;
          };
 
-         Object.broadcast = function () { return broadcast; };
-         return Object;
-     }])
-     */;
+         UserObject.getUser = function (user) {
+             var deffered = $q.defer();
+             data = user;
+             deffered.resolve(data);
+             return deffered.promise;
+         };
+
+         UserObject.data = function () { return data; };
+         return UserObject;
+     }]);
 })();
