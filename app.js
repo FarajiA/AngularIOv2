@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -82,20 +82,7 @@ var app = angular.module('App',
 ]);
 
 app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $templateCache) {
-
-    var options = {
-        android: {
-            senderID: "927875139886"
-        },
-        ios: {
-            alert: "true",
-            badge: "true",
-            sound: "true"
-        },
-        windows: {}
-    };
-
-   
+       
     $ionicPlatform.ready(function () {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -921,7 +908,7 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', '$cordovaPushV5', function ($scope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, $cordovaPushV5) {
+app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device', '$cordovaPushV5', function ($scope, $rootScope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, $cordovaPushV5) {
 
     var mc = this;    
 
@@ -996,26 +983,45 @@ app.controller('mainController', ['$scope', '$q', '$state', '$stateParams', '$io
         // Execute action
     });
 
+
+    var Pushoptions = {
+        android: {
+            senderID: "927875139886"
+        },
+        ios: {
+            alert: "true",
+            badge: "true",
+            sound: "true"
+        },
+        windows: {}
+    };
+
     $scope.userInitiate = function () {
         var deffered = $q.defer();
         UserStore.setUser().then(function (response) {
             $scope.user = response;
             Encryption.Key.publicKey = response.publicKey;
+            ionic.Platform.ready(function () {
+                var deviceInformation = ionic.Platform.device();
 
-            $cordovaPushV5.initialize(options).then(function () {
-                // start listening for new notifications
-                $cordovaPushV5.onNotification();
-                // start listening for errors
-                $cordovaPushV5.onError();
+                Device.devices().then(function (response) {
+                    $cordovaPushV5.initialize(Pushoptions).then(function (data) {
+                    // start listening for new notifications
+                    $cordovaPushV5.onNotification();
+                    // start listening for errors
+                    $cordovaPushV5.onError();
 
-                // register to get registrationId
-
-
-                $cordovaPushV5.register().then(function (registrationId) {
-                    console.log(registrationId);
+                    // register to get registrationId
+                    $cordovaPushV5.register().then(function (registrationId) {
+                       var devices = _.find(response, ['token', registrationId]);
+                       if (_.isEmpty(devices))
+                           Device.register(deviceInformation.model, deviceInformation.platform, registrationId);
+                       
+                    });
+                  });
                 });
-            });
 
+            });
             $q.all([
                 Traffic.chasers(0),
                 Traffic.chasing(0),

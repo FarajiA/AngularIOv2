@@ -223,9 +223,9 @@
          var data = [];
          var Device = {};
 
-         Device.registered = function (model, token) {
+         Device.registered = function (token) {
              var deffered = $q.defer();
-             var msg = { 'token': token, 'model': model };
+             var msg = { 'token': token };
              $http.post(baseURL_CONSTANT + "api/devices/registered", msg)
              .success(function (d) {
                  deffered.resolve(d);
@@ -235,15 +235,33 @@
              });
              return deffered.promise;
          };
-
-         UserObject.getUser = function (user) {
+         Device.register = function (platform, model, token) {
              var deffered = $q.defer();
-             data = user;
-             deffered.resolve(data);
+             var msg = { 'platform': platform, 'token': token, 'model': model };
+             $http.post(baseURL_CONSTANT + "api/devices", msg)
+             .success(function (d) {
+                 deffered.resolve(d);
+             })
+             .error(function (data, status) {
+                 deffered.reject(data);
+             });
              return deffered.promise;
          };
 
-         UserObject.data = function () { return data; };
-         return UserObject;
+         Device.devices = function () {
+             var deffered = $q.defer();
+             $http.get(baseURL_CONSTANT + "api/devices")
+             .success(function (d) {
+                 data = d;
+                 deffered.resolve(d);
+             })
+             .error(function (data, status) {
+                 deffered.reject(data);
+             });
+             return deffered.promise;
+         };
+
+         Device.data = function () { return data; };
+         return Device;
      }]);
 })();
