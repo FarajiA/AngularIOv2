@@ -235,9 +235,9 @@
              });
              return deffered.promise;
          };
-         Device.register = function (platform, model, token) {
+         Device.register = function (platform, model, token, push) {
              var deffered = $q.defer();
-             var msg = { 'platform': platform, 'token': token, 'model': model };
+             var msg = { 'platform': platform, 'token': token, 'model': model, 'allowpush': push };
              $http.post(baseURL_CONSTANT + "api/devices", msg)
              .success(function (d) {
                  deffered.resolve(d);

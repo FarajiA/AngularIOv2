@@ -1003,24 +1003,20 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             Encryption.Key.publicKey = response.publicKey;
             ionic.Platform.ready(function () {
                 var deviceInformation = ionic.Platform.device();
-
-                Device.devices().then(function (response) {
+                Device.devices().then(function (responseDevices) {
+                    var deviceInfo = _.find(responseDevices, ['model', deviceInformation.model]);                   
                     $cordovaPushV5.initialize(Pushoptions).then(function (data) {
                     // start listening for new notifications
                     $cordovaPushV5.onNotification();
                     // start listening for errors
                     $cordovaPushV5.onError();
-
                     // register to get registrationId
-                    $cordovaPushV5.register().then(function (registrationId) {
-                       var devices = _.find(response, ['token', registrationId]);
-                       if (_.isEmpty(devices))
-                           Device.register(deviceInformation.model, deviceInformation.platform, registrationId);
-                       
+                    $cordovaPushV5.register().then(function (registrationId) {                        
+                        if (deviceInfo.token != registrationId)
+                           Device.register(deviceInformation.platform, deviceInformation.model, registrationId, true);                       
                     });
                   });
                 });
-
             });
             $q.all([
                 Traffic.chasers(0),
@@ -1199,7 +1195,27 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
     // triggered every time notification received
     $rootScope.$on('$cordovaPushV5:notificationReceived', function (event, data) {
-        console.log(data);
+        var type = data.additionalData.type;
+        var username = data.additionalData.user.username;
+        var photo = data.additionalData.user.photo;
+        var userID = data.additionalData.user.id;
+
+        var foreground = data.additionalData.foreground;
+        var coldstart = data.additionalData.coldstart;
+
+        if (data.additionalData.coldstart) {
+            console.log("Notification Coldstart: " + data.additionalData)
+        }
+
+
+        if (foreground)
+        {
+            console.log("Notification foreground Received: " + data.additionalData)
+        }
+        else
+        {
+            console.log("Notification background Received: " + data.additionalData)
+        }
     });
 
     // triggered every time error occurs
