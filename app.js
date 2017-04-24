@@ -1001,23 +1001,6 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         UserStore.setUser().then(function (response) {
             $scope.user = response;
             Encryption.Key.publicKey = response.publicKey;
-            ionic.Platform.ready(function () {
-                var deviceInformation = ionic.Platform.device();
-                Device.devices().then(function (responseDevices) {
-                    var deviceInfo = _.find(responseDevices, ['model', deviceInformation.model]);                   
-                    $cordovaPushV5.initialize(Pushoptions).then(function (data) {
-                    // start listening for new notifications
-                    $cordovaPushV5.onNotification();
-                    // start listening for errors
-                    $cordovaPushV5.onError();
-                    // register to get registrationId
-                    $cordovaPushV5.register().then(function (registrationId) {                        
-                        if (deviceInfo.token != registrationId)
-                           Device.register(deviceInformation.platform, deviceInformation.model, registrationId, true);                       
-                    });
-                  });
-                });
-            });
             $q.all([
                 Traffic.chasers(0),
                 Traffic.chasing(0),
@@ -1048,6 +1031,27 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 if ($scope.user.broadcasting)
                     CentralHub.views($scope.proxyCentralHub);
 
+                ionic.Platform.ready(function () {
+                    var deviceInformation = ionic.Platform.device();
+                    Device.devices().then(function (responseDevices) {
+                        var deviceInfo = _.find(responseDevices, ['model', deviceInformation.model]);
+                        $cordovaPushV5.initialize(Pushoptions).then(function (data) {
+                            // start listening for new notifications
+                            $cordovaPushV5.onNotification();
+                            // start listening for errors
+                            $cordovaPushV5.onError();
+                            // register to get registrationId
+                            $cordovaPushV5.register().then(function (registrationId) {
+                                if (_.isEmpty(deviceInfo))
+                                    Device.register(deviceInformation.platform, deviceInformation.model, registrationId, true);                                
+                                else {
+                                    if (deviceInfo.token != registrationId)
+                                        Device.register(deviceInformation.platform, deviceInformation.model, registrationId, true);
+                                }
+                            });
+                        });
+                    });
+                });
                 deffered.resolve(true);
             }, function (reason) {
                 // Error callback where reason is the value of the first rejected promise
@@ -1194,28 +1198,112 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     };
 
     // triggered every time notification received
-    $rootScope.$on('$cordovaPushV5:notificationReceived', function (event, data) {
-        var type = data.additionalData.type;
-        var username = data.additionalData.user.username;
-        var photo = data.additionalData.user.photo;
-        var userID = data.additionalData.user.id;
-
+    $rootScope.$on('$cordovaPushV5:notificationReceived', function (event, data) {        
+        var title;
+        var text;
+        var state;
+        var icon;
+        var parameters;
+        var notify = {
+            "type" : data.additionalData.type,
+            "username": data.additionalData.username,
+            "photo": data.additionalData.photo == "1" ? true : false,
+            "Id": data.additionalData.userid,
+        };
         var foreground = data.additionalData.foreground;
         var coldstart = data.additionalData.coldstart;
 
-        if (data.additionalData.coldstart) {
-            console.log("Notification Coldstart: " + data.additionalData)
+        switch (notify.type) {
+            case "0":
+                var exists = ControllerChecker.exists("TrafficController");
+                if (exists)
+                    $scope.$emit('emit_Chasers', { action: "chasers" });
+                else
+                    Traffic.chasers(0);
+                title = newChaserTitle_CONSTANT;
+                text = newChasing_CONSTANT;
+                state = "main.traffic";
+                icon = "is-icon-avatar";
+                if ($state.current.name != state)
+                    $scope.badge.Traffic = 1;
+                break;
+            case "1":
+                var exists = ControllerChecker.exists("ActivityController");
+                if (exists)
+                    $scope.$emit('emit_Activity', { action: "requests" });
+                else
+                    Activity.requests(0);
+                title = newRequestTitle_CONSTANT;
+                text = newRequest_CONSTANT;
+                state = "main.activity";
+                icon = "ion-paper-airplane";
+                if ($state.current.name != state)
+                    $scope.badge.Activity = 1;
+                $scope.$apply(function () {
+                    $scope.loadRequestState = true;
+                });
+                break;
+            case "2":
+                var exists = ControllerChecker.exists("TrafficController");
+                if (exists)
+                    $scope.$emit('emit_Chasers', { action: "chasing" });
+                else
+                    Traffic.chasing(0)
+                title = newChasingTitle_CONSTANT;
+                text = newChasing_CONSTANT;
+                state = "main.traffic";
+                icon = "is-icon-avatar";
+                if ($state.current.name != state)
+                    $scope.badge.Traffic = 1;
+                $scope.$apply(function () {
+                    $scope.loadChasingState = true;
+                });
+                break;
+            case "3":
+                var exists = ControllerChecker.exists("ActivityController");
+                if (exists)
+                    $scope.$emit('emit_Activity', { action: "broadcasts" });
+                else
+                    Activity.broadcasting(0);
+                title = newBroadcastingTitle_CONSTANT;
+                text = newBroadcasting_CONSTANT;
+                state = "main.activity-detail";
+                icon = "ion-radio-waves";
+                parameters = { username: notify.username }
+                break;
+            case "4":
+                Messages.inbox(0);
+                title = newMesssageTitle_CONSTANT;
+                text = newMesssage_CONSTANT;
+                state = "messages";
+                icon = "ion-chatbox";
+                if ($state.current.name != state && $state.current.name != "messages-thread")
+                    $scope.badge.Messages = 1;
+                break;
         }
-
 
         if (foreground)
         {
-            console.log("Notification foreground Received: " + data.additionalData)
+            $scope.$apply(function () {
+                if (!($state.current.name == "messages-thread" && $stateParams.username == notify.username)) {
+                    var user_data = {
+                        url: $scope.imageURL,
+                        id: notify.Id,
+                        photo: notify.photo,
+                        icon: icon
+                    };
+                    $toaster.info(title, notify.username, {
+                        extraData: user_data,
+                        onTap: function (toast) {
+                            $state.go(state, parameters);
+                        },
+                    });
+
+                }
+            });
         }
         else
-        {
-            console.log("Notification background Received: " + data.additionalData)
-        }
+            $state.go(state, parameters);
     });
 
     // triggered every time error occurs
