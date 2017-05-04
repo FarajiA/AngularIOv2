@@ -1,4 +1,5 @@
 ﻿; (function () {
+    /*
     angular.module('App').factory('Broadcast', ['$http', '$q', function ($http, $q) {
         var data = [];
         var Broadcast = {};
@@ -62,5 +63,6 @@
         Broadcast.data = function () { return data; };
         return Broadcast;
     }]);
+    */
 })();
 

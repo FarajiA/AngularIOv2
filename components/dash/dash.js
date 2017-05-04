@@ -10,8 +10,10 @@
             else {
                 Broadcast.Off().then(function (response) {
                     if (response) {
+                        $scope.$emit('emit_Broadcasting', { action: "turn-off" });
                         $scope.$parent.user.broadcasting = false;
                         $scope.$parent.user.broadcast.viewing = null;
+
                     }
                     else {
                         var alertPopup = $ionicPopup.alert({

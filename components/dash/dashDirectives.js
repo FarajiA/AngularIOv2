@@ -1,4 +1,5 @@
 ﻿; (function () {
+    /*
     angular.module('App').directive('countTo', ['$timeout', function ($timeout) {
          return {
              replace: false,
@@ -60,5 +61,5 @@
          }
 
      }]);
-
+     */
 })();

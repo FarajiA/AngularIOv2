@@ -54,7 +54,7 @@ const block_CONSTANT = {
 var reporting_CONSTANT = {
     flaggedTitle: '0 reported!',
     flaggedText: 'All reports are taken seriously and will be reviewed. Thanks.'
-}
+};
 
 const request_CONSTANT = {
     acceptRequest: 'Accept',
@@ -64,6 +64,21 @@ const request_CONSTANT = {
     acceptRequestSuccess: '0 accepted',
     declineRequestSuccess: '0 declined'
 };
+
+const invite_CONSTANT = {
+    msg : 'Add me on Chaser! Username: 0',
+    subject: 'Super Tight Invite',
+    link: 'http://chasertheapp.com/invite'
+};
+
+const maps_CONSTANT = {
+    title: 'Location services off',
+    text: 'To see your position turn on location services',
+    error: 'Location services off',
+    Errortitle: 'Map failed, sorry dawg',
+    NolongerBroadcasting: '0 is no longer broadcasting'
+};
+
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',
@@ -109,14 +124,14 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
     $rootScope.$on('emit_NewMessage', function (event, args) {
         $rootScope.$broadcast('update_thread', args)
     });
-    /*
+    
     $rootScope.$on('emit_Broadcasting', function (event, args) {
         $rootScope.$broadcast('update_location', args);
     });
+    /*
     $rootScope.$on('emit_UserView', function (event, args) {
         $rootScope.$broadcast('turnOn_locationWatch', args);
     });
-
     $rootScope.$on('emit_Chasers_Block', function (event, args) {
         $rootScope.$broadcast('update_Chasers_block', args);
     });
@@ -210,9 +225,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'dash',
                       files: [
-                          'components/dash/dash.js',
-                          'components/dash/dashServices.js',
-                          'components/dash/dashDirectives.js',
+                          'components/dash/dash.js'
                       ]
                   });
               }],
@@ -256,8 +269,8 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'trafficDetails',
                       files: [
-                          //'lib/angular-simple-logger.js',
-                          //'lib/angular-google-maps.js',
+                          'lib/angular-simple-logger.js',
+                          'lib/angular-google-maps.js',
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
@@ -351,8 +364,8 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'activityDetails',
                       files: [
-                          //'lib/angular-simple-logger.js',
-                          //'lib/angular-google-maps.js',
+                          'lib/angular-simple-logger.js',
+                          'lib/angular-google-maps.js',
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
@@ -445,8 +458,8 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'searchDetails',
                       files: [
-                          //'lib/angular-simple-logger.js',
-                          //'lib/angular-google-maps.js',
+                          'lib/angular-simple-logger.js',
+                          'lib/angular-google-maps.js',
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
@@ -908,8 +921,9 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device', '$cordovaPushV5', function ($scope, $rootScope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, $cordovaPushV5) {
-
+app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device','Broadcast', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer',
+    function ($scope, $rootScope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, Broadcast, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
+    
     var mc = this;    
 
     $scope.loadRequestState = false;
@@ -958,7 +972,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
     $ionicModal.fromTemplateUrl('passphrase.html', {
         scope: $scope,
-        animation: 'slide-in-up'
+        animation: 'slide-in-up',
+        hardwareBackButtonClose: false
     }).then(function (modal) {
         mc.phraseModal = modal;
     });
@@ -982,19 +997,6 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     $scope.$on('modal.removed', function () {
         // Execute action
     });
-
-
-    var Pushoptions = {
-        android: {
-            senderID: "927875139886"
-        },
-        ios: {
-            alert: "true",
-            badge: "true",
-            sound: "true"
-        },
-        windows: {}
-    };
 
     $scope.userInitiate = function () {
         var deffered = $q.defer();
@@ -1028,9 +1030,13 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 if (_.isEmpty(Encryption.Key.privateKey))
                     mc.phraseModal.show();
 
-                if ($scope.user.broadcasting)
+                if ($scope.user.broadcasting) {
+                    //updateCoordinatesAwake();
+                    document.addEventListener('deviceready', function () {
+                        $scope.BackgroundServiceFunction();
+                    }, false);
                     CentralHub.views($scope.proxyCentralHub);
-
+                }
                 ionic.Platform.ready(function () {
                     var deviceInformation = ionic.Platform.device();
                     Device.devices().then(function (responseDevices) {
@@ -1043,7 +1049,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                             // register to get registrationId
                             $cordovaPushV5.register().then(function (registrationId) {
                                 if (_.isEmpty(deviceInfo))
-                                    Device.register(deviceInformation.platform, deviceInformation.model, registrationId, true);                                
+                                    Device.register(deviceInformation.platform, deviceInformation.model, registrationId, true);
                                 else {
                                     if (deviceInfo.token != registrationId)
                                         Device.register(deviceInformation.platform, deviceInformation.model, registrationId, true);
@@ -1072,6 +1078,88 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     else {
         mc.loadingDone = true;
     }
+    var options = {
+        timeout: 7000,
+        enableHighAccuracy: true,
+        maximumAge: 500000
+    };
+
+    $scope.broadcastloading = false;
+    $scope.geoWatch = {};
+
+    $scope.BackgroundServiceFunction = function() {
+        var backgroundServiceSuccess = function (location) {
+            $scope.user.broadcast.latitude = location.latitude;
+            $scope.user.broadcast.longitude = location.longitude;
+            console.log('[js] BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
+            var coords = {
+                latitude: location.latitude,
+                longitude: location.longitude
+            };
+            Broadcast.Broadcast(location.latitude, location.longitude).then(function () {
+                //$ionicLoading.hide();
+                //$scope.broadcastloading = false;
+                console.log('[postCommplete] BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);                
+            });
+            backgroundGeoLocation.finish();
+        };
+
+        var backgroundServiceFail = function (error) {
+            //console.log('BackgroundGeoLocation error');
+        };
+
+        if (ionic.Platform.isAndroid()) {
+            backgroundGeoLocation.configure(backgroundServiceSuccess, backgroundServiceFail, {
+                desiredAccuracy: 0,
+                stationaryRadius: 1,
+                distanceFilter: 1,
+                useActivityDetection: true,
+                // debug: true, <-- enable this hear sounds for background-geolocation life-cycle. 
+                stopOnTerminate: false, // <-- enable this to clear background location settings when the app terminates 
+                notificationIcon: 'broadcast_icon',
+                notificationText: 'ENABLED',
+                notificationTitle: "Chaser",
+                notificationText: "Broadcasting location...",
+                locationProvider: backgroundGeolocation.provider.ANDROID_DISTANCE_FILTER_PROVIDER,
+            });
+        }
+        else {
+            backgroundGeoLocation.configure(backgroundServiceSuccess, backgroundServiceFail, {
+                desiredAccuracy: 10,
+                stationaryRadius: 9,
+                distanceFilter: 5,
+                useActivityDetection: true,
+                activityType: 'AutomotiveNavigation',
+                //debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
+                stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
+            });
+        }
+        backgroundGeoLocation.start();
+    }
+
+    $scope.$on('update_location', function (event, args) {
+        if (args.action === "turn-on") {
+            document.addEventListener('deviceready', function () {
+                $scope.BackgroundServiceFunction();
+            }, false);
+        }
+        else if (args.action === "turn-off") {
+            backgroundGeoLocation.stop();
+        }
+    });
+
+    var Pushoptions = {
+        android: {
+            senderID: "927875139886"
+        },
+        ios: {
+            alert: "true",
+            badge: "true",
+            sound: "true"
+        },
+        windows: {}
+    };
+
 
     $scope.$parent.$on("centralHubNotification", function (e, notify) {
         var title;
@@ -1332,6 +1420,15 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         */
     };
 
+    mc.shareProfile = function () {
+        $cordovaSocialSharing.share(invite_CONSTANT.msg.replace(/0/gi, $scope.user.userName), null, null, invite_CONSTANT.link) // Share via native share sheet
+        .then(function (result) {
+        // Success!
+           }, function (err) {
+        // An error occured. Show a message to the user
+          });
+        };
+
     mc.savePhrase = function () {
         var passphrase = _.toLower(mc.passPhrase);
         if (_.isEmpty(Encryption.Key.publicKey)) {
@@ -1354,5 +1451,16 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             });
         }
     };
+
+        /********** Appwide Pause + Resume logic ************/
+    document.addEventListener("pause", function () {
+       
+    }, false);
+
+    document.addEventListener("resume", function () {
+        $scope.proxyCentralHub = CentralHub.initialize('centralHub');
+    }, false);
+        /***********************      *****************************/
+
     
 }]);
