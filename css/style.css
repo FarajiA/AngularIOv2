@@ -24,7 +24,8 @@ ion-tabs .tab-nav.tabs a .badge {
     color: #ef473a !important;
     right: calc(50% - 19px);
 } 
-
+.list.right-icon label { width: 92%; display: inline-flex; }
+.list.right-icon .icon {font-size:20px;}
 /*Dash Page
 ion-content#dash {top: 0px;} */
 .dashTitle {text-align:center;display: block; padding-top: 8px;}
@@ -311,6 +312,7 @@ p.figure {margin:0;}
 /* Select Broadcast Groups 
 ====================================== */
 .groupIntro p {font-weight:bold;}
+.list.group { color: #444;text-align: center;}
 
 /* Profile  margin-top: 6px;
 ======================================= */

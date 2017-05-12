@@ -1,5 +1,5 @@
-const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
-//const baseURL_CONSTANT = "http://localhost:59822/";
+//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";

@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('DashGroupController', ['$scope', '$state', '$ionicHistory', 'Groups', 'Broadcast', 'CentralHub', '$cordovaGeolocation', '$ionicPopup', '$ionicLoading', function ($scope, $state, $ionicHistory, Groups, Broadcast, CentralHub, $cordovaGeolocation, $ionicPopup, $ionicLoading) {
+    app.controller('DashGroupController', ['$scope', '$state', '$ionicHistory', 'Groups', 'Broadcast', 'CentralHub', '$cordovaGeolocation', '$ionicPopup', '$ionicLoading', '$ionicPopover', function ($scope, $state, $ionicHistory, Groups, Broadcast, CentralHub, $cordovaGeolocation, $ionicPopup, $ionicLoading, $ionicPopover) {
 
         var vm = this;
         vm.groupIndex = 0;
@@ -10,6 +10,10 @@
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
             viewData.enableBack = true;
         });
+
+        vm.all = false;
+        vm.any = false;
+        vm.every = false;
 
         vm.allChasers = AllChasers_CONSTANT;
         vm.anyonewithLink = AnyoneWithLink_CONSTANT;
@@ -57,12 +61,35 @@
                        //console.log("Location services not on");
                    });
                });
-
-
-
-            
+        };
+        vm.updateBroadcast = function () {
 
         };
+
+
+        $ionicPopover.fromTemplateUrl('groupPopover.html', {
+            scope: $scope
+        }).then(function (popover) {
+            vm.popover = popover;
+        });
+        var choiceArray = [vm.all, vm.any, vm.every ]
+        $scope.openPopover = function ($event) {
+
+            //vm.helperText = 
+
+            $scope.popover.show($event);
+        };
+
+        $scope.closePopover = function () {
+            $scope.popover.hide();
+        };
+
+        $scope.$on('$destroy', function () {
+           vm.popover.remove();
+        });
+
+
+
 
     }]);
 })();

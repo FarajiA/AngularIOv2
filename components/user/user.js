@@ -257,5 +257,8 @@
                $state.go('main.dash');
        };
 
+       $scope.$on('$destroy', function () {
+           vm.popover.remove();
+       });
     }]);
 })();
