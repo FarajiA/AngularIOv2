@@ -79,6 +79,12 @@ const maps_CONSTANT = {
     NolongerBroadcasting: '0 is no longer broadcasting'
 };
 
+const broadcast_CONSTANT = {
+    allfollowers: "Allows only your followers to view your location.",
+    anyoneLink: "We provide a link. Only those with it can view your location.",
+    anyoneEvery: "We provide a link & anyone can view your location. Following or not."
+};
+
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',

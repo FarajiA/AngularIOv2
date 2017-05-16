@@ -1,23 +1,20 @@
 ﻿; (function () {
     
-    angular.module('App').directive('tooltip', function () {
-    return {
-        restrict: 'C',
-        link: function (scope, element, attrs) {
-            if (attrs.title) {
-                var $element = $(element);
-                $element.attr("title", attrs.title)
-                $element.tooltipster({
-                    animation: attrs.animation,
-                    trigger: "click",
-                    position: "right",
-                    positionTracker: true,
-                    maxWidth: 500,
-                    contentAsHTML: true
+    angular.module('App').directive('customRadio', function () {
+        return {
+            restrict: 'A',
+            require: '^ngModel',
+            scope: {
+                choice: '='
+            },
+            link: function (scope, elem, attrs, ngModelCtrl) {
+                elem.on('click', function () {
+                    scope.$apply(function () {
+                        ngModelCtrl.$setViewValue(scope.choice);
+                    });
                 });
             }
-        }
-    };
+        };
     });
 
 })();

@@ -25,7 +25,8 @@ ion-tabs .tab-nav.tabs a .badge {
     right: calc(50% - 19px);
 } 
 .list.right-icon label { width: 92%; display: inline-flex; }
-.list.right-icon .icon {font-size:20px;}
+.list.right-icon .icon {font-size:20px;top: 13px;position: relative;}
+.list.right-icon div.helper {display: inline-block;width: 20px;height: 35px;vertical-align: text-bottom;}
 /*Dash Page
 ion-content#dash {top: 0px;} */
 .dashTitle {text-align:center;display: block; padding-top: 8px;}
@@ -104,83 +105,6 @@ p.figure {margin:0;}
 }
 .b-none {
     border: none;
-}
-/*
-  Chat bubble v0.5
- */
-.chat-bubble .item-avatar > img:first-child{
-    top: 24px;
-}
-.bubble {margin-bottom: 5px !important;}
-
-.chat-bubble .bubble {
-  position: relative;
-  margin-bottom: 8px;
-  padding: 0;
-  }
-  .chat-bubble .bubble .content {
-    display: inline-block;
-    background:#f9d5d1;
-    border-radius: 20px;
-    padding: 10px;
-    font-size: 15px;
-    color: #444;
-    white-space: normal;
-    max-width: 100%;
-    text-align: left; }
-    .chat-bubble .bubble .content.photo {
-      padding: 0; }
-  .chat-bubble .bubble .icon-tail {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    border: 10px solid #2cb3c9; }
-  .chat-bubble .bubble img {
-    border-radius: 20px;
-    width: 180px; }
-  .chat-bubble .bubble.bubble-image .icon-tail {
-    display: none; }
-  .chat-bubble .bubble .heart {
-    position: absolute;
-    right: 0px;
-    bottom: 16px; }
-
-.chat-bubble .message-status {
-  font-size: 12px;
-  color: #aaa;
-  position: relative;
-  top: 3px;
-}
-
-.chat-bubble .me {
-  text-align: right; 
-
-}
-.chat-bubble .me .bubble .icon-tail {
-    left: inherit;
-    top: inherit;
-    bottom: 5px;
-    right: -8px;
-    border-bottom: 10px solid #f9d5d1;
-    border-right: 10px solid transparent;
-    border-top: 10px solid transparent;
-    border-bottom-right-radius: 6px; }
-
-.chat-bubble .friend .bubble .content {
-  background: #2cb3c9;
-  color: #fff }
-
-.chat-bubble .friend .bubble .icon-tail {
-  top: inherit;
-  bottom: 5px;
-  left: -8px;
-  border-bottom: 10px solid #2cb3c9;
-  border-right: 10px solid#2cb3c9;
-  border-top: 10px solid transparent;
-  border-left: 10px solid transparent;
-  border-bottom-left-radius: 6px; 
 }
 .no-bg {
   background-color: transparent; 
@@ -313,6 +237,10 @@ p.figure {margin:0;}
 ====================================== */
 .groupIntro p {font-weight:bold;}
 .list.group { color: #444;text-align: center;}
+.group-broadcast {margin: 0 !important;background-color:transparent !important;font-size: 18px !important;}
+.group-broadcast.activated { border:none;}
+.tipPopover {height:84px;}
+.tipPopover ion-content {padding: 10px;}
 
 /* Profile  margin-top: 6px;
 ======================================= */

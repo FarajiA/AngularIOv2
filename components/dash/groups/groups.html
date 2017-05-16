@@ -1,91 +1,34 @@
 ﻿<ion-view view-title="Choose Group">
-    <ion-content class="padding">
+    <ion-content class="padding has-footer">
         <div class="groupIntro">
             <p>You are about to broadcast your location, choose who can view:</p>
         </div>
-        <div class="list right-icon card">
-            <ion-checkbox ng-model="vm.all" ng-checked="vm.all" ng-change="vm.updateBroadcast(vm.all)">
-                All Followers
+        <div class="list right-icon card" ng-repeat="(key,value) in vm.selections">
+            <ion-checkbox ng-model="vm.choice" ng-true-value="'{{value}}'" ng-false-value="">
+                {{value.text}}
+                <p ng-if="value.type == 3">{{value.amount}} members</p>
             </ion-checkbox>
-
-            <i class="tooltip icon ion-android-more-vertical" ng-click="vm.openPopover($event)"></i>
+            <div class="helper" ng-click="vm.openPopover($event, value.type)">
+                <i ng-if="value.type != 3" class="tooltip icon ion-android-more-vertical" ></i>
+            </div>
         </div>
-        <div class="list right-icon card">
-            <ion-checkbox ng-model="vm.any" ng-checked="vm.any" ng-change="vm.updateBroadcast(vm.any)">
-                Anyone with link
-            </ion-checkbox>
-            <i class="tooltip icon ion-android-more-vertical" ng-click="vm.openPopover($event)"></i>
-        </div>
-        <div class="list right-icon card">
-            <ion-checkbox ng-model="vm.every" ng-checked="vm.every" ng-change="vm.updateBroadcast(vm.every)">
-                Anyone & Everyone
-            </ion-checkbox>
-            <i class="tooltip icon ion-android-more-vertical" ng-click="vm.openPopover($event)"></i>
-        </div>
-
-        <div class="list group card" ng-show="vm.Groups.length != 0" ng-repeat="group in vm.Groups">
-            <ion-checkbox ng-model="vm.group$index" ng-checked="vm.group$index" ng-change="vm.updateBroadcast(vm.group$index)">
-                {{group.name}}
-                <p>{{group.membersAmount}} members</p>
-            </ion-checkbox>
-
-            <ion-infinite-scroll ng-if="vm.moGroups" on-infinite="vm.loadMoreGroups()" distance="30%"></ion-infinite-scroll>
-        </div>
-
-        <div class="list card">
+        <div class="list group card">
             <a href="#/groups/edit/0" class="item item-icon-right">
                 Add Group
                 <i class="icon ion-plus-circled"></i>
             </a>
         </div>
-        <!--
-                <ion-list>
-                    <ion-item item="group" class="item item-avatar">
-                        <img src="http://ionicframework.com/img/ionic-logo-blog.png" class="tooltip" title="Stuff yea" animation="fade">
-                        <ion-radio ng-model="choice" ng-value="'G'">Choose G</ion-radio>
-                    </ion-item>
-                </ion-list>
-                <div class="list card">
-                    <a ng-click="vm.broadcast(0, vm.allChasers)" class="item item-icon-right">
-                        <h2>All Followers</h2>
-                    </a>
-                </div>
-                <div class="list card">
-                    <a ng-click="vm.broadcast(0, vm.anyonewithLink)" class="item item-icon-right">
-                        <h2>Anyone with link</h2>
-                        <i class="tooltip icon ion-help-circled" title="Anyone who gets the link supplied" animation="fade"></i>
-                    </a>
-                </div>
-                <div class="list card">
-                    <a ng-click="vm.broadcast(0, vm.everyone)" class="item item-icon-right">
-                        <h2>Anyone & Everyone</h2>
-                        <i class="tooltip icon ion-help-circled" title="Anyone who gets the link supplied and anyone who comes across this profile" animation="fade"></i>
-                    </a>
-                </div>
-                <div class="list card" ng-show="vm.Groups.length != 0" ng-repeat="group in vm.Groups">
-                    <a ng-click="vm.broadcast(group.id, vm.groupOnly)" class="item item-icon-left">
-                        <h2>
-                            {{
-        group.name
-                            }}
-                        </h2>
-                        <p>{{group.membersAmount}} members</p>
-                    </a>
-                    <ion-infinite-scroll ng-if="vm.moGroups" on-infinite="vm.loadMoreGroups()" distance="30%"></ion-infinite-scroll>
-                </div>
-                -->
-
-
+        
         <script id="groupPopover.html" type="text/ng-template">
-            <ion-popover-view>
+            <ion-popover-view class="tipPopover">
                 <ion-content>
                     {{vm.helperText}}
                 </ion-content>
             </ion-popover-view>
         </script>
     </ion-content>
-    <ion-footer-bar align-title="left" class="bar-assertive">
-        <button class="button button-full button-positive" ng-click="vm.broadcast(group.id, vm.groupOnly)">
+    <ion-footer-bar align-title="left" class="bar-assertive" ng-if="vm.choice">
+        <button class="button button-full button-positive group-broadcast" ng-click="vm.broadcast(group.id, vm.groupOnly)">
             Broadcast
         </button>
     </ion-footer-bar>
