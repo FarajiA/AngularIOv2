@@ -34,30 +34,50 @@
 
         vm.Login = function (user) {            
             if (vm.form.loginForm.$valid) {
+                $ionicLoading.show();
                 AuthService.Login(user).then(function (response) {
                     $scope.$parent.userInitiate(response.userName).then(function () {
+                        $ionicLoading.hide();
                         $state.go("main.dash");
                     }), function (err) {
-                        console.log("error logging user in: " + err)
+                        var alertPopup = $ionicPopup.alert({
+                            title: genericError_CONSTANT
+                        });
                     };
+                }, function () {
+                    $ionicLoading.hide();
+                    var alertPopup = $ionicPopup.alert({
+                        title: loginError_CONSTANT
+                    });
                 });
             }
         };
 
         vm.Register = function (user) {
             if (vm.form.registerForm.$valid) {
+                $ionicLoading.show();
                 AuthService.Register(user).then(function (UserAcct) {
                     AuthService.Login(user).then(function (response) {
+                        $ionicLoading.hide();
                         $scope.$parent.userInitiate(response.userName);
                         $state.go('main.dash');
+                    }, function () {
+                        $ionicLoading.hide();
+                        var alertPopup = $ionicPopup.alert({
+                            title: genericError_CONSTANT2
+                        });                        
                     });
+                }, function () {
+                    $ionicLoading.hide();
                 });
             };
         };
 
         vm.forgotPassword = function (user) {
             if (vm.form.forgotForm.$valid) {
+                $ionicLoading.show();
                 UserLogin.forgotPassword(user.email).then(function (response) {
+                    $ionicLoading.hide();
                     if (response) {
                         vm.notOnFile = false;
                         vm.mForgotPassword.hide();
@@ -65,14 +85,18 @@
                     }
                     else
                         vm.notOnFile = true;
+                }, function () {
+                    $ionicLoading.hide();
                 });
             }
         };
 
         vm.submitForgotten = function (user) {
             if (vm.form.verifyForm.$valid) {
+                $ionicLoading.show();
                 UserLogin.resetPassword(user).then(function (response) {
                     if (response) {
+                        $ionicLoading.hide();
                         var alertPopup = $ionicPopup.alert({
                             title: 'Updated!',
                             template: 'Login with new credentials'
@@ -82,11 +106,16 @@
                         });
                     }
                     else {
+                        $ionicLoading.hide();
                         var alertPopup = $ionicPopup.alert({
-                            title: genericError_CONSTANT,
-                            template: 'Something went wrong, try again.'
+                            title: genericError_CONSTANT
                         });
                     }                        
+                }, function () {
+                    $ionicLoading.hide();
+                    var alertPopup = $ionicPopup.alert({
+                        title: genericError_CONSTANT
+                    });
                 });
             }
         };
@@ -152,23 +181,6 @@
             
             
         };
-       /*
-        // This method is to get the user profile info from the facebook api
-        var getFacebookProfileInfo = function (authResponse) {
-            var info = $q.defer();
-
-            facebookConnectPlugin.api('/me?fields=email,name&access_token=' + authResponse.accessToken, null,
-              function (response) {
-                  info.resolve(response);
-              },
-              function (response) {
-                  console.log(response);
-                  info.reject(response);
-              }
-            );
-            return info.promise;
-        };
-       */
         var CheckifAccountExists = function (provider, token) {
             var info = $q.defer();
             UserLogin.checkAccount(provider, token).then(function (response) {

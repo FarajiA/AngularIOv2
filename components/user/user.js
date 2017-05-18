@@ -12,7 +12,6 @@
         vm.broadcast = {};
         vm.imageURL = $scope.$parent.imageURL;
         $scope.chaserBroadcast = {};
-        vm.alreadyBlocked = false;
         var path = $location.path().split("/") || "Unknown";
         vm.segment = path[2];
         vm.showBack = _.isEmpty($ionicHistory.viewHistory().backView);
@@ -29,7 +28,14 @@
                 vm.broadcasting = response.broadcasting;
                 $scope.relationship = response.relationship;
                 $scope.broadcastObject = response.broadcast;
-                vm.blockText = $scope.relationship == 3 ? decision_CONSTANT.block : decision_CONSTANT.unblock;
+                vm.blockText = $scope.relationship == 3 ? decision_CONSTANT.unblock : decision_CONSTANT.block;
+                
+                if (_.toString($scope.relationship) == 1 || !vm.private) {
+                    vm.chaserLink = '#/main/' + vm.segment + '/chasers/' + vm.id;
+                    vm.chasingLink = '#/main/' + vm.segment + '/chasing/' + vm.id;
+                }
+                else 
+                    vm.chaserLink = vm.chasingLink = "javascript:void(0)";
 
                 Messages.recentMessage(vm.id).then(function (response) {
                     vm.messageLink = "#/messages/" + vm.username + "/" + vm.id;
@@ -38,13 +44,6 @@
                     Msg.publickey = vm.publicKey;
                     Messages.activemessage(Msg);
                 });
-
-                if (_.toString($scope.relationship) == 1 || !vm.private) {
-                    vm.chaserLink = '#/main/' + vm.segment + '/chasers/' + vm.id;
-                    vm.chasingLink = '#/main/' + vm.segment + '/chasing/' + vm.id;
-                }
-                else 
-                    vm.chaserLink = vm.chasingLink = "javascript:void(0)";
             });
         };
 

@@ -12,12 +12,12 @@
                     <i class="is-icon-avatar"></i>
                     <input type="text" name="username" ng-model="loginData.username" required placeholder="Username">
                 </label>
-                <div class="invalid-required" ng-show="vm.form.loginForm.username.$error && vm.form.loginForm.username.$touched">* Username is required</div>
+                <div class="invalid-required" ng-show="vm.form.loginForm.username.$touched && vm.form.loginForm.username.$invalid ">* Username is required</div>
                 <label class="item item-input">
                     <i class="is-icon-padlock"></i>
                     <input type="password" name="password" ng-model="loginData.password" placeholder="Password" required>
                 </label>
-                <div class="invalid-required" ng-show="vm.form.loginForm.password.$error && vm.form.loginForm.password.$touched">* Password is required</div>                
+                <div class="invalid-required" ng-show="vm.form.loginForm.password.$invalid && vm.form.loginForm.password.$touched">* Password is required</div>                
                 <label class="item item-button">
                     <button class="button button-block button-positive" type="submit">Sign in</button>
                 </label>

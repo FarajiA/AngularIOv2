@@ -2,7 +2,7 @@
     <ion-nav-buttons side="right">
         <button class="button button-icon icon ion-android-more-vertical"></button>
     </ion-nav-buttons>
-    <ion-content delegate-handle="userMessageScroll">
+    <ion-content delegate-handle="userMessageScroll" ng-class="thread">
         <!-- Chat bubbles -->
         <!--<ion-infinite-scroll ng-if="vm.moMessages" on-infinite="vm.loadMoreMessages()" distance="30%"></ion-infinite-scroll> -->
         <ion-infinite-scroll-reverse immediate-check="false" ng-if="vm.moMessages && vm.initialLoadCompleted" icon="ion-loading-c" distance="25%" on-infinite="vm.loadMoreMessages()" reverse="true">

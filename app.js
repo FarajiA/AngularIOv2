@@ -13,6 +13,7 @@ const Group_CONSTANT = "3";
 
 const genericError_CONSTANT = "Oops try again";
 const genericError_CONSTANT2 = "Something went wrong. Try again";
+const loginError_CONSTANT = "We don't know you";
 const newMesssageTitle_CONSTANT = "New Message";
 const newRequestTitle_CONSTANT = "New Request";
 const newChasingTitle_CONSTANT = "Accepted Request";

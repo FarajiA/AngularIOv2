@@ -36,6 +36,7 @@
             //vm.Groups = response.results;
             vm.groupsTotal = response.total;
             vm.groupIndex++;
+            $ionicLoading.hide();
         });
 
         vm.broadcast = function () {
