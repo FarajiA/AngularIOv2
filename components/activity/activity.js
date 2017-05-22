@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('ActivityController', ['$scope', '$q', '$stateParams', '$ionicPopup', 'Activity',function ($scope, $q, $stateParams,$ionicPopup,Activity) {
+    app.controller('ActivityController', ['$scope', '$q', '$state', '$stateParams', '$ionicPopup', 'Activity',function ($scope, $q, $state, $stateParams,$ionicPopup,Activity) {
         // reusable authorization
         var vm = this;
         vm.ActivityService = Activity;
@@ -10,6 +10,11 @@
 
         vm.loadRequestState = $scope.$parent.loadRequestState;
         vm.showRequests = ($stateParams.requests === "requests") || _.isEqual($scope.$parent.badge.Activity, 1);
+        
+        if (!_.isEmpty($stateParams.username)) {
+            $state.go('main.activity-detail', { username: $stateParams.username });
+        };
+
         
         $scope.$on('update_activity', function (event, args) {
             if (args.action === "broadcasts")
@@ -146,7 +151,6 @@
                 
         $scope.$watch('$parent.loadRequestState', function (newVal, oldVal) {
             vm.showRequests = newVal;
-            //$scope.$parent.loadRequestState = false;
         });
 
     }]);

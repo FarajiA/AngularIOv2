@@ -337,7 +337,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
             }
         })
       .state('main.activity', {
-          url: '/activity/:requests',
+          url: '/activity/:requests?username',
           views: {
               'main-activity': {
                   templateUrl: 'components/activity/activity.html',
