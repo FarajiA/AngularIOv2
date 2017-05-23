@@ -86,6 +86,13 @@ const broadcast_CONSTANT = {
     anyoneEvery: "We provide a link & anyone can view your location. Following or not."
 };
 
+const passphrase_CONSTANT = {
+    didntmatch_title: "Doesn't match",
+    didntmatch_text: "You can still use this passphrase your previous messages will not be decoded.",
+    create: "Create",
+    enter:"Enter"
+};
+
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',
@@ -928,8 +935,8 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicModal', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device','Broadcast', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer',
-    function ($scope, $rootScope, $q, $state, $stateParams, $ionicModal, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, Broadcast, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
+app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicLoading', '$ionicModal', '$ionicPopup', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device','Broadcast', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer',
+    function ($scope, $rootScope, $q, $state, $stateParams, $ionicLoading, $ionicModal, $ionicPopup, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, Broadcast, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
     
     var mc = this;    
 
@@ -1004,6 +1011,17 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     $scope.$on('modal.removed', function () {
         // Execute action
     });
+        
+    $scope.errorHandlerFunction = function(title, text){
+        $ionicLoading.hide();
+        if (!_.isEmpty(title) && !_.isEmpty(text)) {
+            var alertObject = {};
+            Object.assign(alertObject, _.isEmpty(title) ? { title: title } : null,
+                                       _.isEmpty(text) ? { template: text } : null);
+            var alertPopup = $ionicPopup.alert(alertObject);          
+        }
+
+    };
 
     $scope.userInitiate = function () {
         var deffered = $q.defer();
@@ -1034,8 +1052,15 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
                 $scope.proxyCentralHub = CentralHub.initialize('centralHub');
 
-                if (_.isEmpty(Encryption.Key.privateKey))
+                if (_.isEmpty(Encryption.Key.privateKey)) {
+                    if (_.isEmpty(Encryption.Key.publicKey))
+                        mc.phraseText = passphrase_CONSTANT.create;
+                    else
+                        mc.phraseText = passphrase_CONSTANT.enter;
+                   
                     mc.phraseModal.show();
+                }
+                
 
                 if ($scope.user.broadcasting) {
                     //updateCoordinatesAwake();
@@ -1169,98 +1194,9 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
 
     $scope.$parent.$on("centralHubNotification", function (e, notify) {
-        var title;
-        var text;
-        var state;
-        var icon;
-        var parameters;
-
-        switch (notify.type) {
-            case 0:
-                var exists = ControllerChecker.exists("TrafficController");
-                if (exists)
-                    $scope.$emit('emit_Chasers', { action: "chasers" });
-                else
-                    Traffic.chasers(0);
-                title = newChaserTitle_CONSTANT;
-                text = newChasing_CONSTANT;
-                state = "main.traffic";
-                icon = "is-icon-avatar";
-                if ($state.current.name != state)
-                    $scope.badge.Traffic = 1;
-                break;
-            case 1:
-                var exists = ControllerChecker.exists("ActivityController");
-                if (exists)
-                    $scope.$emit('emit_Activity', { action: "requests" }); 
-                else
-                    Activity.requests(0);
-                title = newRequestTitle_CONSTANT;
-                text = newRequest_CONSTANT;
-                state = "main.activity";
-                icon = "ion-paper-airplane";
-                if ($state.current.name != state)
-                    $scope.badge.Activity = 1;
-                $scope.$apply(function () {
-                    $scope.loadRequestState = true;
-                });
-                break;
-            case 2:
-                var exists = ControllerChecker.exists("TrafficController");
-                if (exists)
-                    $scope.$emit('emit_Chasers', { action: "chasing" });
-                else
-                    Traffic.chasing(0)
-                title = newChasingTitle_CONSTANT;
-                text = newChasing_CONSTANT;
-                state = "main.traffic";
-                icon = "is-icon-avatar";
-                if ($state.current.name != state)
-                    $scope.badge.Traffic = 1;
-                $scope.$apply(function () {
-                    $scope.loadChasingState = true;
-                });
-                break;
-            case 3:
-                var exists = ControllerChecker.exists("ActivityController");
-                if (exists)
-                    $scope.$emit('emit_Activity', { action: "broadcasts" });
-                else
-                    Activity.broadcasting(0);
-                title = newBroadcastingTitle_CONSTANT;
-                text = newBroadcasting_CONSTANT;
-                state = "main.activity-detail";
-                icon = "ion-radio-waves";
-                parameters = { username: notify.username }
-                break;
-            case 4:
-                Messages.inbox(0);
-                title = newMesssageTitle_CONSTANT;
-                text = newMesssage_CONSTANT;
-                state = "messages";
-                icon = "ion-chatbox";
-                if ($state.current.name != state && $state.current.name != "messages-thread")
-                    $scope.badge.Messages = 1;
-                break;
-        }
-
-        $scope.$apply(function () {
-            if (!($state.current.name == "messages-thread" && $stateParams.username == notify.username)) {
-                var user_data = {
-                    url: $scope.imageURL,
-                    id: notify.Id,
-                    photo: notify.photo,
-                    icon: icon
-                };
-                $toaster.info(title, notify.username, {
-                    extraData: user_data,
-                    onTap: function (toast) {
-                        $state.go(state, parameters);
-                    },
-                });               
-                
-            }
-        });
+        notify.coldstart = false;
+        notify.foreground = false;
+        NotificationAction(notify);
     });
 
     $scope.$parent.$on("tokenRefreshed", function () {
@@ -1294,19 +1230,98 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
     // triggered every time notification received
     $rootScope.$on('$cordovaPushV5:notificationReceived', function (event, data) {        
-        var title;
-        var text;
-        var state;
-        var icon;
-        var parameters;
         var notify = {
             "type" : data.additionalData.type,
             "username": data.additionalData.username,
             "photo": data.additionalData.photo == "1" ? true : false,
             "Id": data.additionalData.userid,
+            "foreground": data.additionalData.foreground,
+            "coldstart" : data.additionalData.coldstart
         };
-        var foreground = data.additionalData.foreground;
-        var coldstart = data.additionalData.coldstart;
+
+        NotificationAction(notify);
+    });
+
+    // triggered every time error occurs
+    $rootScope.$on('$cordovaPushV5:errorOcurred', function (event, e) {
+        console.log(e);
+    });
+
+    mc.showDangToast = function () {
+        var user_data = {
+            url: $scope.imageURL,
+            id: "67d5f188-f862-4ecf-8082-5fd4f7f67308",
+            photo: true,
+            icon: "ion-email"
+        }
+        $toaster.info('We are open today from 10 to 22', 'Information', {
+            extraData: user_data,
+            onTap: function (a, b) {    
+                $state.go("main.activity-detail", { username: "janisj" });
+            },
+        });
+        /*
+        $toaster.pop('success', 'New Thang', 'Notification stuff goes here', "", 'trustedHtml', function (toaster) {
+            console.log("stuff yea whatever");
+            return true;
+        });
+        */
+    };
+
+    mc.shareProfile = function () {
+        $cordovaSocialSharing.share(invite_CONSTANT.msg.replace(/0/gi, $scope.user.userName), null, null, invite_CONSTANT.link) // Share via native share sheet
+        .then(function (result) {
+        // Success!
+           }, function (err) {
+        // An error occured. Show a message to the user
+          });
+    };
+
+    mc.savePhrase = function () {
+        $ionicLoading.show();
+        var passphrase = _.toLower(mc.passPhrase);
+        if (_.isEmpty(Encryption.Key.publicKey)) {
+            Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
+                $ionicLoading.hide();
+                if (response)
+                    mc.phraseModal.hide();
+               
+            }, $scope.errorHandlerFunction(genericError_CONSTANT));
+        }
+        else {
+            Encryption.verifyPassphrase(passphrase.replace(/\s+/g, '')).then(function (response) {
+                if (response) {
+                    Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
+                        if (response)
+                            mc.phraseModal.hide();
+                    });
+                }
+                else {
+                    $scope.errorHandlerFunction(passphrase_CONSTANT.didntmatch_title, passphrase_CONSTANT.didntmatch_text);
+                }
+            }, $scope.errorHandlerFunction(genericError_CONSTANT));
+        }
+    };
+        
+        /********** Appwide Pause + Resume logic ************/
+    document.addEventListener("pause", function () {
+       
+    }, false);
+
+    document.addEventListener("resume", function () {
+        $scope.proxyCentralHub = CentralHub.initialize('centralHub');
+    }, false);
+        /***********************      *****************************/
+
+
+    function NotificationAction(notify) {
+        var title;
+        var text;
+        var state;
+        var icon;
+        var parameters;
+        var foreground = notify.foreground;
+        var coldstart = notify.coldstart;
 
         switch (notify.type) {
             case "0":
@@ -1377,8 +1392,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 break;
         }
 
-        if (foreground)
-        {
+        if (foreground) {
             $scope.$apply(function () {
                 if (!($state.current.name == "messages-thread" && $stateParams.username == notify.username)) {
                     var user_data = {
@@ -1399,75 +1413,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         }
         else
             $state.go(state, parameters);
-    });
 
-    // triggered every time error occurs
-    $rootScope.$on('$cordovaPushV5:errorOcurred', function (event, e) {
-        console.log(e);
-    });
-
-    mc.showDangToast = function () {
-        var user_data = {
-            url: $scope.imageURL,
-            id: "67d5f188-f862-4ecf-8082-5fd4f7f67308",
-            photo: true,
-            icon: "ion-email"
-        }
-        $toaster.info('We are open today from 10 to 22', 'Information', {
-            extraData: user_data,
-            onTap: function (a, b) {    
-                $state.go("main.activity-detail", { username: "janisj" });
-            },
-        });
-        /*
-        $toaster.pop('success', 'New Thang', 'Notification stuff goes here', "", 'trustedHtml', function (toaster) {
-            console.log("stuff yea whatever");
-            return true;
-        });
-        */
     };
-
-    mc.shareProfile = function () {
-        $cordovaSocialSharing.share(invite_CONSTANT.msg.replace(/0/gi, $scope.user.userName), null, null, invite_CONSTANT.link) // Share via native share sheet
-        .then(function (result) {
-        // Success!
-           }, function (err) {
-        // An error occured. Show a message to the user
-          });
-        };
-
-    mc.savePhrase = function () {
-        var passphrase = _.toLower(mc.passPhrase);
-        if (_.isEmpty(Encryption.Key.publicKey)) {
-            Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
-                if (response)
-                    mc.phraseModal.hide();
-            });
-        }
-        else {
-            Encryption.verifyPassphrase(passphrase.replace(/\s+/g, '')).then(function (response) {
-                if (response) {
-                    Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
-                        if (response)
-                            mc.phraseModal.hide();
-                    });
-                }
-                else 
-                    console.log("Didn't Match");
-                
-            });
-        }
-    };
-
-        /********** Appwide Pause + Resume logic ************/
-    document.addEventListener("pause", function () {
-       
-    }, false);
-
-    document.addEventListener("resume", function () {
-        $scope.proxyCentralHub = CentralHub.initialize('centralHub');
-    }, false);
-        /***********************      *****************************/
-
     
 }]);

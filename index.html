@@ -124,7 +124,7 @@
             <ion-modal-view class="modal-forgotpass modal-inspius modal-noback">
                 <ion-content>
                     <div class="header text-center clearfix">
-                        <div class="title">Enter passphrase</div>
+                        <div class="title">{{mc.phraseText}} passphrase</div>
                     </div>
                     <!--
                     <ion-header-bar class="bar bar-header ">
@@ -133,10 +133,9 @@
                     </ion-header-bar>
                     -->
 
-                    <div class="list">
+                    <div class="list list-inset">
                         <label class="item item-input">
-                            <!-- <span class="input-label">Enter Passphrase</span> -->
-                            <input ng-model="mc.passPhrase" placeholder="Passphrase" type="text">
+                            <input ng-model="mc.passPhrase" placeholder="Passphrase" ng-maxlength="150" type="text">
                         </label>
                         <button class="button button-block button-positive" type="submit" ng-click="mc.savePhrase()">Save</button>
                     </div>
