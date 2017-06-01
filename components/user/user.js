@@ -1,6 +1,7 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('UserController', ['$scope','$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$location', '$ionicPopover', '$ionicHistory', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', function ($scope, $rootScope, $state, $timeout, $stateParams, $ionicModal, $location, $ionicPopover, $ionicHistory, UserStore, User, BroadcastStatus, Block, Messages, CentralHub) {
+    app.controller('UserController', ['$scope', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$location', '$ionicHistory', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub',
+        function ($scope, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $location, $ionicHistory, UserStore, User, BroadcastStatus, Block, Messages, CentralHub) {
         var vm = this;
         /*
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {

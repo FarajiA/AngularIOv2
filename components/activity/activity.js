@@ -11,10 +11,8 @@
         vm.loadRequestState = $scope.$parent.loadRequestState;
         vm.showRequests = ($stateParams.requests === "requests") || _.isEqual($scope.$parent.badge.Activity, 1);
         
-        if (!_.isEmpty($stateParams.username)) {
+        if (!_.isEmpty($stateParams.username)) 
             $state.go('main.activity-detail', { username: $stateParams.username });
-        };
-
         
         $scope.$on('update_activity', function (event, args) {
             if (args.action === "broadcasts")

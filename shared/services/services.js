@@ -136,17 +136,17 @@
              localStorageService.remove('KeyData');
          };
 
-         EncryptionObject.generatePrivateKey = function (passphrase) {
+         EncryptionObject.generatePrivateKey = function (passphrase, newPhrase) {
              var deffered = $q.defer();
              var RSAkey = cryptico.generateRSAKey(passphrase, Bits);
              var publicKey = cryptico.publicKeyString(RSAkey);
-
-             if (!_.isEmpty(EncryptionObject.Key.publicKey)) {
+             
+             if (!newPhrase) {
                  EncryptionObject.Key.privateKey = RSAkey;
                  localStorageService.set('KeyData', { privateKey: Base64Encode(passphrase), publicKey: publicKey });
                  deffered.resolve(true);
              }
-             else {
+             else {             
                  var msg = { 'key': publicKey };
                  $http.post(baseURL_CONSTANT + 'api/accounts/user/publickey', msg).success(function (response) {
                      EncryptionObject.Key.privateKey = RSAkey;
@@ -170,7 +170,7 @@
              deffered.resolve(object);
              return deffered.promise;
          };
-
+        
          EncryptionObject.Decrypt = function (msgEncrypted) {
              var deffered = $q.defer();
              var decrypted = cryptico.decrypt(msgEncrypted, EncryptionObject.Key.privateKey);

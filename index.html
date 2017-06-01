@@ -64,8 +64,6 @@
                 <ion-nav-back-button class="button button-icon icon ion-chevron-left">
                 </ion-nav-back-button>
             </ion-nav-bar>
-           <!--  <toaster-container toaster-options="{'time-out': 500000,'hideDuration': 1000,'extendedTimeOut': 1000, 'position-class':'toast-top-full-width' }" class="custom"></toaster-container>
-            <toaster-container toaster-options="{'time-out': 5000,'hideDuration': 1000,'extendedTimeOut': 1000, 'position-class':'toast-top-full-width' }" class="custom"></toaster-container> -->
             <ion-nav-view></ion-nav-view>
         </ion-side-menu-content>
         <ion-side-menu side="left">
@@ -124,15 +122,8 @@
             <ion-modal-view class="modal-forgotpass modal-inspius modal-noback">
                 <ion-content>
                     <div class="header text-center clearfix">
-                        <div class="title">{{mc.phraseText}} passphrase</div>
+                        <div class="title">{{mc.phraseText}} passphrase    vm.openPopover($event)</div>
                     </div>
-                    <!--
-                    <ion-header-bar class="bar bar-header ">
-                        <h1 class="title">Enter passphrase</h1>
-                        <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
-                    </ion-header-bar>
-                    -->
-
                     <div class="list list-inset">
                         <label class="item item-input">
                             <input ng-model="mc.passPhrase" placeholder="Passphrase" ng-maxlength="150" type="text">
@@ -141,6 +132,14 @@
                     </div>
                 </ion-content>
             </ion-modal-view>
+
+            <script id="passphraseHelp.html" type="text/ng-template">
+                <ion-popover-view class="tipPopover">
+                    <ion-content>
+                        {{mc.phraseHelper}}
+                    </ion-content>
+                </ion-popover-view>
+            </script>
         </script>
     </ion-side-menus>
 </body>

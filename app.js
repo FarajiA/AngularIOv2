@@ -1,4 +1,4 @@
-//const baseURL_CONSTANT = "http://3498-18836.el-alt.com/";
+//const baseURL_CONSTANT = "https://ch-mo.com/";
 const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
@@ -51,12 +51,10 @@ const block_CONSTANT = {
     unblockConfirmTitle: 'Unblock 0?',
     unblockOops: 'Oops! Something went wrong, try again.'
 };
-
 var reporting_CONSTANT = {
     flaggedTitle: '0 reported!',
     flaggedText: 'All reports are taken seriously and will be reviewed. Thanks.'
 };
-
 const request_CONSTANT = {
     acceptRequest: 'Accept',
     declineRequest: 'Decline',
@@ -65,13 +63,11 @@ const request_CONSTANT = {
     acceptRequestSuccess: '0 accepted',
     declineRequestSuccess: '0 declined'
 };
-
 const invite_CONSTANT = {
     msg : 'Add me on Chaser! Username: 0',
     subject: 'Super Tight Invite',
     link: 'http://chasertheapp.com/invite'
 };
-
 const maps_CONSTANT = {
     title: 'Location services off',
     text: 'To see your position turn on location services',
@@ -79,20 +75,18 @@ const maps_CONSTANT = {
     Errortitle: 'Map failed, sorry dawg',
     NolongerBroadcasting: '0 is no longer broadcasting'
 };
-
 const broadcast_CONSTANT = {
     allfollowers: "Allows only your followers to view your location.",
     anyoneLink: "We provide a link. Only those with it can view your location.",
     anyoneEvery: "We provide a link & anyone can view your location. Following or not."
 };
-
 const passphrase_CONSTANT = {
     didntmatch_title: "Doesn't match",
     didntmatch_text: "You can still use this passphrase your previous messages will not be decoded.",
     create: "Create",
-    enter:"Enter"
+    enter: "Enter",
+    helpText: "Your passphrase is used to create an encryption key for your messages. Remember this phrase if you plan on using this account on multiple devices."
 };
-
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',
@@ -1012,13 +1006,19 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         // Execute action
     });
         
-    $scope.errorHandlerFunction = function(title, text){
+    $scope.errorHandlerFunction = function(title, text, callback){
         $ionicLoading.hide();
         if (!_.isEmpty(title) && !_.isEmpty(text)) {
             var alertObject = {};
-            Object.assign(alertObject, _.isEmpty(title) ? { title: title } : null,
-                                       _.isEmpty(text) ? { template: text } : null);
-            var alertPopup = $ionicPopup.alert(alertObject);          
+            Object.assign(alertObject, !_.isEmpty(title) ? { title: title } : null,
+                                       !_.isEmpty(text) ? { template: text } : null);
+
+            if (typeof callback === "function") {
+                callback(alertObject);
+            }
+            else 
+                var confirmPopup = $ionicPopup.alert(alertObject);
+
         }
 
     };
@@ -1059,8 +1059,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                         mc.phraseText = passphrase_CONSTANT.enter;
                    
                     mc.phraseModal.show();
-                }
-                
+                }                
 
                 if ($scope.user.broadcasting) {
                     //updateCoordinatesAwake();
@@ -1119,7 +1118,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     $scope.broadcastloading = false;
     $scope.geoWatch = {};
 
-    $scope.BackgroundServiceFunction = function() {
+    $scope.BackgroundServiceFunction = function () {
         var backgroundServiceSuccess = function (location) {
             $scope.user.broadcast.latitude = location.latitude;
             $scope.user.broadcast.longitude = location.longitude;
@@ -1131,7 +1130,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             Broadcast.Broadcast(location.latitude, location.longitude).then(function () {
                 //$ionicLoading.hide();
                 //$scope.broadcastloading = false;
-                console.log('[postCommplete] BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);                
+                console.log('[postCommplete] BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
             });
             backgroundGeoLocation.finish();
         };
@@ -1167,7 +1166,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             });
         }
         backgroundGeoLocation.start();
-    }
+    };
 
     $scope.$on('update_location', function (event, args) {
         if (args.action === "turn-on") {
@@ -1192,10 +1191,9 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         windows: {}
     };
 
-
     $scope.$parent.$on("centralHubNotification", function (e, notify) {
         notify.coldstart = false;
-        notify.foreground = false;
+        notify.foreground = true;
         NotificationAction(notify);
     });
 
@@ -1247,27 +1245,6 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         console.log(e);
     });
 
-    mc.showDangToast = function () {
-        var user_data = {
-            url: $scope.imageURL,
-            id: "67d5f188-f862-4ecf-8082-5fd4f7f67308",
-            photo: true,
-            icon: "ion-email"
-        }
-        $toaster.info('We are open today from 10 to 22', 'Information', {
-            extraData: user_data,
-            onTap: function (a, b) {    
-                $state.go("main.activity-detail", { username: "janisj" });
-            },
-        });
-        /*
-        $toaster.pop('success', 'New Thang', 'Notification stuff goes here', "", 'trustedHtml', function (toaster) {
-            console.log("stuff yea whatever");
-            return true;
-        });
-        */
-    };
-
     mc.shareProfile = function () {
         $cordovaSocialSharing.share(invite_CONSTANT.msg.replace(/0/gi, $scope.user.userName), null, null, invite_CONSTANT.link) // Share via native share sheet
         .then(function (result) {
@@ -1277,27 +1254,44 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
           });
     };
 
+    var Encrypt = function(passphrase, newPhrase){
+        Encryption.generatePrivateKey(passphrase.replace(/\s+/g, ''), newPhrase).then(function (response) {
+            $ionicLoading.hide();
+            if (response)
+                mc.phraseModal.hide();
+            else
+                $scope.errorHandlerFunction(genericError_CONSTANT);
+
+        }, $scope.errorHandlerFunction(genericError_CONSTANT));
+    };
+        
+    $ionicPopover.fromTemplateUrl(passphraseHelp.html, {
+        scope: $scope,
+    }).then(function (popover) {
+        vm.phrasePopover = popover;
+        mc.phraseHelper = passphrase_CONSTANT.helperText;
+    });
+
     mc.savePhrase = function () {
         $ionicLoading.show();
         var passphrase = _.toLower(mc.passPhrase);
         if (_.isEmpty(Encryption.Key.publicKey)) {
-            Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
-                $ionicLoading.hide();
-                if (response)
-                    mc.phraseModal.hide();
-               
-            }, $scope.errorHandlerFunction(genericError_CONSTANT));
+            Encrypt(mc.passPhrase, true);            
         }
         else {
             Encryption.verifyPassphrase(passphrase.replace(/\s+/g, '')).then(function (response) {
                 if (response) {
-                    Encryption.generatePrivateKey(passphrase.replace(/\s+/g, '')).then(function (response) {
-                        if (response)
-                            mc.phraseModal.hide();
-                    });
+                    Encrypt(mc.passPhrase, false);
                 }
                 else {
-                    $scope.errorHandlerFunction(passphrase_CONSTANT.didntmatch_title, passphrase_CONSTANT.didntmatch_text);
+                    $scope.errorHandlerFunction(passphrase_CONSTANT.didntmatch_title, passphrase_CONSTANT.didntmatch_text, function (alertObject) {
+                        var confirmPopup = $ionicPopup.confirm(alertObject);
+                        confirmPopup.then(function (res) {
+                            if (res) {
+                                Encrypt(mc.passPhrase, true);
+                            } 
+                        });
+                    });
                 }
             }, $scope.errorHandlerFunction(genericError_CONSTANT));
         }
