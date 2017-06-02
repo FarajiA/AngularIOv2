@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "https://ch-mo.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "https://ch-mo.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -87,6 +87,23 @@ const passphrase_CONSTANT = {
     enter: "Enter",
     helpText: "Your passphrase is used to create an encryption key for your messages. Remember this phrase if you plan on using this account on multiple devices."
 };
+
+function convertImgToBase64URL(url, callback, outputFormat) {
+    var img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function () {
+        var canvas = document.createElement('CANVAS'),
+        ctx = canvas.getContext('2d'), dataURL;
+        canvas.height = this.height;
+        canvas.width = this.width;
+        ctx.drawImage(this, 0, 0);
+        dataURL = canvas.toDataURL(outputFormat);
+        callback(dataURL);
+        canvas = null;
+    };
+    img.src = url;
+}
+
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',
@@ -929,8 +946,8 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicLoading', '$ionicModal', '$ionicPopup', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device','Broadcast', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer',
-    function ($scope, $rootScope, $q, $state, $stateParams, $ionicLoading, $ionicModal, $ionicPopup, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, Broadcast, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
+app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicPopover', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device','Broadcast', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer',
+    function ($scope, $rootScope, $q, $state, $stateParams, $ionicLoading, $ionicModal, $ionicPopup, $ionicPopover, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, Broadcast, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
     
     var mc = this;    
 
@@ -1127,9 +1144,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 latitude: location.latitude,
                 longitude: location.longitude
             };
-            Broadcast.Broadcast(location.latitude, location.longitude).then(function () {
-                //$ionicLoading.hide();
-                //$scope.broadcastloading = false;
+            Broadcast.Broadcast(coords).then(function () {
                 console.log('[postCommplete] BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
             });
             backgroundGeoLocation.finish();
@@ -1265,10 +1280,10 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         }, $scope.errorHandlerFunction(genericError_CONSTANT));
     };
         
-    $ionicPopover.fromTemplateUrl(passphraseHelp.html, {
+    $ionicPopover.fromTemplateUrl("shared/templates/passphraseHelp.html", {
         scope: $scope,
     }).then(function (popover) {
-        vm.phrasePopover = popover;
+        mc.phrasePopover = popover;
         mc.phraseHelper = passphrase_CONSTANT.helperText;
     });
 
@@ -1306,7 +1321,6 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         $scope.proxyCentralHub = CentralHub.initialize('centralHub');
     }, false);
         /***********************      *****************************/
-
 
     function NotificationAction(notify) {
         var title;
@@ -1407,7 +1421,116 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         }
         else
             $state.go(state, parameters);
-
     };
-    
+    /*
+    $scope.type = 'circle';
+    $scope.imageURI = '';
+    $scope.resImageDataURI = '';
+    $scope.resImgFormat = 'image/png';
+    $scope.resImgQuality = 1;
+    $scope.selMinSize = 200;
+    $scope.resImgSize = 200;
+        //$scope.aspectRatio=1.2;
+    $scope.onChange = function ($dataURI) {
+        $scope.resImageDataURI = $dataURI;
+    };
+    $scope.onLoadError = function () {
+        //console.log('onLoadError fired');
+    };
+
+    $scope.takePicture = function () {
+        var fitwidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) + 15;
+        var fitheight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+        var options = {
+            quality: 75,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: Camera.PictureSourceType.CAMERA,
+            allowEdit: true,
+            encodingType: Camera.EncodingType.JPEG,
+            targetWidth: fitwidth,
+            targetHeight: fitheight,
+            popoverOptions: CameraPopoverOptions,
+            saveToPhotoAlbum: false,
+            correctOrientation: true
+        };
+
+        $ionicPlatform.ready(function () {
+            $cordovaCamera.getPicture(options).then(function (imageData) {
+                $scope.imgURI = "data:image/jpeg;base64," + imageData;
+                $scope.cropmodal.show();
+            }, function (err) {
+                //console.log('Failed because: ');
+                //console.log(err);
+            });
+        });
+    };
+
+    $scope.selectPicture = function () {
+        var fitwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var fitheight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+        var options = {
+            quality: 75,
+            targetWidth: fitwidth,
+            targetHeight: fitheight,
+            encodingType: Camera.EncodingType.JPEG,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+            correctOrientation: true
+        };
+        $ionicPlatform.ready(function () {
+            $cordovaCamera.getPicture(options).then(
+              function (imageData) {
+                  $scope.cropmodal.show();
+                  $scope.imgURI = "data:image/jpeg;base64," + imageData;
+              },
+              function (err) {
+                  //console.log('Failed because: ');
+                  //console.log(err);
+              });
+        });
+    };
+
+    $scope.uploadPicture = function () {
+        $ionicLoading.show();
+        var options = {
+            chunkedMode: false,
+            mimeType: "image/png"
+        };
+
+        iPhone header setting
+        var params = new Object();
+        params.headers = { ChaserGuid: UserObject.data().GUID };
+        options.params = params;
+        
+
+        // android header setting
+        options.headers = { ChaserGuid: UserObject.data().GUID };
+
+        $ionicPlatform.ready(function () {
+            $cordovaFileTransfer.upload(baseURL + "api/fileupload", $scope.resImageDataURI, options)
+            .then(function (result) {
+                var response = result;
+                $scope.cropmodal.hide();
+                $scope.photomodal.hide();
+                $scope.chaser.savedImage = $scope.resImageDataURI;
+                localStorageService.set('chaserImage', $scope.resImageDataURI);
+                $ionicLoading.hide();
+            }, function (err) {
+                //console.log("Whoops! Upload failed");
+                $scope.cropmodal.hide();
+                $scope.photomodal.hide();
+                $ionicLoading.hide();
+            }/*, function (progress) {
+                console.log("Progress: " + (progress.loaded / progress.total) * 100)
+                $timeout(function () {
+                    $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+                });
+            });
+        });
+    };
+    */
+
+
 }]);
