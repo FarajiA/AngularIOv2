@@ -1,5 +1,5 @@
-const baseURL_CONSTANT = "https://ch-mo.com/";
-//const baseURL_CONSTANT = "http://localhost:59822/";
+//const baseURL_CONSTANT = "https://ch-mo.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -87,7 +87,6 @@ const passphrase_CONSTANT = {
     enter: "Enter",
     helpText: "Your passphrase is used to create an encryption key for your messages. Remember this phrase if you plan on using this account on multiple devices."
 };
-
 function convertImgToBase64URL(url, callback, outputFormat) {
     var img = new Image();
     img.crossOrigin = 'Anonymous';
@@ -103,7 +102,6 @@ function convertImgToBase64URL(url, callback, outputFormat) {
     };
     img.src = url;
 }
-
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',
@@ -1010,17 +1008,9 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         mc.phraseModal.hide();
     };
 
-    // Cleanup the modal when we're done with it!
-    $scope.$on('$destroy', function () {
-        mc.phraseModal.remove();
-    });
     // Execute action on hide modal
     $scope.$on('modal.hidden', function () {
-        // Execute action
-    });
-    // Execute action on remove modal
-    $scope.$on('modal.removed', function () {
-        // Execute action
+        mc.phraseModal.remove();
     });
         
     $scope.errorHandlerFunction = function(title, text, callback){
@@ -1030,14 +1020,11 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             Object.assign(alertObject, !_.isEmpty(title) ? { title: title } : null,
                                        !_.isEmpty(text) ? { template: text } : null);
 
-            if (typeof callback === "function") {
+            if (typeof callback === "function") 
                 callback(alertObject);
-            }
             else 
                 var confirmPopup = $ionicPopup.alert(alertObject);
-
         }
-
     };
 
     $scope.userInitiate = function () {
@@ -1284,7 +1271,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         scope: $scope,
     }).then(function (popover) {
         mc.phrasePopover = popover;
-        mc.phraseHelper = passphrase_CONSTANT.helperText;
+        mc.phraseHelper = passphrase_CONSTANT.helpText;
     });
 
     mc.savePhrase = function () {
