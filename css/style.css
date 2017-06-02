@@ -27,7 +27,7 @@ ion-tabs .tab-nav.tabs a .badge {
 .list.right-icon label { width: 92%; display: inline-flex; }
 .list.right-icon .icon {font-size:20px;top: 13px;position: relative;}
 .list.right-icon div.helper {display: inline-block;width: 20px;height: 35px;vertical-align: text-bottom;}
-
+.phrasepad { position: relative;padding-left: 20px;top: 3px;}
 /* Side menu */
 .sidemenu-header {text-align:center;border-color: #111; background-color: #444444;color: #fff;height: 215px;background-image: url('../img/profile-background.png');}
 .sidemenu-header h1 {text-overflow: ellipsis;
@@ -369,6 +369,7 @@ ion-content.thread {background-color:#fff;}
 .group-broadcast {margin: 0 !important;background-color:transparent !important;font-size: 18px !important;}
 .group-broadcast.activated { border:none;}
 .tipPopover {height:84px;}
+.tipPopover.phrase {height:129px;}
 .tipPopover ion-content {padding: 10px;}
 
 /* Profile  margin-top: 6px;
