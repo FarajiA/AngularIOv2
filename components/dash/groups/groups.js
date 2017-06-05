@@ -61,7 +61,7 @@
                            $ionicLoading.hide();
                            $ionicHistory.goBack();
                            $scope.$emit('emit_Broadcasting', { action: "turn-on" });
-                           Broadcast.Notify(selected.type, groupID);
+                           Broadcast.Notify(selected.type, selected.groupID);
                            CentralHub.views($scope.$parent.proxyCentralHub);
                        }
                    }, function (err) {

@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "https://ch-mo.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "https://ch-mo.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -110,7 +110,8 @@ var app = angular.module('App',
         'toastr',
         'mdChips',
         'ngCordova',
-        'toastr'
+        'toastr',
+        'ngImgCrop'
         /*
         'App.Activity',
         'App.Messages',
@@ -158,7 +159,6 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
     $rootScope.$on('emit_Chasers_Block', function (event, args) {
         $rootScope.$broadcast('update_Chasers_block', args);
     });
-
     */
     
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
@@ -944,8 +944,8 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicPopover', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device','Broadcast', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer',
-    function ($scope, $rootScope, $q, $state, $stateParams, $ionicLoading, $ionicModal, $ionicPopup, $ionicPopover, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, Broadcast, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
+app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicPopover', '$ionicPlatform', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device','Broadcast', 'localStorageService', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer', 'localStorageService',
+    function ($scope, $rootScope, $q, $state, $stateParams, $ionicLoading, $ionicModal, $ionicPopup, $ionicPopover, $ionicPlatform, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, Broadcast, localStorageService, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
     
     var mc = this;    
 
@@ -1093,6 +1093,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                         });
                     });
                 });
+
+                //photoUpdate($scope.user);
                 deffered.resolve(true);
             }, function (reason) {
                 // Error callback where reason is the value of the first rejected promise
@@ -1409,7 +1411,55 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         else
             $state.go(state, parameters);
     };
-    /*
+    /********** photo upload & download ****************/
+    var photoUpdate = function(user) {
+        var hasphoto = user.photo;
+        var savedImage = localStorageService.get('chaserImage');
+        //$scope.chaser = {};
+        if (hasphoto && !savedImage) {
+            var rando = Math.floor(1000 + Math.random() * 9000)
+            convertImgToBase64URL(imageURL + user.id + ".png?id=" + rando, function (base64Img) {
+                $scope.user.savedImage = base64Img;
+                localStorageService.set('chaserImage', $scope.user.savedImage);
+            }, 'image/png');
+        } else if (savedImage) 
+            $scope.user.savedImage = savedImage;
+        else 
+            $scope.user.savedImage = "img/default_avatar.png";
+        
+    };
+
+    $ionicModal.fromTemplateUrl('photo-modal.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function (modal) {
+        mc.photomodal = modal;
+    });
+
+    $ionicModal.fromTemplateUrl('crop-modal.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function (modal) {
+        mc.cropmodal = modal;
+    });
+
+    mc.openPhotoModal = function () {
+        mc.photomodal.show();
+    };
+
+    mc.closeModal = function () {
+        mc.openPhotoModal.hide();
+    };
+
+    mc.closecropModal = function () {
+        mc.cropmodal.hide();
+        mc.photomodal.hide();
+    };
+
+    $scope.$on('cropmodal.hidden', function () {
+        $scope.resImageDataURI = {};
+    });
+
     $scope.type = 'circle';
     $scope.imageURI = '';
     $scope.resImageDataURI = '';
@@ -1425,7 +1475,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         //console.log('onLoadError fired');
     };
 
-    $scope.takePicture = function () {
+    mc.takePicture = function () {
         var fitwidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) + 15;
         var fitheight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
@@ -1445,7 +1495,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         $ionicPlatform.ready(function () {
             $cordovaCamera.getPicture(options).then(function (imageData) {
                 $scope.imgURI = "data:image/jpeg;base64," + imageData;
-                $scope.cropmodal.show();
+                mc.cropmodal.show();
             }, function (err) {
                 //console.log('Failed because: ');
                 //console.log(err);
@@ -1453,7 +1503,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         });
     };
 
-    $scope.selectPicture = function () {
+    mc.selectPicture = function () {
         var fitwidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
         var fitheight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
@@ -1469,7 +1519,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         $ionicPlatform.ready(function () {
             $cordovaCamera.getPicture(options).then(
               function (imageData) {
-                  $scope.cropmodal.show();
+                  mc.cropmodal.show();
                   $scope.imgURI = "data:image/jpeg;base64," + imageData;
               },
               function (err) {
@@ -1486,38 +1536,31 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             mimeType: "image/png"
         };
 
-        iPhone header setting
-        var params = new Object();
-        params.headers = { ChaserGuid: UserObject.data().GUID };
-        options.params = params;
-        
-
-        // android header setting
-        options.headers = { ChaserGuid: UserObject.data().GUID };
 
         $ionicPlatform.ready(function () {
             $cordovaFileTransfer.upload(baseURL + "api/fileupload", $scope.resImageDataURI, options)
             .then(function (result) {
                 var response = result;
-                $scope.cropmodal.hide();
-                $scope.photomodal.hide();
+                mc.cropmodal.hide();
+                mc.photomodal.hide();
                 $scope.chaser.savedImage = $scope.resImageDataURI;
                 localStorageService.set('chaserImage', $scope.resImageDataURI);
                 $ionicLoading.hide();
             }, function (err) {
                 //console.log("Whoops! Upload failed");
-                $scope.cropmodal.hide();
-                $scope.photomodal.hide();
+                mc.cropmodal.hide();
+                mc.photomodal.hide();
                 $ionicLoading.hide();
-            }/*, function (progress) {
+            }/*,function (progress) {
                 console.log("Progress: " + (progress.loaded / progress.total) * 100)
                 $timeout(function () {
                     $scope.downloadProgress = (progress.loaded / progress.total) * 100;
                 });
-            });
+               
+            } */);
         });
     };
-    */
+   /******* end photo upload & download ******************/
 
 
 }]);
