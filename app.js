@@ -1538,7 +1538,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
 
         $ionicPlatform.ready(function () {
-            $cordovaFileTransfer.upload(baseURL + "api/fileupload", $scope.resImageDataURI, options)
+            $cordovaFileTransfer.upload(baseURL + "api/accounts/user/photoupload", $scope.resImageDataURI, options)
             .then(function (result) {
                 var response = result;
                 mc.cropmodal.hide();
