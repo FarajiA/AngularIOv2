@@ -1,5 +1,5 @@
-const baseURL_CONSTANT = "https://ch-mo.com/";
-//const baseURL_CONSTANT = "http://localhost:59822/";
+//const baseURL_CONSTANT = "https://ch-mo.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -24,6 +24,7 @@ const newMesssage_CONSTANT = "0 sent you a message.";
 const newRequest_CONSTANT = "0 sent you a request.";
 const newChasing_CONSTANT = "0 accepted your request.";
 const newChaser_CONSTANT = "0 started following you.";
+const newViewing_CONSTANT = "{0} views, {1} watching";
 const composeNewMsg_CONSTANT = "Message";
 const groupDeleteConfirmTitle_CONSTANT = "Delete 0 group?";
 const groupAddButtonText_CONSTANT = "Add Group";
@@ -1386,6 +1387,11 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 icon = "ion-chatbox";
                 if ($state.current.name != state && $state.current.name != "messages-thread")
                     $scope.badge.Messages = 1;
+                break;
+            case "5":
+                text = newViewing_CONSTANT;
+                state = "main.dash";
+                icon = "ion-radio-waves";
                 break;
         }
 
