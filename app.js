@@ -24,7 +24,7 @@ const newMesssage_CONSTANT = "0 sent you a message.";
 const newRequest_CONSTANT = "0 sent you a request.";
 const newChasing_CONSTANT = "0 accepted your request.";
 const newChaser_CONSTANT = "0 started following you.";
-const newViewing_CONSTANT = "{0} views, {1} watching";
+const newViewing_CONSTANT = "{0} watching, {1} views";
 const composeNewMsg_CONSTANT = "Message";
 const groupDeleteConfirmTitle_CONSTANT = "Delete 0 group?";
 const groupAddButtonText_CONSTANT = "Add Group";
@@ -226,7 +226,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
             follower: 'toast-follower'
         },
         positionClass: 'toast-top-full-width',
-        timeOut: 5000,
+        timeOut: 50000,
         titleClass: 'toast-title',
         toastClass: 'toast'
     });
@@ -1033,6 +1033,14 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         UserStore.setUser().then(function (response) {
             $scope.user = response;
             Encryption.Key.publicKey = response.publicKey;
+            if (_.isEmpty(Encryption.Key.privateKey)) {
+                if (_.isEmpty(Encryption.Key.publicKey))
+                    mc.phraseText = passphrase_CONSTANT.create;
+                else
+                    mc.phraseText = passphrase_CONSTANT.enter;
+
+                mc.phraseModal.show();
+            }
             $q.all([
                 Traffic.chasers(0),
                 Traffic.chasing(0),
@@ -1055,16 +1063,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 if ($state.current.name === 'main.traffic')
                     $scope.badgeTrafficCheck();
 
-                $scope.proxyCentralHub = CentralHub.initialize('centralHub');
-
-                if (_.isEmpty(Encryption.Key.privateKey)) {
-                    if (_.isEmpty(Encryption.Key.publicKey))
-                        mc.phraseText = passphrase_CONSTANT.create;
-                    else
-                        mc.phraseText = passphrase_CONSTANT.enter;
-                   
-                    mc.phraseModal.show();
-                }                
+                $scope.proxyCentralHub = CentralHub.initialize('centralHub'); 
 
                 if ($scope.user.broadcasting) {
                     //updateCoordinatesAwake();
@@ -1238,6 +1237,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             "username": data.additionalData.username,
             "photo": data.additionalData.photo == "1" ? true : false,
             "Id": data.additionalData.userid,
+            "viewing": data.additionalData.viewing,
+            "views": data.additionalData.views,
             "foreground": data.additionalData.foreground,
             "coldstart" : data.additionalData.coldstart
         };
@@ -1322,7 +1323,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         var coldstart = notify.coldstart;
 
         switch (notify.type) {
-            case "0":
+            case 0:
                 var exists = ControllerChecker.exists("TrafficController");
                 if (exists)
                     $scope.$emit('emit_Chasers', { action: "chasers" });
@@ -1335,7 +1336,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 if ($state.current.name != state)
                     $scope.badge.Traffic = 1;
                 break;
-            case "1":
+            case 1:
                 var exists = ControllerChecker.exists("ActivityController");
                 if (exists)
                     $scope.$emit('emit_Activity', { action: "requests" });
@@ -1351,7 +1352,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                     $scope.loadRequestState = true;
                 });
                 break;
-            case "2":
+            case 2:
                 var exists = ControllerChecker.exists("TrafficController");
                 if (exists)
                     $scope.$emit('emit_Chasers', { action: "chasing" });
@@ -1367,7 +1368,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                     $scope.loadChasingState = true;
                 });
                 break;
-            case "3":
+            case 3:
                 var exists = ControllerChecker.exists("ActivityController");
                 if (exists)
                     $scope.$emit('emit_Activity', { action: "broadcasts" });
@@ -1379,7 +1380,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 icon = "ion-radio-waves";
                 parameters = { username: notify.username }
                 break;
-            case "4":
+            case 4:
                 Messages.inbox(0);
                 title = newMesssageTitle_CONSTANT;
                 text = newMesssage_CONSTANT;
@@ -1388,8 +1389,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 if ($state.current.name != state && $state.current.name != "messages-thread")
                     $scope.badge.Messages = 1;
                 break;
-            case "5":
-                text = newViewing_CONSTANT;
+            case 5:
+                title = newViewing_CONSTANT.replace("{0}", notify.viewing).replace("{1}", notify.views);
                 state = "main.dash";
                 icon = "ion-radio-waves";
                 break;
