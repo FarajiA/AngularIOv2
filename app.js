@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "https://ch-mo.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "https://ch-mo.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -1033,6 +1033,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         UserStore.setUser().then(function (response) {
             $scope.user = response;
             Encryption.Key.publicKey = response.publicKey;
+            photoUpdate();
             $q.all([
                 Traffic.chasers(0),
                 Traffic.chasing(0),
@@ -1094,8 +1095,6 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                         });
                     });
                 });
-
-                //photoUpdate($scope.user);
                 deffered.resolve(true);
             }, function (reason) {
                 // Error callback where reason is the value of the first rejected promise
@@ -1418,21 +1417,13 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             $state.go(state, parameters);
     };
     /********** photo upload & download ****************/
-    var photoUpdate = function(user) {
-        var hasphoto = user.photo;
-        var savedImage = localStorageService.get('chaserImage');
-        //$scope.chaser = {};
-        if (hasphoto && !savedImage) {
+    function photoUpdate() {
+        if ($scope.user.photo) {
             var rando = Math.floor(1000 + Math.random() * 9000)
-            convertImgToBase64URL(imageURL + user.id + ".png?id=" + rando, function (base64Img) {
-                $scope.user.savedImage = base64Img;
-                localStorageService.set('chaserImage', $scope.user.savedImage);
-            }, 'image/png');
-        } else if (savedImage) 
-            $scope.user.savedImage = savedImage;
-        else 
-            $scope.user.savedImage = "img/default_avatar.png";
-        
+            mc.profilePhoto = $scope.imageURL + $scope.user.id + '.png?rando=' + rando;
+        }
+        else
+            mc.profilePhoto = "img/default_avatar.png";        
     };
 
     $ionicModal.fromTemplateUrl('photo-modal.html', {
@@ -1545,15 +1536,14 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         var params = new Object();
         params.headers = { Authorization: "Bearer " + authdata.token };
         options.params = params;
-
         $ionicPlatform.ready(function () {
             $cordovaFileTransfer.upload(baseURL_CONSTANT + "api/accounts/user/photoupload", $scope.resImageDataURI, options)
             .then(function (result) {
                 var response = result;
                 mc.cropmodal.hide();
                 mc.photomodal.hide();
-                $scope.chaser.savedImage = $scope.resImageDataURI;
-                localStorageService.set('chaserImage', $scope.resImageDataURI);
+                $scope.user.photo = true;
+                photoUpdate();
                 $ionicLoading.hide();
             }, function (err) {
                 //console.log("Whoops! Upload failed");

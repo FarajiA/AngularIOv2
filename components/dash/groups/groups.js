@@ -60,7 +60,7 @@
                            $scope.$parent.user.broadcast = response;
                            $ionicLoading.hide();
                            $ionicHistory.goBack();
-                           //$scope.$emit('emit_Broadcasting', { action: "turn-on" });
+                           $scope.$emit('emit_Broadcasting', { action: "turn-on" });
                            Broadcast.Notify(selected.type, selected.groupID);
                            CentralHub.views($scope.$parent.proxyCentralHub);
                        }
