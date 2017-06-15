@@ -1529,16 +1529,19 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         });
     };
 
-    $scope.uploadPicture = function () {
+    mc.uploadPicture = function () {
         $ionicLoading.show();
         var options = {
             chunkedMode: false,
             mimeType: "image/png"
         };
 
+        var params = new Object();
+        params.headers = { Authorization: "Bearer " + authdata.token };
+        options.params = params;
 
         $ionicPlatform.ready(function () {
-            $cordovaFileTransfer.upload(baseURL + "api/fileupload", $scope.resImageDataURI, options)
+            $cordovaFileTransfer.upload(baseURL_CONSTANT + "api/accounts/user/photoupload", $scope.resImageDataURI, options)
             .then(function (result) {
                 var response = result;
                 mc.cropmodal.hide();
