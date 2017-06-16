@@ -67,7 +67,8 @@
             <ion-content has-header="true">
                 <div class="sidemenu-header">
                     <a class="profile" ng-click="mc.openPhotoModal()" href="#">
-                        <img ng-src="{{user.photo == true && imageURL + user.id || 'img/default_avatar.png' }}" />
+                        <img ng-src="{{ mc.profilePhoto }}" />
+                        <!--//user.photo == true && imageURL + user.id + '.png' || 'img/default_avatar.png' -->
                     </a>
                     <h1 class="title">{{user.userName}}</h1>
                 </div>

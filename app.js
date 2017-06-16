@@ -88,21 +88,6 @@ const passphrase_CONSTANT = {
     enter: "Enter",
     helpText: "Your passphrase is used to create an encryption key for your messages. Remember this phrase if you plan on using this account on multiple devices."
 };
-function convertImgToBase64URL(url, callback, outputFormat) {
-    var img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = function () {
-        var canvas = document.createElement('CANVAS'),
-        ctx = canvas.getContext('2d'), dataURL;
-        canvas.height = this.height;
-        canvas.width = this.width;
-        ctx.drawImage(this, 0, 0);
-        dataURL = canvas.toDataURL(outputFormat);
-        callback(dataURL);
-        canvas = null;
-    };
-    img.src = url;
-}
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',
@@ -1041,6 +1026,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
                 mc.phraseModal.show();
             }
+            photoUpdate();
             $q.all([
                 Traffic.chasers(0),
                 Traffic.chasing(0),
@@ -1093,8 +1079,6 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                         });
                     });
                 });
-
-                //photoUpdate($scope.user);
                 deffered.resolve(true);
             }, function (reason) {
                 // Error callback where reason is the value of the first rejected promise
@@ -1303,7 +1287,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         }
     };
         
-        /********** Appwide Pause + Resume logic ************/
+    /********** Appwide Pause + Resume logic ************/
     document.addEventListener("pause", function () {
        
     }, false);
@@ -1311,7 +1295,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     document.addEventListener("resume", function () {
         $scope.proxyCentralHub = CentralHub.initialize('centralHub');
     }, false);
-        /***********************      *****************************/
+    /***********************      *****************************/
 
     function NotificationAction(notify) {
         var title;
@@ -1419,21 +1403,13 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             $state.go(state, parameters);
     };
     /********** photo upload & download ****************/
-    var photoUpdate = function(user) {
-        var hasphoto = user.photo;
-        var savedImage = localStorageService.get('chaserImage');
-        //$scope.chaser = {};
-        if (hasphoto && !savedImage) {
+    function photoUpdate() {
+        if ($scope.user.photo) {
             var rando = Math.floor(1000 + Math.random() * 9000)
-            convertImgToBase64URL(imageURL + user.id + ".png?id=" + rando, function (base64Img) {
-                $scope.user.savedImage = base64Img;
-                localStorageService.set('chaserImage', $scope.user.savedImage);
-            }, 'image/png');
-        } else if (savedImage) 
-            $scope.user.savedImage = savedImage;
-        else 
-            $scope.user.savedImage = "img/default_avatar.png";
-        
+            mc.profilePhoto = $scope.imageURL + $scope.user.id + '.png?rando=' + rando;
+        }
+        else
+            mc.profilePhoto = "img/default_avatar.png";        
     };
 
     $ionicModal.fromTemplateUrl('photo-modal.html', {
@@ -1536,22 +1512,24 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         });
     };
 
-    $scope.uploadPicture = function () {
+    mc.uploadPicture = function () {
         $ionicLoading.show();
         var options = {
             chunkedMode: false,
             mimeType: "image/png"
         };
 
-
+        var params = new Object();
+        params.headers = { Authorization: "Bearer " + authdata.token };
+        options.params = params;
         $ionicPlatform.ready(function () {
-            $cordovaFileTransfer.upload(baseURL + "api/accounts/user/photoupload", $scope.resImageDataURI, options)
+            $cordovaFileTransfer.upload(baseURL_CONSTANT + "api/accounts/user/photoupload", $scope.resImageDataURI, options)
             .then(function (result) {
                 var response = result;
                 mc.cropmodal.hide();
                 mc.photomodal.hide();
-                $scope.chaser.savedImage = $scope.resImageDataURI;
-                localStorageService.set('chaserImage', $scope.resImageDataURI);
+                $scope.user.photo = true;
+                photoUpdate();
                 $ionicLoading.hide();
             }, function (err) {
                 //console.log("Whoops! Upload failed");
