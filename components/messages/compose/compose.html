@@ -17,16 +17,6 @@
                     <ion-infinite-scroll ng-if="vm.moRecipients" on-infinite="vm.loadMorelistRecipients()" distance="30%"></ion-infinite-scroll>       
                 </div>
             </div>
-            <!-- 
-            <div class="panel-footer chat-bottom-bar">
-                <form style="display:flex" ng-submit="vm.submitFunction()">
-                    <div class="input-group">
-                        <textarea class="form-control input-sm chat-input" name="composeMessage" placeholder="{{vm.inputPlaceholderText}}" ng-model="vm.writingMessage" maxlength="300" style="width:59%"></textarea>
-                        <button class="button button-stable button-small" ng-disabled="vm.writingMessage ==  '' || vm.selectedUsers.length === 0">Send</button>
-                    </div>
-                </form>
-            </div>
-            -->
         </div>
     </ion-content>
 

@@ -131,6 +131,11 @@ ion-content#dash {top: 0px;} */
 }
 p.figure {margin:0;}
 
+/* Traffic 
+=============== */
+#chasers ion-item.item-avatar.item-complex a {display:inline-block;width: 89%;}
+
+
 /* Search 
 =============== */
 #search-nav .right-buttons .button-clear { color: inherit;}

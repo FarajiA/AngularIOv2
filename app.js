@@ -132,7 +132,7 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
     });
 
     $rootScope.$on('emit_NewMessage', function (event, args) {
-        $rootScope.$broadcast('update_thread', args)
+        $rootScope.$broadcast('update_thread', args);
     });
     
     $rootScope.$on('emit_Broadcasting', function (event, args) {
@@ -166,7 +166,7 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
     });
     
     $templateCache.put('directives/toast/toast.html',
-        "<div id=\"{{extraData.id}}\" class=\"{{toastClass}} {{toastType}}\" ng-click=\"tapToast()\">\n <div ng-switch on=\"allowHtml\">\n <ion-item class=\"item-avatar item-icon-right item item-complex\" type=\"item-text-wrap\" href=\"javascript:void(0)\"><img ng-src=\"{{extraData.photo && extraData.url + extraData.id + '.png' || 'img/default_avatar.png' }}\"><h2>{{title}}</h2><p>{{message}}</p><i class=\"icon {{extraData.icon}}\"></i></ion-item><div ng-switch-when=\"true\" ng-if=\"title\" class=\"{{titleClass}}\" ng-bind-html=\"title\"></div>\n<div ng-switch-when=\"true\" class=\"{{messageClass}}\" ng-bind-html=\"message\"></div>\n  </div>\n<progress-bar ng-if=\"progressBar\"></progress-bar>\n</div>\n"
+        "<div id=\"{{extraData.id}}\" class=\"{{toastClass}} {{toastType}}\" ng-click=\"tapToast()\">\n <div ng-switch on=\"allowHtml\">\n <ion-item class=\"item-icon-right item item-complex\" type=\"item-text-wrap\" href=\"javascript:void(0)\" ng-class=\" {'item-avatar': (extraData.type != 5)}  \" ><img ng-if=\"extraData.type != 5\" ng-src=\"{{extraData.photo && extraData.url + extraData.id + '.png' || 'img/default_avatar.png' }}\"><h2 ng-if=\"extraData.type != 5\">{{title}}</h2><p>{{message}}</p><i class=\"icon {{extraData.icon}}\"></i></ion-item><div ng-switch-when=\"true\" ng-if=\"title\" class=\"{{titleClass}}\" ng-bind-html=\"title\"></div>\n<div ng-switch-when=\"true\" class=\"{{messageClass}}\" ng-bind-html=\"message\"></div>\n  </div>\n<progress-bar ng-if=\"progressBar\"></progress-bar>\n</div>\n"
     );
 });
 
@@ -211,7 +211,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
             follower: 'toast-follower'
         },
         positionClass: 'toast-top-full-width',
-        timeOut: 50000,
+        timeOut: 500000,
         titleClass: 'toast-title',
         toastClass: 'toast'
     });
@@ -1245,7 +1245,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     };
 
     var Encrypt = function(passphrase, newPhrase){
-        Encryption.generatePrivateKey(passphrase.replace(/\s+/g, ''), newPhrase).then(function (response) {
+        Encryption.generatePrivateKey(passphrase/*.replace(/\s+/g, '')*/, newPhrase).then(function (response) {
             $ionicLoading.hide();
             if (response)
                 mc.phraseModal.hide();
@@ -1264,12 +1264,12 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
     mc.savePhrase = function () {
         $ionicLoading.show();
-        var passphrase = _.toLower(mc.passPhrase);
+        var passphrase = mc.passPhrase; //_.toLower(mc.passPhrase);
         if (_.isEmpty(Encryption.Key.publicKey)) {
             Encrypt(mc.passPhrase, true);            
         }
         else {
-            Encryption.verifyPassphrase(passphrase.replace(/\s+/g, '')).then(function (response) {
+            Encryption.verifyPassphrase(passphrase/*.replace(/\s+/g, '')*/).then(function (response) {
                 if (response) {
                     Encrypt(mc.passPhrase, false);
                 }
@@ -1387,7 +1387,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                         url: $scope.imageURL,
                         id: notify.Id,
                         photo: notify.photo,
-                        icon: icon
+                        icon: icon,
+                        type: notify.type
                     };
                     $toaster.info(title, notify.username, {
                         extraData: user_data,
