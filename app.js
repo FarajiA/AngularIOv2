@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "https://ch-mo.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "https://ch-mo.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -944,7 +944,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     $scope.showTabs = {};
     $scope.showTabs.show = true;
     $scope.imageURL = imgURL_CONSTANT;
-
+    mc.profileloading = false;
     $scope.viewFigures = false;
 
     //$scope.shareLink = "";
@@ -1404,13 +1404,16 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             $state.go(state, parameters);
     };
     /********** photo upload & download ****************/
+    
+
     function photoUpdate() {
         if ($scope.user.photo) {
-            var rando = Math.floor(1000 + Math.random() * 9000)
+            var rando = _.random(1, 999);
             mc.profilePhoto = $scope.imageURL + $scope.user.id + '.png?rando=' + rando;
         }
         else
-            mc.profilePhoto = "img/default_avatar.png";        
+            mc.profilePhoto = "img/default_avatar.png";
+        mc.profileloading = false
     };
 
     $ionicModal.fromTemplateUrl('photo-modal.html', {
@@ -1514,6 +1517,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     };
 
     mc.uploadPicture = function () {
+        mc.profileloading = true;
         $ionicLoading.show();
         var options = {
             chunkedMode: false,
@@ -1537,6 +1541,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 mc.cropmodal.hide();
                 mc.photomodal.hide();
                 $ionicLoading.hide();
+                mc.profileloading = false;
             }/*,function (progress) {
                 console.log("Progress: " + (progress.loaded / progress.total) * 100)
                 $timeout(function () {
