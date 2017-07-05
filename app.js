@@ -88,6 +88,11 @@ const passphrase_CONSTANT = {
     enter: "Enter",
     helpText: "Your passphrase is used to create an encryption key for your messages. Remember this phrase if you plan on using this account on multiple devices."
 };
+const removeFollower_CONSTANT = {
+    removeUserTitle: 'remove 0?',
+    successfullyDeleted: '0 is no longer following you.'
+};
+
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
         ['ionic',

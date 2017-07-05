@@ -23,10 +23,9 @@
                         <p>{{chaser.firstName}}&nbsp;{{chaser.lastName}}</p>
                       </a>
                       <div class="helper">
-                          <i class="tooltip icon ion-android-more-vertical"></i>
+                          <i class="tooltip icon ion-android-more-vertical" ng-click="vm.removeChaser(chaser.id, chaser.username, $index)"></i>
                       </div>
                     </ion-item>
-
                 </ion-list>
                 <ion-infinite-scroll ng-if="vm.moChasers" on-infinite="vm.loadMoreChasers()" distance="30%"></ion-infinite-scroll>
             </div>

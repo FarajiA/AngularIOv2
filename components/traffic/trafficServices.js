@@ -37,7 +37,13 @@
 
         Traffic.unfollow = function (guid) {
             var deffered = $q.defer();
-
+            $http.delete(baseURL_CONSTANT + "api/chasing/" + guid)
+            .success(function (d) {
+                deffered.resolve(d);
+            })
+            .error(function (data, status) {
+                console.log("Request failed " + status);
+            });
             return deffered.promise;
         };
 

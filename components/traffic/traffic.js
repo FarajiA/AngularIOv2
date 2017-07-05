@@ -1,6 +1,6 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('TrafficController', ['$scope','$rootScope', '$timeout', '$stateParams', 'Traffic', 'UserStore', function ($scope,$rootScope, $timeout, $stateParams, Traffic, UserStore) {
+    app.controller('TrafficController', ['$scope','$rootScope', '$timeout', '$stateParams', '$ionicPopup', 'Traffic', 'UserStore', function ($scope,$rootScope, $timeout, $stateParams, $ionicPopup, Traffic, UserStore) {
         var vm = this;
         vm.TrafficService = Traffic;
         vm.imageURL = $scope.$parent.imageURL;
@@ -120,7 +120,29 @@
         });
 
 
-
+        vm.removeChaser = function (userID, username, index) {
+            var confirmPopup = $ionicPopup.confirm({
+                title: _.replace(removeFollower_CONSTANT.removeUserTitle, '0', username),
+                template: ''
+            });
+            confirmPopup.then(function (res) {
+                if (res) {
+                    Traffic.unfollow(userID).then(function (response) {
+                        var successful = response;
+                        if (successful) {
+                            vm.Chasers.splice(index, 1);
+                            vm.chasersNo = (vm.chasersNo - 1);
+                        }
+                        else 
+                            var whoopsPopup = $ionicPopup.confirm({ title: block_CONSTANT.unblockOops });
+                    }, function () {
+                        var whoopsPopup = $ionicPopup.confirm({
+                            title: block_CONSTANT.unblockOops
+                        });
+                    });
+                } 
+            });
+        };
 
 
     }]);
