@@ -1122,9 +1122,14 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 latitude: location.latitude,
                 longitude: location.longitude
             };
+            CentralHub.broadcast($scope.proxyCentralHub, coords).then(function (updated) {
+                console.log('[postCommplete]: ' + updated + ' BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
+            });
+            /*
             Broadcast.Broadcast(coords).then(function () {
                 console.log('[postCommplete] BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
             });
+            */
             backgroundGeoLocation.finish();
         };
 
@@ -1132,6 +1137,37 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             //console.log('BackgroundGeoLocation error');
         };
 
+        var bgOptionsAndroid = {
+            stationaryRadius: 50,
+            distanceFilter: 50,
+            desiredAccuracy: 10,
+            debug: true,
+            notificationIcon: 'broadcast_icon',
+            notificationText: 'ENABLED',
+            notificationTitle: "Chaser",
+            notificationText: "Broadcasting location...",
+            locationProvider: 0,//backgroundGeolocation.provider.ANDROID_DISTANCE_FILTER_PROVIDER,
+            interval: 10,
+            fastestInterval: 5,
+            activitiesInterval: 10,
+            stopOnTerminate: false,
+            startOnBoot: false,
+            startForeground: true,
+            stopOnStillActivity: true,
+            activityType: 'AutomotiveNavigation',
+            url: 'https://ch-mo.com/api/broadcast/locations',
+            syncUrl: 'https://ch-mo.com/api/broadcast/locations',
+            syncThreshold: 100,
+            httpHeaders: {
+                'Authorization': 'Bearer ' + authdata.token
+            },
+            pauseLocationUpdates: false,
+            saveBatteryOnBackground: false,
+            maxLocations: 50
+        };
+        
+        backgroundGeoLocation.configure(backgroundServiceSuccess, backgroundServiceFail, bgOptionsAndroid);
+        /*
         if (ionic.Platform.isAndroid()) {
             backgroundGeoLocation.configure(backgroundServiceSuccess, backgroundServiceFail, {
                 desiredAccuracy: 0,
@@ -1158,14 +1194,22 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
             });
         }
+        */
         backgroundGeoLocation.start();
     };
 
     $scope.$on('update_location', function (event, args) {
         if (args.action === "turn-on") {
+            
             document.addEventListener('deviceready', function () {
                 $scope.BackgroundServiceFunction();
             }, false);
+            /*
+            var coords = { longitude: -118.198020, latitude: 33.771682 };
+            CentralHub.broadcast($scope.proxyCentralHub, coords).then(function (updated) {
+                console.log('[postCommplete]: ' + updated + ' BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
+            });
+            */
         }
         else if (args.action === "turn-off") {
             backgroundGeoLocation.stop();
@@ -1250,7 +1294,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     };
 
     var Encrypt = function(passphrase, newPhrase){
-        Encryption.generatePrivateKey(passphrase/*.replace(/\s+/g, '')*/, newPhrase).then(function (response) {
+        Encryption.generatePrivateKey(passphrase.replace(/\s+/g, ''), newPhrase).then(function (response) {
             $ionicLoading.hide();
             if (response)
                 mc.phraseModal.hide();
@@ -1269,12 +1313,12 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
 
     mc.savePhrase = function () {
         $ionicLoading.show();
-        var passphrase = mc.passPhrase; //_.toLower(mc.passPhrase);
+        var passphrase = _.toLower(mc.passPhrase);
         if (_.isEmpty(Encryption.Key.publicKey)) {
             Encrypt(mc.passPhrase, true);            
         }
         else {
-            Encryption.verifyPassphrase(passphrase/*.replace(/\s+/g, '')*/).then(function (response) {
+            Encryption.verifyPassphrase(passphrase.replace(/\s+/g, '')).then(function (response) {
                 if (response) {
                     Encrypt(mc.passPhrase, false);
                 }

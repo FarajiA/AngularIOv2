@@ -64,6 +64,14 @@
         return proxy;
     };
 
+    var broadcast = function (proxyConnection, coords) {
+        var deffered = $q.defer();
+        proxyConnection.invoke('BroadcastUpdate', coords.latitude, coords.longitude).done(function (result) {
+            deffered.resolve(result);
+        });
+        return deffered.promise;
+    };
+
     var joinbroadcast = function (proxyConnection, username) {
         var deffered = $q.defer();
         proxyConnection.invoke('JoinBroadcastGroup', username).done(function (result) {
@@ -94,6 +102,7 @@
 
     return {
         initialize: initialize,
+        broadcast : broadcast,
         joinbroadcast: joinbroadcast,
         leavebroadcast: leavebroadcast,
         views: views,

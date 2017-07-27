@@ -46,8 +46,7 @@
                 showBackdrop: false,
                 maxWidth: 200,
                 showDelay: 0
-            });
-
+            });            
             var selected = JSON.parse(vm.choice);
             $cordovaGeolocation
                .getCurrentPosition(posOptions)
