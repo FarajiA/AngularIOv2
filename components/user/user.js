@@ -81,8 +81,8 @@
         $scope.$on('mapUpdate', function (event, value) {
             $scope.$apply(function () {
                 vm.broadcast.coords = {
-                    latitude: _.toNumber(value.coords.Latitude),
-                    longitude: _.toNumber(value.coords.Longitude)
+                    latitude: _.toNumber(value.Latitude),
+                    longitude: _.toNumber(value.Longitude)
                 };
             });
         });

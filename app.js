@@ -1,5 +1,5 @@
-const baseURL_CONSTANT = "https://ch-mo.com/";
-//const baseURL_CONSTANT = "http://localhost:59822/";
+//const baseURL_CONSTANT = "https://ch-mo.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -216,7 +216,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
             follower: 'toast-follower'
         },
         positionClass: 'toast-top-full-width',
-        timeOut: 500000,
+        timeOut: 5000,
         titleClass: 'toast-title',
         toastClass: 'toast'
     });
@@ -1137,7 +1137,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             //console.log('BackgroundGeoLocation error');
         };
 
-        var bgOptionsAndroid = {
+        var bgOptions = {
             stationaryRadius: 50,
             distanceFilter: 50,
             desiredAccuracy: 10,
@@ -1155,57 +1155,42 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             startForeground: true,
             stopOnStillActivity: true,
             activityType: 'AutomotiveNavigation',
+            syncThreshold: 100,/*
             url: 'https://ch-mo.com/api/broadcast/locations',
             syncUrl: 'https://ch-mo.com/api/broadcast/locations',
             syncThreshold: 100,
             httpHeaders: {
                 'Authorization': 'Bearer ' + authdata.token
             },
+             */
             pauseLocationUpdates: false,
             saveBatteryOnBackground: false,
             maxLocations: 50
         };
         
-        backgroundGeoLocation.configure(backgroundServiceSuccess, backgroundServiceFail, bgOptionsAndroid);
-        /*
-        if (ionic.Platform.isAndroid()) {
-            backgroundGeoLocation.configure(backgroundServiceSuccess, backgroundServiceFail, {
-                desiredAccuracy: 0,
-                stationaryRadius: 1,
-                distanceFilter: 1,
-                useActivityDetection: true,
-                // debug: true, <-- enable this hear sounds for background-geolocation life-cycle. 
-                stopOnTerminate: false, // <-- enable this to clear background location settings when the app terminates 
-                notificationIcon: 'broadcast_icon',
-                notificationText: 'ENABLED',
-                notificationTitle: "Chaser",
-                notificationText: "Broadcasting location...",
-                locationProvider: backgroundGeolocation.provider.ANDROID_DISTANCE_FILTER_PROVIDER,
-            });
-        }
-        else {
-            backgroundGeoLocation.configure(backgroundServiceSuccess, backgroundServiceFail, {
-                desiredAccuracy: 10,
-                stationaryRadius: 9,
-                distanceFilter: 5,
-                useActivityDetection: true,
-                activityType: 'AutomotiveNavigation',
-                //debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
-                stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
-            });
-        }
-        */
+        backgroundGeoLocation.configure(backgroundServiceSuccess, backgroundServiceFail, bgOptions);
+       
         backgroundGeoLocation.start();
     };
 
     $scope.$on('update_location', function (event, args) {
-        if (args.action === "turn-on") {
-            
+        if (args.action === "turn-on") {            
             document.addEventListener('deviceready', function () {
                 $scope.BackgroundServiceFunction();
             }, false);
             /*
-            var coords = { longitude: -118.198020, latitude: 33.771682 };
+            var rando = _.random(7);
+            var coordsArray = [{ longitude: -97.746198, latitude: 30.222426 },
+                            { longitude: -97.744911, latitude: 30.226246 },
+                            { longitude: -97.741735, latitude: 30.227432 },
+                            { longitude: -97.738988, latitude: 30.227284 },
+                            { longitude: -97.739031, latitude: 30.223465 },
+                            { longitude: -97.737701, latitude: 30.220684 },
+                            { longitude: -97.739847, latitude: 30.217198 },
+                            { longitude: -97.743967, latitude: 30.216975 }];
+
+            var coords = coordsArray[rando];
+
             CentralHub.broadcast($scope.proxyCentralHub, coords).then(function (updated) {
                 console.log('[postCommplete]: ' + updated + ' BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
             });
