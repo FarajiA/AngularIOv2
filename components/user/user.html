@@ -37,32 +37,20 @@
     <script id="mapModal.html" type="text/ng-template">
         <ion-modal-view class="map-modal">
             <ion-content has-bouncing="false">
-                <a ng-click="vm.closeMap()" class="button icon-left ion-close button-clear button-dark"></a>
-                <h3>Broadcast Coords</h3>
-                {{vm.broadcast.coords.latitude}} / {{vm.broadcast.coords.longitude}}
-                <hr />
+                <div id="mapbanner">
+                    <a ng-click="closeModal()" class="button icon-left ion-close button-clear button-dark"></a>
+                    <span class="mapTitle">{{username}}</span>
+                </div>
+                <ui-gmap-google-map ng-if="vm.map.center" center='vm.map.center' control='vm.map.control' zoom='vm.map.zoom' draggable="true" options="vm.options">
+                    <ui-gmap-marker ng-if="!vm.selfIdentity" coords="vm.broadcast.coords" options="vm.broadcast.options" idkey="vm.broadcast.id">
+                    </ui-gmap-marker>
+                    <ui-gmap-marker coords="vm.userMarker.coords" options="vm.userMarker.options" idkey="vm.userMarker.id">
+                    </ui-gmap-marker>
+                </ui-gmap-google-map>
+
             </ion-content>
         </ion-modal-view>
     </script>
-    <!--
-        <script id="mapModal.html" type="text/ng-template">
-          <ion-modal-view class="map-modal">
-              <ion-content has-bouncing="false">
-                  <div id="mapbanner">
-                      <a ng-click="closeModal()" class="button icon-left ion-close button-clear button-dark"></a>
-                      <span class="mapTitle">{{vm.username}}</span>
-                  </div>
-                  <ui-gmap-google-map center='map.center' control='map.control' zoom='map.zoom' draggable="true" options="options">
-                      <ui-gmap-marker ng-if="!selfIdentity" coords="chaserMarker.coords" options="chaserMarker.options" idkey="chaserMarker.id">
-                      </ui-gmap-marker>
-                      <ui-gmap-marker coords="userMarker.coords" options="userMarker.options" idkey="userMarker.id">
-                      </ui-gmap-marker>
-                  </ui-gmap-google-map>
-
-              </ion-content>
-          </ion-modal-view>
-      </script>
-        -->
     <script id="menuPopover.html" type="text/ng-template">
         <ion-popover-view class="flagPopover">
             <ion-content>

@@ -29,11 +29,11 @@
     return UserObject;
 }]).factory('CentralHub', ['$q', '$rootScope', 'AuthService', function ($q, $rootScope, AuthService) {
     var proxy = null;
-
+    var connection = null;
+    var forced = false;
     var initialize = function (hubName) {
-        var connection = $.hubConnection(signalRURL_CONSTANT, { useDefaultPath: false });
+        connection = $.hubConnection(signalRURL_CONSTANT, { useDefaultPath: false });
         connection.qs = { 'bearer_token': AuthService.authentication.token };
-
         proxy = connection.createHubProxy(hubName);
 
         proxy.on('notificationReceived', function (userName, photo, id, type, viewing, views) {
@@ -57,8 +57,8 @@
         });
 
         connection.disconnected(function () {
-            console.log('Connection closed. Retrying...');
-            setTimeout(function () { connection.start({ jsonp: true }); }, 5000);
+            if (!forced)
+                setTimeout(function () { connection.start({ jsonp: true }); }, 5000);
         });
 
         return proxy;
@@ -100,13 +100,19 @@
         });
     };
 
+    var disconnect = function () {
+        forced = true;
+        connection.stop();
+    };
+
     return {
         initialize: initialize,
         broadcast : broadcast,
         joinbroadcast: joinbroadcast,
         leavebroadcast: leavebroadcast,
         views: views,
-        streamBroadcast: streamBroadcast
+        streamBroadcast: streamBroadcast,
+        disconnect: disconnect
     };
 
    }]).factory('Encryption', ['$http', '$q', 'localStorageService', 'AuthService', 'UserStore', function ($http, $q, localStorageService, AuthService, UserStore) {
@@ -348,5 +354,29 @@
 
          Broadcast.data = function () { return data; };
          return Broadcast;
-     }]);;
+     }]).factory('GeoAlert', function () {
+        var viewed = {
+            seen: false
+        };
+        return {
+            getGeoalert: function () {
+                return viewed.seen;
+            },
+            setGeoalert: function (seen) {
+                viewed.seen = seen;
+            }
+        };
+    }).factory('UserView', function () {
+        var view = {
+            current: false
+        };
+        return {
+            UserPageCurrent: function () {
+                return view.current;
+            },
+            SetUserPageCurrent: function (current) {
+                view.current = current;
+            }
+        };
+    });
 })();

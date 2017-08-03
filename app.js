@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "https://ch-mo.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "https://ch-mo.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -92,6 +92,13 @@ const removeFollower_CONSTANT = {
     removeUserTitle: 'remove 0?',
     successfullyDeleted: '0 is no longer following you.'
 };
+const mapsPrompt_CONSTANT = {
+    title: 'Location services off',
+    text: 'To see your position turn on location services',
+    error: 'Location services off',
+    Errortitle: 'Map failed, sorry dawg',
+    NolongerBroadcasting : '0 is no longer broadcasting'
+};
 
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
@@ -102,7 +109,8 @@ var app = angular.module('App',
         'mdChips',
         'ngCordova',
         'toastr',
-        'ngImgCrop'
+        'ngImgCrop',
+        'uiGmapgoogle-maps'
         /*
         'App.Activity',
         'App.Messages',
@@ -176,13 +184,17 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
 });
 
 app.config(RouteMethods, ocLazyLoadProvider);
-RouteMethods.$inject = ["$stateProvider", "$urlRouterProvider", "$httpProvider", "$ionicConfigProvider", "$provide", "toastrConfig"];
+RouteMethods.$inject = ["$stateProvider", "$urlRouterProvider", "$httpProvider", "$ionicConfigProvider", "$provide", "toastrConfig", "uiGmapgoogle-maps"];
 ocLazyLoadProvider.$inject = ["$ocLazyLoadProvider"];
 
-function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $provide, toastrConfig) {
+function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $provide, toastrConfig, uiGmapGoogleMapApiProvider) {
 
     $ionicConfigProvider.backButton.previousTitleText(false).text('');
     $ionicConfigProvider.tabs.position('bottom');
+
+    uiGmapGoogleMapApiProvider.configure({
+        key: 'AIzaSyC4SnjNGk2uAkaSZHnT6auYwgA-79Qky1M'
+    })
 
     $provide.decorator('mdChipsDirective', function ($delegate, $injector) {
         var directive, link;
@@ -283,8 +295,6 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'trafficDetails',
                       files: [
-                          'lib/angular-simple-logger.js',
-                          'lib/angular-google-maps.js',
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
@@ -378,8 +388,6 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'activityDetails',
                       files: [
-                          'lib/angular-simple-logger.js',
-                          'lib/angular-google-maps.js',
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
@@ -472,8 +480,6 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                   return $ocLazyLoad.load({
                       name: 'searchDetails',
                       files: [
-                          'lib/angular-simple-logger.js',
-                          'lib/angular-google-maps.js',
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
@@ -1125,11 +1131,6 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             CentralHub.broadcast($scope.proxyCentralHub, coords).then(function (updated) {
                 console.log('[postCommplete]: ' + updated + ' BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
             });
-            /*
-            Broadcast.Broadcast(coords).then(function () {
-                console.log('[postCommplete] BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
-            });
-            */
             backgroundGeoLocation.finish();
         };
 
@@ -1155,7 +1156,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             startForeground: true,
             stopOnStillActivity: true,
             activityType: 'AutomotiveNavigation',
-            syncThreshold: 100,/*
+            syncThreshold: 100,
+            /*
             url: 'https://ch-mo.com/api/broadcast/locations',
             syncUrl: 'https://ch-mo.com/api/broadcast/locations',
             syncThreshold: 100,
@@ -1323,7 +1325,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         
     /********** Appwide Pause + Resume logic ************/
     document.addEventListener("pause", function () {
-       
+        if (!$scope.user.broadcasting)
+            CentralHub.disconnect();
     }, false);
 
     document.addEventListener("resume", function () {
@@ -1340,7 +1343,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         var foreground = notify.foreground;
         var coldstart = notify.coldstart;
 
-        switch (notify.type) {
+        var type = parseInt(notify.type);
+        switch (type) {
             case 0:
                 var exists = ControllerChecker.exists("TrafficController");
                 if (exists)
@@ -1422,7 +1426,7 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                         id: notify.Id,
                         photo: notify.photo,
                         icon: icon,
-                        type: notify.type
+                        type: type
                     };
                     $toaster.info(title, notify.username, {
                         extraData: user_data,

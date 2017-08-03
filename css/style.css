@@ -363,6 +363,33 @@ ion-content.thread {background-color:#fff;}
      top: -50px;
 }
 
+/*Map modal*/
+.map-modal {width: 100%; height: 100%; top:0; left:0;}
+.map-modal .scroll {height:100%}
+.angular-google-map { height: 100%; }
+.angular-google-map-container{height: 100%;}
+#mapbanner {
+position: absolute;
+top: 0px;
+width: 100%;background-color: #fff;
+z-index: 2;
+opacity: 0.5;
+filter: alpha(opacity=60);
+height:50px;
+text-align: center;
+}
+#mapbanner .mapTitle{display: inline-block;
+    height: 50px;
+    font-size: 30px;
+    padding-top: 15px;
+}
+#mapbanner a.button {
+    float: left;
+    margin-left: 5px;
+    position: absolute;
+    left: 10px;
+}
+
 /* Groups 
 ====================================== */
 .groupPopover {height: 60px;}

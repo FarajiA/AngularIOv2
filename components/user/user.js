@@ -1,7 +1,8 @@
 ﻿; (function () {
     var app = angular.module('App');
-    app.controller('UserController', ['$scope', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$location', '$ionicHistory', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub',
-        function ($scope, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $location, $ionicHistory, UserStore, User, BroadcastStatus, Block, Messages, CentralHub) {
+    //app.requires.push('uiGmapgoogle-maps');
+    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'GeoAlert', 'UserView', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
+        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, GeoAlert, UserView, GoogleMapApi, uiGmapIsReady) {
         var vm = this;
         /*
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
@@ -12,11 +13,18 @@
         vm.title = vm.username;
         vm.broadcast = {};
         vm.imageURL = $scope.$parent.imageURL;
-        $scope.chaserBroadcast = {};
         var path = $location.path().split("/") || "Unknown";
         vm.segment = path[2];
         vm.showBack = _.isEmpty($ionicHistory.viewHistory().backView);
-
+        vm.userMarker = {
+            id: 1,
+            options: { icon: 'img/map_dot.png' },
+        };
+        var options = {
+            timeout: 7000,
+            enableHighAccuracy: true,
+            maximumAge: 500000
+        };
         var getUserRequest = function () {
             User.Info(vm.username).then(function (response) {
                 vm.fullName = response.fullName;
@@ -49,44 +57,6 @@
         };
 
         getUserRequest();
-
-        /*  Map logic */
-        $ionicModal.fromTemplateUrl('mapModal.html', {
-            scope: $scope,
-            animation: 'slide-in-up'
-        }).then(function (modal) {
-            vm.mapModal = modal;
-        });
-
-        vm.openMap = function () {
-            CentralHub.joinbroadcast($scope.$parent.proxyCentralHub, vm.username).then(function (coords) {
-                vm.broadcast.coords = {
-                    latitude: _.toNumber(coords.Latitude),
-                    longitude: _.toNumber(coords.Longitude)
-                };
-                CentralHub.streamBroadcast($scope.$parent.proxyCentralHub);
-            });
-            vm.mapModal.show();
-        };
-
-        vm.closeMap = function () {
-            vm.mapModal.hide();
-            CentralHub.leavebroadcast($scope.$parent.proxyCentralHub, vm.id);
-        };
-
-        $scope.$on('$destroy', function () {
-            vm.mapModal.remove();
-        });
-
-        $scope.$on('mapUpdate', function (event, value) {
-            $scope.$apply(function () {
-                vm.broadcast.coords = {
-                    latitude: _.toNumber(value.Latitude),
-                    longitude: _.toNumber(value.Longitude)
-                };
-            });
-        });
-        /* End map*/
 
         $scope.$on('$ionicView.enter', function () {
             if (!(vm.id === $scope.user.id)) {
@@ -122,15 +92,8 @@
                         vm.allowedAccess = false;
                     }
                 });
-            }
-        });
-
-        $scope.$on('$ionicView.leave', function () {
-            /* 
-            if (!$scope.selfIdentity) {
-                UserView.SetUserPageCurrent(false);
-            }
-            */
+            } else 
+                vm.selfIdentity = true;
         });
 
         $ionicPopover.fromTemplateUrl('menuPopover.html', {
@@ -259,6 +222,116 @@
 
        $scope.$on('$destroy', function () {
            vm.popover.remove();
+       });
+
+
+       /************** Map ***************/
+       $ionicModal.fromTemplateUrl('mapModal.html', {
+           scope: $scope,
+           animation: 'slide-in-up'
+       }).then(function (modal) {
+           vm.mapModal = modal;
+       });
+
+       vm.openMap = function () {
+           $ionicLoading.show({
+               template: '<ion-spinner></ion-spinner> Connecting to ' + vm.username
+           });
+           CentralHub.joinbroadcast($scope.$parent.proxyCentralHub, vm.username).then(function (coords) {
+               vm.broadcast.coords = {
+                   latitude:  _.toNumber(coords.Latitude),
+                   longitude: _.toNumber(coords.Longitude)
+               };
+               GeoWatch().then(function () {
+                   vm.mapModal.show();
+                   CentralHub.streamBroadcast($scope.$parent.proxyCentralHub);
+                   GoogleMapInvoke();
+               })
+           });
+       };
+
+       vm.closeMap = function () {
+           vm.mapModal.hide();
+           CentralHub.leavebroadcast($scope.$parent.proxyCentralHub, vm.id);
+       };
+
+       $scope.$on('$destroy', function () {
+           vm.mapModal.remove();
+       });
+
+       $scope.$on('mapUpdate', function (event, value) {
+           $scope.$apply(function () {
+               vm.broadcast.coords = {
+                   latitude: _.toNumber(value.Latitude),
+                   longitude: _.toNumber(value.Longitude)
+               };
+           });
+       });
+
+       function GoogleMapInvoke() {
+           GoogleMapApi.then(function (maps) {
+               $ionicLoading.hide();
+               vm.options = { disableDefaultUI: true };
+               var markerBounds = new maps.LatLngBounds();
+               var chaser_Latlng = new maps.LatLng(vm.broadcast.coords.latitude, vm.broadcast.coords.longitude);
+               var user_Latlng = new maps.LatLng(vm.userMarker.coords.latitude, vm.userMarker.coords.longitude);
+
+               markerBounds.extend(chaser_Latlng);
+               markerBounds.extend(user_Latlng);
+               vm.map = { control: {}, center: { latitude: markerBounds.getCenter().lat(), longitude: markerBounds.getCenter().lng() }, zoom: 12 };
+
+               uiGmapIsReady.promise().then(function (maps) {
+                   vm.map.control.getGMap().fitBounds(markerBounds);
+                   //$scope.map.control.getGMap().setZoom($scope.map.control.getGMap().getZoom());
+               });
+           },
+               function (error) {
+                   $scope.modal.hide();
+                   $ionicPopup.alert({
+                       title: mapsPrompt_CONSTANT.Errortitle
+                   }).then(function (res) {
+                   });
+               });
+       };7
+       function GeoWatch(next) {
+           var d = $q.defer()
+           $ionicPlatform.ready(function () {
+               $scope.geoWatch = $cordovaGeolocation.watchPosition(options);
+               $scope.geoWatch.then(null,
+                 function (error) {
+                     d.resolve();
+                     var seen = GeoAlert.getGeoalert();
+                     if (seen)
+                         return;
+                     $ionicPopup.alert({
+                         title: mapsPrompt_CONSTANT.title,
+                         template: mapsPrompt_CONSTANT.text
+                     }).then(function (res) {
+                         GeoAlert.setGeoalert(true);
+                     });
+                 }, function (position) {
+                     d.resolve();
+                     vm.userMarker.coords = {
+                         latitude: position.latitude,
+                         longitude: position.longitude
+                     };
+                 });
+           });
+           return d.promise;
+       };
+
+       var clearGeoWatch = function () {
+           if (!_.isEmpty($scope.geoWatch))
+               $scope.geoWatch.clearWatch();
+       };
+
+        /*********** End Map ***************/
+
+       $scope.$on('$ionicView.leave', function () {
+           if (!vm.selfIdentity) {
+               clearGeoWatch();
+               UserView.SetUserPageCurrent(false);
+           }
        });
     }]);
 })();
