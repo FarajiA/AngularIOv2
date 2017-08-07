@@ -354,7 +354,7 @@
 
          Broadcast.data = function () { return data; };
          return Broadcast;
-     }]).factory('GeoAlert', function () {
+     }])/*.factory('GeoAlert', function () {
         var viewed = {
             seen: false
         };
@@ -366,7 +366,7 @@
                 viewed.seen = seen;
             }
         };
-    }).factory('UserView', function () {
+    })*/.factory('UserView', function () {
         var view = {
             current: false
         };

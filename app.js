@@ -184,7 +184,7 @@ app.run(function (AuthService, Encryption, $state, $rootScope, $ionicPlatform, $
 });
 
 app.config(RouteMethods, ocLazyLoadProvider);
-RouteMethods.$inject = ["$stateProvider", "$urlRouterProvider", "$httpProvider", "$ionicConfigProvider", "$provide", "toastrConfig", "uiGmapgoogle-maps"];
+RouteMethods.$inject = ["$stateProvider", "$urlRouterProvider", "$httpProvider", "$ionicConfigProvider", "$provide", "toastrConfig", "uiGmapGoogleMapApiProvider"];
 ocLazyLoadProvider.$inject = ["$ocLazyLoadProvider"];
 
 function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicConfigProvider, $provide, toastrConfig, uiGmapGoogleMapApiProvider) {

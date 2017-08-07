@@ -1,8 +1,8 @@
 ﻿; (function () {
     var app = angular.module('App');
     //app.requires.push('uiGmapgoogle-maps');
-    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'GeoAlert', 'UserView', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
-        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, GeoAlert, UserView, GoogleMapApi, uiGmapIsReady) {
+    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'UserView', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
+        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, UserView, GoogleMapApi, uiGmapIsReady) {
         var vm = this;
         /*
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
@@ -11,13 +11,16 @@
         */
         vm.username = $stateParams.username;
         vm.title = vm.username;
-        vm.broadcast = {};
+        vm.broadcast = {
+            id: 1,
+            options: { icon: 'img/checkered_chaser.png' }
+        };
         vm.imageURL = $scope.$parent.imageURL;
         var path = $location.path().split("/") || "Unknown";
         vm.segment = path[2];
         vm.showBack = _.isEmpty($ionicHistory.viewHistory().backView);
         vm.userMarker = {
-            id: 1,
+            id: 2,
             options: { icon: 'img/map_dot.png' },
         };
         var options = {
@@ -246,7 +249,9 @@
                    vm.mapModal.show();
                    CentralHub.streamBroadcast($scope.$parent.proxyCentralHub);
                    GoogleMapInvoke();
-               })
+               }, function () {
+                   $ionicLoading.hide();
+               });
            });
        };
 
@@ -293,27 +298,24 @@
                    });
                });
        };7
-       function GeoWatch(next) {
+       function GeoWatch() {
            var d = $q.defer()
            $ionicPlatform.ready(function () {
                $scope.geoWatch = $cordovaGeolocation.watchPosition(options);
                $scope.geoWatch.then(null,
                  function (error) {
-                     d.resolve();
-                     var seen = GeoAlert.getGeoalert();
-                     if (seen)
-                         return;
+                     d.reject();
                      $ionicPopup.alert({
                          title: mapsPrompt_CONSTANT.title,
                          template: mapsPrompt_CONSTANT.text
                      }).then(function (res) {
-                         GeoAlert.setGeoalert(true);
+                         //GeoAlert.setGeoalert(true);
                      });
                  }, function (position) {
                      d.resolve();
                      vm.userMarker.coords = {
-                         latitude: position.latitude,
-                         longitude: position.longitude
+                         latitude: position.coords.latitude,
+                         longitude: position.coords.longitude
                      };
                  });
            });
