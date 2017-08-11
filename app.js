@@ -1,5 +1,5 @@
-const baseURL_CONSTANT = "https://ch-mo.com/";
-//const baseURL_CONSTANT = "http://localhost:59822/";
+//const baseURL_CONSTANT = "https://ch-mo.com/";
+const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -298,7 +298,9 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
-                          'components/blocks/blocksServices.js'
+                          'components/blocks/blocksServices.js',
+                          'lib/markerAnimate.js',
+                          'lib/slidingmarker.min.js'
                       ]
                   });
               }],
@@ -391,7 +393,9 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
-                          'components/blocks/blocksServices.js'
+                          'components/blocks/blocksServices.js',
+                          'lib/markerAnimate.js',
+                          'lib/slidingmarker.min.js'
                       ]
                   });
               }],
@@ -483,7 +487,9 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
-                          'components/blocks/blocksServices.js'
+                          'components/blocks/blocksServices.js',
+                          'lib/markerAnimate.js',
+                          'lib/slidingmarker.min.js'
                       ]
                   });
               }],

@@ -11,9 +11,10 @@
         */
         vm.username = $stateParams.username;
         vm.title = vm.username;
+        vm.chaserMarkerIcon = {};
         vm.broadcast = {
             id: 1,
-            options: { icon: 'img/checkered_chaser.png' }
+            options: { icon: vm.chaserMarkerIcon }
         };
         vm.imageURL = $scope.$parent.imageURL;
         var path = $location.path().split("/") || "Unknown";
@@ -275,20 +276,26 @@
 
        function GoogleMapInvoke() {
            GoogleMapApi.then(function (maps) {
-               $ionicLoading.hide();
                vm.options = { disableDefaultUI: true };
-               var markerBounds = new maps.LatLngBounds();
-               var chaser_Latlng = new maps.LatLng(vm.broadcast.coords.latitude, vm.broadcast.coords.longitude);
-               var user_Latlng = new maps.LatLng(vm.userMarker.coords.latitude, vm.userMarker.coords.longitude);
+               CombineImages(function (finalIcon) {
+                   vm.chaserMarkerIcon.anchor = new google.maps.Point(36, 100);
+                   vm.chaserMarkerIcon.size = new google.maps.Size(75, 100);
+                   vm.chaserMarkerIcon.url = finalIcon;
+                   $ionicLoading.hide();
+                   var markerBounds = new maps.LatLngBounds();
+                   var chaser_Latlng = new maps.LatLng(vm.broadcast.coords.latitude, vm.broadcast.coords.longitude);
+                   var user_Latlng = new maps.LatLng(vm.userMarker.coords.latitude, vm.userMarker.coords.longitude);
 
-               markerBounds.extend(chaser_Latlng);
-               markerBounds.extend(user_Latlng);
-               vm.map = { control: {}, center: { latitude: markerBounds.getCenter().lat(), longitude: markerBounds.getCenter().lng() }, zoom: 12 };
+                   markerBounds.extend(chaser_Latlng);
+                   markerBounds.extend(user_Latlng);
+                   vm.map = { control: {}, center: { latitude: markerBounds.getCenter().lat(), longitude: markerBounds.getCenter().lng() }, zoom: 12 };
 
-               uiGmapIsReady.promise().then(function (maps) {
-                   vm.map.control.getGMap().fitBounds(markerBounds);
-                   //$scope.map.control.getGMap().setZoom($scope.map.control.getGMap().getZoom());
+                   uiGmapIsReady.promise().then(function (maps) {
+                       vm.map.control.getGMap().fitBounds(markerBounds);
+                       //$scope.map.control.getGMap().setZoom($scope.map.control.getGMap().getZoom());
+                   });
                });
+
            },
                function (error) {
                    $scope.modal.hide();
@@ -297,7 +304,7 @@
                    }).then(function (res) {
                    });
                });
-       };7
+       };
        function GeoWatch() {
            var d = $q.defer()
            $ionicPlatform.ready(function () {
@@ -325,6 +332,37 @@
        var clearGeoWatch = function () {
            if (!_.isEmpty($scope.geoWatch))
                $scope.geoWatch.clearWatch();
+       };
+
+       function CombineImages(cb) {
+           var primaryCanvas = document.createElement('canvas');
+           var tmpCtx = primaryCanvas.getContext('2d');
+           var $dim = 12;
+           var finalImg;
+           primaryCanvas.width = 65;
+           primaryCanvas.height = 100;
+
+           var markerImg = new Image();
+           markerImg.src = "img/marker.png";
+           markerImg.onload = function () {
+               tmpCtx.drawImage(markerImg, 0, 0, 65, 100);
+               var thumbImg = new Image();
+               var timestamp = new Date().getTime();
+               thumbImg.crossOrigin = "Anonymous";
+               thumbImg.src =  vm.photo ? imgURL_CONSTANT + vm.id + '.png' + timestamp: 'img/default_avatar.png';
+
+               thumbImg.onload = function () {
+                   tmpCtx.save();
+                   tmpCtx.beginPath();
+                   tmpCtx.arc(33, 28, 2 * $dim, 0, Math.PI * 2, true);
+                   tmpCtx.closePath();
+                   tmpCtx.clip();
+
+                   tmpCtx.drawImage(thumbImg, 8, 3, 4 * $dim, 4 * $dim);
+                   finalImg = primaryCanvas.toDataURL("image/png");
+                   cb(finalImg);
+               };
+           };
        };
 
         /*********** End Map ***************/
