@@ -298,9 +298,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
-                          'components/blocks/blocksServices.js',
-                          'lib/markerAnimate.js',
-                          'lib/slidingmarker.min.js'
+                          'components/blocks/blocksServices.js'
                       ]
                   });
               }],
@@ -393,9 +391,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
-                          'components/blocks/blocksServices.js',
-                          'lib/markerAnimate.js',
-                          'lib/slidingmarker.min.js'
+                          'components/blocks/blocksServices.js'
                       ]
                   });
               }],
@@ -1213,13 +1209,17 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     });
 
     $scope.$parent.$on("centralHubBroadcast", function (e, coords) {
-        $scope.$broadcast('mapUpdate', coords)
+        $scope.$broadcast('mapUpdate', coords);
     });
 
     $scope.$parent.$on("centralHubViewing", function (e, views) {
         $scope.$apply(function () {
             $scope.user.broadcast.viewing = views;
         });
+    });
+
+    $scope.$parent.$on("centralHubBroadcastOff", function (e, userID, userName) {
+        $scope.$broadcast('broadcastOff', userID, userName);
     });
 
     mc.CheckBadge = function (badge) {
@@ -1577,25 +1577,5 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         });
     };
    /******* end photo upload & download ******************/
-    $scope.loadScript = function (url, type, charset) {
-        if (type === undefined) type = 'text/javascript';
-        if (url) {
-            var script = document.querySelector("script[src*='" + url + "']");
-            if (!script) {
-                var heads = document.getElementsByTagName("head");
-                if (heads && heads.length) {
-                    var head = heads[0];
-                    if (head) {
-                        script = document.createElement('script');
-                        script.setAttribute('src', url);
-                        script.setAttribute('type', type);
-                        if (charset) script.setAttribute('charset', charset);
-                        head.appendChild(script);
-                    }
-                }
-            }
-            return script;
-        }
-    };
 
 }]);

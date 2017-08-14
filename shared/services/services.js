@@ -100,6 +100,12 @@
         });
     };
 
+    var broadcastOff = function (proxyConnection) {
+        proxyConnection.on('broadcastEnd', function (coords) {
+            $rootScope.$emit("centralHubBroadcastOff", coords);
+        });
+    };
+
     var disconnect = function () {
         forced = true;
         connection.stop();
