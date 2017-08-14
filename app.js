@@ -487,9 +487,7 @@ function RouteMethods($stateProvider, $urlRouterProvider, $httpProvider, $ionicC
                           'components/user/userServices.js',
                           'components/user/user.js',
                           'components/user/userDirectives.js',
-                          'components/blocks/blocksServices.js',
-                          'lib/markerAnimate.js',
-                          'lib/slidingmarker.min.js'
+                          'components/blocks/blocksServices.js'
                       ]
                   });
               }],
@@ -1186,23 +1184,6 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
             document.addEventListener('deviceready', function () {
                 $scope.BackgroundServiceFunction();
             }, false);
-            /*
-            var rando = _.random(7);
-            var coordsArray = [{ longitude: -97.746198, latitude: 30.222426 },
-                            { longitude: -97.744911, latitude: 30.226246 },
-                            { longitude: -97.741735, latitude: 30.227432 },
-                            { longitude: -97.738988, latitude: 30.227284 },
-                            { longitude: -97.739031, latitude: 30.223465 },
-                            { longitude: -97.737701, latitude: 30.220684 },
-                            { longitude: -97.739847, latitude: 30.217198 },
-                            { longitude: -97.743967, latitude: 30.216975 }];
-
-            var coords = coordsArray[rando];
-
-            CentralHub.broadcast($scope.proxyCentralHub, coords).then(function (updated) {
-                console.log('[postCommplete]: ' + updated + ' BackgroundGeoLocation callbackSent: ' + location.latitude + ',' + location.longitude);
-            });
-            */
         }
         else if (args.action === "turn-off") {
             backgroundGeoLocation.stop();
@@ -1596,6 +1577,25 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         });
     };
    /******* end photo upload & download ******************/
-
+    $scope.loadScript = function (url, type, charset) {
+        if (type === undefined) type = 'text/javascript';
+        if (url) {
+            var script = document.querySelector("script[src*='" + url + "']");
+            if (!script) {
+                var heads = document.getElementsByTagName("head");
+                if (heads && heads.length) {
+                    var head = heads[0];
+                    if (head) {
+                        script = document.createElement('script');
+                        script.setAttribute('src', url);
+                        script.setAttribute('type', type);
+                        if (charset) script.setAttribute('charset', charset);
+                        head.appendChild(script);
+                    }
+                }
+            }
+            return script;
+        }
+    };
 
 }]);

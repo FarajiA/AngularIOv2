@@ -1,8 +1,9 @@
 ﻿; (function () {
     var app = angular.module('App');
     //app.requires.push('uiGmapgoogle-maps');
-    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'UserView', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
-        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, UserView, GoogleMapApi, uiGmapIsReady) {
+    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform','$ocLazyLoad', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'UserView', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
+        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $ocLazyLoad, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, UserView, GoogleMapApi, uiGmapIsReady) {
+        
         var vm = this;
         /*
         $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
@@ -246,6 +247,8 @@
                    latitude:  _.toNumber(coords.Latitude),
                    longitude: _.toNumber(coords.Longitude)
                };
+               vm.broadcast.duration = 1000;
+               vm.broadcast.easing = "easeOutQuart";
                GeoWatch().then(function () {
                    vm.mapModal.show();
                    CentralHub.streamBroadcast($scope.$parent.proxyCentralHub);
@@ -276,6 +279,11 @@
 
        function GoogleMapInvoke() {
            GoogleMapApi.then(function (maps) {
+               $ocLazyLoad.load(
+                      ['lib/jquery.easing.min.js', 'lib/markerAnimate.js', 'lib/slidingmarker.min.js'])
+                        .then(function () {
+                            SlidingMarker.initializeGlobally();
+                        });
                vm.options = { disableDefaultUI: true };
                CombineImages(function (finalIcon) {
                    vm.chaserMarkerIcon.anchor = new google.maps.Point(36, 100);
@@ -285,7 +293,6 @@
                    var markerBounds = new maps.LatLngBounds();
                    var chaser_Latlng = new maps.LatLng(vm.broadcast.coords.latitude, vm.broadcast.coords.longitude);
                    var user_Latlng = new maps.LatLng(vm.userMarker.coords.latitude, vm.userMarker.coords.longitude);
-
                    markerBounds.extend(chaser_Latlng);
                    markerBounds.extend(user_Latlng);
                    vm.map = { control: {}, center: { latitude: markerBounds.getCenter().lat(), longitude: markerBounds.getCenter().lng() }, zoom: 12 };
@@ -349,7 +356,7 @@
                var thumbImg = new Image();
                var timestamp = new Date().getTime();
                thumbImg.crossOrigin = "Anonymous";
-               thumbImg.src =  vm.photo ? imgURL_CONSTANT + vm.id + '.png' + timestamp: 'img/default_avatar.png';
+               thumbImg.src =  vm.photo ? imgURL_CONSTANT + vm.id + '.png': 'img/default_avatar.png';
 
                thumbImg.onload = function () {
                    tmpCtx.save();
@@ -372,6 +379,8 @@
                clearGeoWatch();
                UserView.SetUserPageCurrent(false);
            }
-       });
+       });     
+    
+
     }]);
 })();
