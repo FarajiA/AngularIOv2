@@ -277,13 +277,21 @@
            });
        });
 
+       $scope.$on('broadcastOff', function (event, userID, userName) {
+           $ionicPopup.alert({
+               title: maps_CONSTANT.NolongerBroadcasting.replace(/0/gi, userName)
+           }).then(function (res) {
+               vm.broadcasting = false;
+               vm.mapModal.hide();
+           });
+       });
+
        function GoogleMapInvoke() {
            GoogleMapApi.then(function (maps) {
-               $ocLazyLoad.load(
-                      ['lib/jquery.easing.min.js', 'lib/markerAnimate.js', 'lib/slidingmarker.min.js'])
-                        .then(function () {
-                            SlidingMarker.initializeGlobally();
-                        });
+               $ocLazyLoad.load(['lib/jquery.easing.min.js', 'lib/markerAnimate.js', 'lib/slidingmarker.min.js'])
+                   .then(function () {
+                        SlidingMarker.initializeGlobally();
+                   });
                vm.options = { disableDefaultUI: true };
                CombineImages(function (finalIcon) {
                    vm.chaserMarkerIcon.anchor = new google.maps.Point(36, 100);
@@ -302,12 +310,11 @@
                        //$scope.map.control.getGMap().setZoom($scope.map.control.getGMap().getZoom());
                    });
                });
-
            },
                function (error) {
                    $scope.modal.hide();
                    $ionicPopup.alert({
-                       title: mapsPrompt_CONSTANT.Errortitle
+                       title: maps_CONSTANT.Errortitle
                    }).then(function (res) {
                    });
                });
@@ -320,8 +327,8 @@
                  function (error) {
                      d.reject();
                      $ionicPopup.alert({
-                         title: mapsPrompt_CONSTANT.title,
-                         template: mapsPrompt_CONSTANT.text
+                         title: maps_CONSTANT.title,
+                         template: maps_CONSTANT.text
                      }).then(function (res) {
                          //GeoAlert.setGeoalert(true);
                      });

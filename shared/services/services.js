@@ -98,12 +98,9 @@
         proxyConnection.on('receiveBroadcast', function (coords) {
             $rootScope.$emit("centralHubBroadcast", coords);
         });
-    };
-
-    var broadcastOff = function (proxyConnection) {
-        proxyConnection.on('broadcastEnd', function (coords) {
-            $rootScope.$emit("centralHubBroadcastOff", coords);
-        });
+        proxyConnection.on('broadcastEnd', function (userID, userName) {
+            $rootScope.$emit("centralHubBroadcastOff", userID, userName);
+        }); 
     };
 
     var disconnect = function () {

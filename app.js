@@ -92,13 +92,6 @@ const removeFollower_CONSTANT = {
     removeUserTitle: 'remove 0?',
     successfullyDeleted: '0 is no longer following you.'
 };
-const mapsPrompt_CONSTANT = {
-    title: 'Location services off',
-    text: 'To see your position turn on location services',
-    error: 'Location services off',
-    Errortitle: 'Map failed, sorry dawg',
-    NolongerBroadcasting : '0 is no longer broadcasting'
-};
 
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
