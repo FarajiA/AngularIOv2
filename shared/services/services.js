@@ -281,6 +281,18 @@
              return deffered.promise;
          };
 
+         Device.deleteDevice = function (token) {
+             var deffered = $q.defer();
+             $http.delete(baseURL_CONSTANT + "api/devices/" + token)
+             .success(function (d) {
+                 deffered.resolve(d);
+             })
+             .error(function (data, status) {
+                 deffered.reject(data);
+             });
+             return deffered.promise;
+         };
+
          Device.data = function () { return data; };
          return Device;
      }]).factory('UserView', function () {

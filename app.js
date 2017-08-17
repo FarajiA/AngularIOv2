@@ -815,7 +815,7 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
         authServiceFactory.authentication.refreshTokenExp = data.refreshTokenDate;
     };
 
-    authServiceFactory.logOut = function () {
+    authServiceFactory.logOut = function (cb) {
 
         localStorageService.remove('authorizationData');
         localStorageService.remove('KeyData');
@@ -825,6 +825,7 @@ app.factory('AuthService', ['$http', '$q', 'localStorageService', 'UserStore', f
         authServiceFactory.authentication.token = "";
         authServiceFactory.authentication.refreshToken = "";
         authServiceFactory.authentication.refreshTokenExp = "";
+        cb();
     };
 
     authServiceFactory.fillAuthData = function () {
@@ -1570,5 +1571,14 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         });
     };
    /******* end photo upload & download ******************/
+
+    mc.logout = function () {
+        //backgroundGeoLocation.stop();        
+        AuthService.logOut(function () {
+            $state.go('login');
+            //Device.deleteDevice(token);
+        });
+        
+    };
 
 }]);

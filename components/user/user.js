@@ -288,7 +288,7 @@
 
        function GoogleMapInvoke() {
            GoogleMapApi.then(function (maps) {
-               $ocLazyLoad.load(['lib/jquery.easing.min.js', 'lib/markerAnimate.js', 'lib/slidingmarker.min.js'])
+               $ocLazyLoad.load(['lib/jquery.easing.min.js', 'lib/markerAnimate.js', 'lib/slidingMarker.min.js'])
                    .then(function () {
                         SlidingMarker.initializeGlobally();
                    });
@@ -311,13 +311,13 @@
                    });
                });
            },
-               function (error) {
-                   $scope.modal.hide();
-                   $ionicPopup.alert({
-                       title: maps_CONSTANT.Errortitle
-                   }).then(function (res) {
-                   });
+           function (error) {
+               $scope.modal.hide();
+               $ionicPopup.alert({
+                  title: maps_CONSTANT.Errortitle
+               }).then(function (res) {
                });
+           });
        };
        function GeoWatch() {
            var d = $q.defer()
