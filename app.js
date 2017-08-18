@@ -69,6 +69,10 @@ const invite_CONSTANT = {
     subject: 'Super Tight Invite',
     link: 'http://chasertheapp.com/invite'
 };
+const shareLocation_CONSTANT = {
+    msg: 'Follow the route of 0 on Chaser.',
+    link: baseURL_CONSTANT + 'broadcast/'
+};
 const maps_CONSTANT = {
     title: 'Location services off',
     text: 'To see your position turn on location services',
@@ -1206,9 +1210,10 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
         $scope.$broadcast('mapUpdate', coords);
     });
 
-    $scope.$parent.$on("centralHubViewing", function (e, views) {
+    $scope.$parent.$on("centralHubViewing", function (e, watching, views) {
         $scope.$apply(function () {
-            $scope.user.broadcast.viewing = views;
+            $scope.user.broadcast.viewing = watching;
+            $scope.user.broadcast.views = views;
         });
     });
 

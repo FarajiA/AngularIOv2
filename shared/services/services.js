@@ -89,8 +89,8 @@
     };
 
     var views = function (proxyConnection) {
-        proxyConnection.on('updateViewing', function (views) {
-            $rootScope.$emit("centralHubViewing", views);
+        proxyConnection.on('updateViewing', function (watching, views) {
+            $rootScope.$emit("centralHubViewing", watching, views);
         });
     };
 

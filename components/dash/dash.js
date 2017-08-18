@@ -13,7 +13,6 @@
                         $scope.$emit('emit_Broadcasting', { action: "turn-off" });
                         $scope.$parent.user.broadcasting = false;
                         $scope.$parent.user.broadcast.viewing = null;
-
                     }
                     else {
                         var alertPopup = $ionicPopup.alert({
@@ -22,8 +21,18 @@
                     }
                 });
             };
+        };        
+
+        vm.shareBroadcast = function () {
+            $cordovaSocialSharing.share(shareLocation_CONSTANT.msg.replace(/0/gi, $scope.user.userName), null, null, shareLocation_CONSTANT.link + share) // Share via native share sheet
+            .then(function (result) {
+                // Success!
+            }, function (err) {
+                // An error occured. Show a message to the user
+            });
+            
         };
-        
+
 
     }]);
 })();
