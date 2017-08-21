@@ -10,7 +10,7 @@
             <i class="icon ion-android-share-alt"></i>
         </button>
 
-        <div class="viewSlideUp" ng-if="user.broadcast.viewing >= 0" ng-show="user.broadcast.viewing != null">
+        <div class="viewSlideUp" ng-if="user.broadcasting" ng-show="user.broadcasting">
             <div class="row viewTitle">
                 <div class="col">
                     <p class="figure" ng-bind="user.broadcast.viewing"></p>

@@ -57,6 +57,8 @@
                        if (!_.isEmpty(response.broadcastType)) {
                            $scope.$parent.user.broadcasting = true;
                            $scope.$parent.user.broadcast = response;
+                           $scope.$parent.user.broadcast.views = 0;
+                           $scope.$parent.user.broadcast.viewing = 0;
                            $ionicLoading.hide();
                            $ionicHistory.goBack();
                            $scope.$emit('emit_Broadcasting', { action: "turn-on" });

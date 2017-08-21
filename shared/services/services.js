@@ -31,7 +31,7 @@
     var proxy = null;
     var connection = null;
     var forced = false;
-    var initialize = function (hubName) {
+    var initialize = function (hubName, cb) {
         connection = $.hubConnection(signalRURL_CONSTANT, { useDefaultPath: false });
         connection.qs = { 'bearer_token': AuthService.authentication.token };
         proxy = connection.createHubProxy(hubName);
@@ -53,15 +53,14 @@
         });
 
         connection.start({ jsonp: true }).done(function (response) {
+            cb(proxy);
             console.log("Connection complete");
         });
 
         connection.disconnected(function () {
             if (!forced)
                 setTimeout(function () { connection.start({ jsonp: true }); }, 5000);
-        });
-
-        return proxy;
+        });        
     };
 
     var broadcast = function (proxyConnection, coords) {
@@ -295,15 +294,15 @@
 
          Device.data = function () { return data; };
          return Device;
-     }]).factory('UserView', function () {
+     }]).factory('UserViewMap', function () {
         var view = {
-            current: false
+            current: ''
         };
         return {
-            UserPageCurrent: function () {
+            CurrentConnection: function () {
                 return view.current;
             },
-            SetUserPageCurrent: function (current) {
+            SetUserConnection: function (current) {
                 view.current = current;
             }
         };

@@ -1,6 +1,6 @@
 ﻿; (function () {
     angular.module('App')
-        .controller('DashController', ['$scope','$state', '$ionicPopup', 'Broadcast', function ($scope, $state, $ionicPopup, Broadcast) {
+        .controller('DashController', ['$scope','$state', '$ionicPopup', '$ionicLoading', '$cordovaSocialSharing', 'Broadcast', function ($scope, $state, $ionicPopup, $ionicLoading, $cordovaSocialSharing, Broadcast) {
         // reusable authorization
         var vm = this;       
         
@@ -8,7 +8,9 @@
             if (!$scope.$parent.user.broadcasting)
                 $state.go("dash-group");
             else {
+                $ionicLoading.show();
                 Broadcast.Off().then(function (response) {
+                    $ionicLoading.hide();
                     if (response) {
                         $scope.$emit('emit_Broadcasting', { action: "turn-off" });
                         $scope.$parent.user.broadcasting = false;
@@ -24,6 +26,7 @@
         };        
 
         vm.shareBroadcast = function () {
+            var share = $scope.user.broadcast.share;
             $cordovaSocialSharing.share(shareLocation_CONSTANT.msg.replace(/0/gi, $scope.user.userName), null, null, shareLocation_CONSTANT.link + share) // Share via native share sheet
             .then(function (result) {
                 // Success!

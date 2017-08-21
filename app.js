@@ -1,5 +1,5 @@
-//const baseURL_CONSTANT = "https://ch-mo.com/";
-const baseURL_CONSTANT = "http://localhost:59822/";
+const baseURL_CONSTANT = "https://ch-mo.com/";
+//const baseURL_CONSTANT = "http://localhost:59822/";
 const imgURL_CONSTANT = baseURL_CONSTANT + "photos/";
 const signalRURL_CONSTANT = baseURL_CONSTANT + "socketpocket";
 const clientID_CONSTANT = "ngAuthApp";
@@ -939,8 +939,8 @@ app.factory('authInterceptorService', ['$q', '$rootScope', '$injector', 'localSt
     return authInterceptorServiceFactory;
 }]);
 
-app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicPopover', '$ionicPlatform', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'toastr', 'ControllerChecker', 'Device','Broadcast', 'localStorageService', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer', 'localStorageService',
-    function ($scope, $rootScope, $q, $state, $stateParams, $ionicLoading, $ionicModal, $ionicPopup, $ionicPopover, $ionicPlatform, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, $toaster, ControllerChecker, Device, Broadcast, localStorageService, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
+app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stateParams', '$ionicLoading', '$ionicModal', '$ionicPopup', '$ionicPopover', '$ionicPlatform', 'AuthService', 'Encryption', 'UserStore', 'Traffic', 'Activity', 'Messages', 'CentralHub', 'UserViewMap', 'toastr', 'ControllerChecker', 'Device','Broadcast', 'localStorageService', '$cordovaPushV5', '$cordovaSocialSharing','$cordovaGeolocation','$cordovaCamera', '$cordovaFileTransfer', 'localStorageService',
+    function ($scope, $rootScope, $q, $state, $stateParams, $ionicLoading, $ionicModal, $ionicPopup, $ionicPopover, $ionicPlatform, AuthService, Encryption, UserStore, Traffic, Activity, Messages, CentralHub, UserViewMap, $toaster, ControllerChecker, Device, Broadcast, localStorageService, $cordovaPushV5, $cordovaSocialSharing, $cordovaGeolocation, $cordovaCamera, $cordovaFileTransfer) {
     
     var mc = this;    
 
@@ -1057,8 +1057,10 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                     mc.badgeActivityCheck();
                 if ($state.current.name === 'main.traffic')
                     $scope.badgeTrafficCheck();
-
-                $scope.proxyCentralHub = CentralHub.initialize('centralHub'); 
+                                
+                CentralHub.initialize('centralHub', function(proxy){
+                    $scope.proxyCentralHub = proxy;
+                }); 
 
                 if ($scope.user.broadcasting) {
                     //updateCoordinatesAwake();
@@ -1316,7 +1318,28 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
     }, false);
 
     document.addEventListener("resume", function () {
-        $scope.proxyCentralHub = CentralHub.initialize('centralHub');
+        CentralHub.initialize('centralHub', function (proxy) {
+            $scope.proxyCentralHub = proxy;
+            var currentMapOpen = UserViewMap.CurrentConnection();
+            if (currentMapOpen) {
+                $ionicLoading.show({
+                    template: '<ion-spinner></ion-spinner> Connecting to ' + currentMapOpen
+                });
+                CentralHub.joinbroadcast(proxy, currentMapOpen).then(function () {
+                    $ionicLoading.hide();
+                    CentralHub.streamBroadcast(proxy);
+                }, function (err) {
+                    $ionicLoading.hide();
+                    $ionicPopup.alert({
+                        title: maps_CONSTANT.Errortitle
+                    }).then(function (res) {
+                    });
+                });
+            }                
+        });
+
+
+
     }, false);
     /***********************      *****************************/
 
@@ -1399,6 +1422,8 @@ app.controller('mainController', ['$scope', '$rootScope', '$q', '$state', '$stat
                 break;
             case 5:
                 title = newViewing_CONSTANT.replace("{0}", notify.viewing).replace("{1}", notify.views);
+                $scope.user.broadcast.views = notify.views;
+                $scope.user.broadcast.viewing = notify.viewing;
                 state = "main.dash";
                 icon = "ion-radio-waves";
                 break;

@@ -412,15 +412,22 @@ text-align: center;
 
 /* Profile  margin-top: 6px;
 ======================================= */
-.profile-tabs { position: relative; top: 205px; }
-.profile-tabs .tab-item { color: inherit !important; }
+.profile-tabs {position: relative;top: 205px;background-color: #444 !important;}
+.profile-tabs .tab-item {color: inherit !important;}
 .profile-tabs .tab-item i { font-size: 25px; display: block; margin: 10px 0 5px; }
+.profile-tabs .tab-item[disabled] {opacity: 1}
 
 .broadcast-profile {
     position: relative;
     z-index: 3;
     top: 250px;
 }
+
+.broadcast-profile button
+{width: 100%;
+    margin-left: 20px;
+    margin-right: 20px;}
+
 .hero{
   background-size: cover;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
@@ -458,6 +465,7 @@ text-align: center;
 }
 
 .hero-content h4{color: rgba(255,255,255,.7); margin: 3px 0 5px;}
+.hero-content button { min-height: 43px; width: 120px; font-size: 13px;}
 .popover.flagPopover {height:112px;}
 /*setting page*/
 form#settingsForm label i {padding-right: 10px;}

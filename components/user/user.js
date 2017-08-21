@@ -1,8 +1,8 @@
 ﻿; (function () {
     var app = angular.module('App');
     //app.requires.push('uiGmapgoogle-maps');
-    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform','$ocLazyLoad', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'UserView', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
-        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $ocLazyLoad, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, UserView, GoogleMapApi, uiGmapIsReady) {
+    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform', '$ocLazyLoad', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'UserViewMap', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
+        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $ocLazyLoad, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, UserViewMap, GoogleMapApi, uiGmapIsReady) {
         
         var vm = this;
         /*
@@ -251,8 +251,9 @@
                vm.broadcast.easing = "easeOutQuart";
                GeoWatch().then(function () {
                    vm.mapModal.show();
-                   CentralHub.streamBroadcast($scope.$parent.proxyCentralHub);
                    GoogleMapInvoke();
+                   CentralHub.streamBroadcast($scope.$parent.proxyCentralHub);
+                   UserViewMap.SetUserConnection(vm.username);
                }, function () {
                    $ionicLoading.hide();
                });
@@ -261,7 +262,9 @@
 
        vm.closeMap = function () {
            vm.mapModal.hide();
-           CentralHub.leavebroadcast($scope.$parent.proxyCentralHub, vm.id);
+           CentralHub.leavebroadcast($scope.$parent.proxyCentralHub, vm.id).then(function () {
+            UserViewMap.SetUserConnection('');
+           });
        };
 
        $scope.$on('$destroy', function () {
@@ -384,7 +387,6 @@
        $scope.$on('$ionicView.leave', function () {
            if (!vm.selfIdentity) {
                clearGeoWatch();
-               UserView.SetUserPageCurrent(false);
            }
        });     
     
