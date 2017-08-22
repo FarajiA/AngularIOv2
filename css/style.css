@@ -161,7 +161,6 @@ p.figure {margin:0;}
 ====================*/
 .timestamp {
     background-color: white;
-    text-transform: uppercase;
     color: #aaa;
     font-size: 12px;
 }
@@ -173,7 +172,6 @@ p.figure {margin:0;}
     top: 24px;
 }
 .bubble {margin-bottom: 5px !important;}
-
 .chat-bubble .bubble {
   position: relative;
   margin-bottom: 8px;
@@ -278,8 +276,11 @@ ion-content.thread {background-color:#fff;}
 .requests ion-item a {padding-right: 20px !important;}
 .requests ion-item a h2{ display:inline-block }
 .requests ion-item a p { display:inline-block }
-.requests ion-item a .buttons {float: right; position: relative; top:-22px;}
-.requests ion-item a .buttons button:first-child { margin-right: 45px; background-color: green; color: #fff; }
+#requests ion-item .buttons {position: relative;top: -67px;}
+#requests ion-item .buttons button {height: 35px;}
+#requests ion-item .buttons button:first-child {margin-right: 45px;background-color: green;color: #fff;}
+#requests ion-item.item-avatar.item-complex a {display:inline-block;width: 74%;}
+
 
 /* Compose msg styling
 =========================*/
