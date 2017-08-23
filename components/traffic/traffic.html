@@ -6,6 +6,8 @@
         <button class="button button-icon icon ion-ios-chatboxes-outline msgTitle" ng-click="mc.CheckBadge(2)" ui-sref="messages"><span ng-if="badge.Messages == 1" class="badge badge-assertive">{{badge.Messages}}</span></button>
     </ion-nav-buttons>
     <ion-content has-padding="false" has-header="true" has-bouncing="true">
+        <ion-refresher spinner="lines" on-refresh="vm.doRefresh()" disable-pulling-rotation="true">
+        </ion-refresher>
         <div class="button-bar">
             <a class="button" ng-class="{'active' : !vm.showChasing }" ng-click="vm.showChasing = false;">Followers <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.chasersNo}}</span></i></a>
             <a class="button" ng-class="{'active' : vm.showChasing }" ng-click="vm.showChasing = true;">Following <i class="icon ion-ios7-telephone-outline"><span class="badge badge-stable icon-badge">{{vm.chasingNo}}</span></i></a>

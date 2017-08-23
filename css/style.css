@@ -28,6 +28,11 @@ ion-tabs .tab-nav.tabs a .badge {
 .list.right-icon .icon {font-size:20px;top: 13px;position: relative;}
 .list.right-icon div.helper {display: inline-block;width: 20px;height: 35px;vertical-align: text-bottom;}
 .phrasepad { position: relative;padding-left: 20px;top: 3px;}
+/***** global button styling *******/
+button.button-outline.button-full {border-right-width: thin; border-left-width: thin;}
+.button-bar .button {background-color: #FFF2EE;}
+.button-bar .button.active {border-bottom: 2px solid #FF847C;}
+.button-bar .button.actived {background-color: #E1D6D2; border-bottom: 2px solid #FF847C;}
 /* Side menu */
 .sidemenu-header {text-align:center;border-color: #111; background-color: #444444;color: #fff;height: 215px;background-image: url('../img/profile-background.png');}
 .sidemenu-header h1 {text-overflow: ellipsis;
