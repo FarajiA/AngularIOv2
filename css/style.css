@@ -6,10 +6,25 @@ form label .success {color: green;}
 p.description {color:#fff;}
 .tab-nav.tabs .tab-item {line-height:inherit}
 .icon.ion-chevron-left:before {font-size: 20px !important;}
+/** Login **/
+.modal-inspius .header .logo img {width:inherit; height:inherit}
 .modal-inspius {
   background: url(../img/bg-login.jpg) !important;
   background-size: cover !important;
+    background-repeat: repeat-y;
+    animation: animatedBackground 50s linear infinite;
+    height: 100%;
+    margin-top: 0;
   }
+    
+@keyframes animatedBackground {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 0 500px;
+    }
+}
 .social-footer {text-align:center}
 .social-footer button{margin:15px}
 .social-footer .button-facebook {background-color:#3b5999; color:#fff}
@@ -28,9 +43,16 @@ ion-tabs .tab-nav.tabs a .badge {
 .list.right-icon .icon {font-size:20px;top: 13px;position: relative;}
 .list.right-icon div.helper {display: inline-block;width: 20px;height: 35px;vertical-align: text-bottom;}
 .phrasepad { position: relative;padding-left: 20px;top: 3px;}
+/*******  prompt styling  
+.popup-buttons .button:first-child {border-color: #b2b2b2;}
+.button.button-positive { background-color:#FFF2EE; color:#444; border-color: #b2b2b2; }
+.button.button-positive:hover {color: #000;}
+.button.button-positive.active, .button.button-positive.activated { border-color: #b2b2b2; background-color: #E1D6D2; }
+
 /***** global button styling *******/
 button.button-outline.button-full {border-right-width: thin; border-left-width: thin;}
 .button-bar .button {background-color: #FFF2EE;}
+.button-bar a {border-top: 0px; border-left: 0px;border-right: 0px;}
 .button-bar .button.active {border-bottom: 2px solid #FF847C;}
 .button-bar .button.actived {background-color: #E1D6D2; border-bottom: 2px solid #FF847C;}
 /* Side menu */

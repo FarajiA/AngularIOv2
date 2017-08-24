@@ -388,8 +388,17 @@
            if (!vm.selfIdentity) {
                clearGeoWatch();
            }
-       });     
-    
+       });
+
+       $ionicPopover.fromTemplateUrl('publicKeyMsg.html', {
+           scope: $scope,
+       }).then(function (popover) {
+           vm.msgPopover = popover;
+       });
+
+
+        
+       vm.publicKeyMsg = "Can't message. This user hasn't created a msg key";
 
     }]);
 })();
