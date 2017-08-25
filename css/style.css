@@ -495,6 +495,11 @@ text-align: center;
 .hero-content h4{color: rgba(255,255,255,.7); margin: 3px 0 5px;}
 .hero-content button { min-height: 43px; width: 120px; font-size: 13px;}
 .popover.flagPopover {height:112px;}
+
+.popover-wrapper .publickey { height: 69px; }
+.popover-wrapper .publickey ion-content  { padding: 10px; }
+
+
 /*setting page*/
 form#settingsForm label i {padding-right: 10px;}
 form#settingsForm .password {text-align:center;}

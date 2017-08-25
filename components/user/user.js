@@ -1,8 +1,8 @@
 ﻿; (function () {
     var app = angular.module('App');
     //app.requires.push('uiGmapgoogle-maps');
-    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform', '$ocLazyLoad', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'UserViewMap', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
-        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $ocLazyLoad, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, UserViewMap, GoogleMapApi, uiGmapIsReady) {
+    app.controller('UserController', ['$scope', '$q', '$rootScope', '$state', '$timeout', '$stateParams', '$ionicViewSwitcher', '$ionicModal', '$ionicPopover', '$ionicPopup', '$ionicLoading', '$location', '$ionicHistory', '$ionicPlatform', '$ocLazyLoad', '$cordovaGeolocation', 'UserStore', 'User', 'BroadcastStatus', 'Block', 'Messages', 'CentralHub', 'UserViewMap', 'uiGmapGoogleMapApi', 'uiGmapIsReady',
+        function ($scope, $q, $rootScope, $state, $timeout, $stateParams, $ionicViewSwitcher, $ionicModal, $ionicPopover, $ionicPopup, $ionicLoading, $location, $ionicHistory, $ionicPlatform, $ocLazyLoad, $cordovaGeolocation, UserStore, User, BroadcastStatus, Block, Messages, CentralHub, UserViewMap, GoogleMapApi, uiGmapIsReady) {
         
         var vm = this;
         /*
@@ -52,7 +52,6 @@
                     vm.chaserLink = vm.chasingLink = "javascript:void(0)";
 
                 Messages.recentMessage(vm.id).then(function (response) {
-                    vm.messageLink = "#/messages/" + vm.username + "/" + vm.id;
                     var Msg = response || {};
                     Msg.username = vm.username;
                     Msg.publickey = vm.publicKey;
@@ -381,7 +380,6 @@
                };
            };
        };
-
         /*********** End Map ***************/
 
        $scope.$on('$ionicView.leave', function () {
@@ -396,9 +394,15 @@
            vm.msgPopover = popover;
        });
 
-
-        
-       vm.publicKeyMsg = "Can't message. This user hasn't created a msg key";
+       vm.publicKeyMsg = userMsg_CONSTANT.contact.replace(/0/gi, vm.username);
+       vm.messageAction = function ($event) {
+           if (!vm.publicKey)
+               vm.msgPopover.show($event);
+           else {
+               $ionicViewSwitcher.nextDirection('forward');
+               $state.go('messages-thread', { username: vm.username, userID: vm.id });
+           }
+       };
 
     }]);
 })();

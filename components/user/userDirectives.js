@@ -43,21 +43,7 @@
                                 $rootScope.$broadcast('emit_Chasers', { action: "chasing" });
                             }
                         });
-                    });
-                    
-                    /*
-                    scope.$emit('emit_Chasers', { action: "chasing" });
-                    $rootScope.$broadcast('update_Chasers', { action: "chasing" });
-
-                    $rootScope.$broadcast('updateorgs', { action: "chasing" }); //works
-
-                    scope.$apply(function () {
-                        scope.$emit('emit_Chasers', { action: "chasing" });
-                        $rootScope.$emit('rootScope:emit', 'Emit!');
-                        $rootScope.$broadcast('updateorgs', { action: "chasing" });
-                        scope.doStuff();
-                    });
-                    */
+                    });                    
                 };
 
                 var UserUnblock = function () {
@@ -118,7 +104,6 @@
                             scope.isFollowing = decision_CONSTANT.unblock;
                             break;
                     }
-
                 });
 
                 elem.on('click', function (e) {
@@ -170,26 +155,4 @@
             }
         }
     }]);
-
-    angular.module('App').directive('tooltip', function () {
-        return {
-            restrict: 'C',
-            link: function (scope, element, attrs) {
-                if (attrs.title) {
-                    var $element = $(element);
-                    $element.attr("title", attrs.title)
-                    $element.tooltipster({
-                        animation: attrs.animation,
-                        trigger: "click",
-                        position: "right",
-                        positionTracker: true,
-                        maxWidth: 500,
-                        contentAsHTML: true
-                    });
-                }
-            }
-        };
-    });
-
-
 })();

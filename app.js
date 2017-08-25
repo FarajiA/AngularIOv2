@@ -96,6 +96,9 @@ const removeFollower_CONSTANT = {
     removeUserTitle: 'remove 0?',
     successfullyDeleted: '0 is no longer following you.'
 };
+const userMsg_CONSTANT = {
+    contact: 'Can\'t message 0. This user hasn\'t created a msg key.'
+};
 
 ionic.Gestures.gestures.Hold.defaults.hold_threshold = 20;
 var app = angular.module('App',
